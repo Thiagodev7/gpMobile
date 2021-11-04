@@ -51,12 +51,6 @@ class NavigationBloc extends BlocBase {
         MaterialPageRoute(builder: (context) => MyDayWidget()),
       );
     }
-    // if (index == "5") {
-    //   Navigator.push(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => NiverWidget()),
-    //   );
-    // }
     if (index == "5") {
       Navigator.push(
         context,

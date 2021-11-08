@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 //https://androidkt.com/flutter-alertdialog-example/
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
+import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
+import 'package:gpmobile/src/pages/documentos/ListarDocService.dart';
 import 'package:gpmobile/src/pages/login/entrar/EntrarWidget.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
+import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //https://www.youtube.com/watch?v=58_IM0OTU2M
 
@@ -87,6 +91,24 @@ final List<PeriodoItem> listaTxtDatasContraCheque = [
   ),
   PeriodoItem(
     title: "$contraChequePeriodoAtualMenos4",
+  ),
+];
+
+final List<PeriodoItem> listaTxtDatas = [
+  PeriodoItem(
+    title: "2021",
+  ),
+  PeriodoItem(
+    title: "2020",
+  ),
+  PeriodoItem(
+    title: "2019",
+  ),
+  PeriodoItem(
+    title: "2018",
+  ),
+  PeriodoItem(
+    title: "2017",
   ),
 ];
 
@@ -1013,6 +1035,70 @@ class AlertDialogTemplate extends State<StatefulWidget>
         );
       },
     );
+  }
+
+  Future<String> showAlertDialogAno(
+    BuildContext context,
+    String titulo,
+  ) async {
+    return showDialog<String>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          //
+          final corBackground = Colors.white70.withOpacity(1);
+          final corTitulo = Color(0xff212121);
+          PeriodoItem _selected;
+          int indice;
+
+          return SimpleDialog(
+            backgroundColor: corBackground,
+            title: Text(
+              titulo,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: corTitulo,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            children: [
+              CheckData(
+                  items: listaTxtDatas,
+                  selected: _selected,
+                  origem: "cedulaC",
+                  style: GroupStyle(
+                      activeColor: Colors.red,
+                      checkPosition: ListTileControlAffinity.leading,
+                      titleAlign: TextAlign.left,
+                      titleStyle: TextStyle(fontSize: 12)),
+                  onSelected: (item) async {
+                    print(item.title);
+
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    String empresa = prefs.getString('empresa');
+                    String matricula = prefs.getString('matricula');
+                    String usuario = prefs.getString('usuario');
+                    var url = await BuscaUrl().url('cedulaC') +
+                        "matricula=" +
+                        matricula +
+                        "&cpfcolaborador=" +
+                        usuario +
+                        "&intano=" +
+                        item.title +
+                        "&chrEmpresa=" +
+                        empresa;
+
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      AlertDialogTemplate().showAlertDialogSimples(
+                          context, "Alerta", 'URL não encontrada $url');
+                    }
+                  }),
+            ],
+          );
+        });
   }
 }
 

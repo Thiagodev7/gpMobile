@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
 import 'package:gpmobile/src/pages/aniversariantes/view/NiverWidget.dart';
-import 'package:gpmobile/src/pages/documentos/listar/ListarDocWidget.dart';
+import 'package:gpmobile/src/pages/documentos/view/ListarDocWidget.dart';
 import 'package:gpmobile/src/pages/ferias/view/FeriasWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemEnvioModel.dart';

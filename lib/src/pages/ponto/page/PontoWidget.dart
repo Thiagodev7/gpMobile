@@ -6,10 +6,13 @@ import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
+import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PontoWidget extends StatefulWidget {
   //metodo recebe dados da tela de contra-cheque
@@ -377,7 +380,41 @@ class _PontoWidgetState extends State<PontoWidget> {
           // mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("$nomePeriodo"),
+            Row(children: [
+              IconButton(
+                icon: Icon(
+                  Icons.picture_as_pdf,
+                  size: 30,
+                ),
+                color: new Estilo().iconsCor,
+                onPressed: () => AlertDialogTemplate()
+                    .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
+                    .then((map) async {
+                  if (map == ConfirmAction.OK) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    String empresa = prefs.getString('empresa');
+                    String matricula = prefs.getString('matricula');
+                    var url = await BuscaUrl().url('pontoPDF') +
+                        'matricula=' +
+                        matricula +
+                        '&mesReferencia=' +
+                        pmes +
+                        '&anoReferencia=' +
+                        pano +
+                        '&chrEmpresa=' +
+                        empresa;
+
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      AlertDialogTemplate().showAlertDialogSimples(
+                          context, "Alerta", 'URL não encontrada $url');
+                    }
+                  }
+                }),
+              ),
+            ]),
             IconButton(
               icon: Icon(
                 Icons.date_range,
@@ -1119,7 +1156,41 @@ class _PontoWidgetState extends State<PontoWidget> {
       actions: [
         Row(
           children: [
-            Text("$nomePeriodo"),
+            Row(children: [
+              IconButton(
+                icon: Icon(
+                  Icons.picture_as_pdf,
+                  size: 30,
+                ),
+                color: new Estilo().iconsCor,
+                onPressed: () => AlertDialogTemplate()
+                    .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
+                    .then((map) async {
+                  if (map == ConfirmAction.OK) {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    String empresa = prefs.getString('empresa');
+                    String matricula = prefs.getString('matricula');
+                    var url = await BuscaUrl().url('pontoPDF') +
+                        'matricula=' +
+                        matricula +
+                        '&mesReferencia=' +
+                        pmes +
+                        '&anoReferencia=' +
+                        pano +
+                        '&chrEmpresa=' +
+                        empresa;
+
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      AlertDialogTemplate().showAlertDialogSimples(
+                          context, "Alerta", 'URL não encontrada $url');
+                    }
+                  }
+                }),
+              ),
+            ]),
             IconButton(
               icon: Icon(
                 Icons.date_range,

@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/GenericLogsModel.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:validadores/ValidarCPF.dart';
 
 class VizualizarDocService {
   GenericLogsModel _tabelaArquivos = new GenericLogsModel();

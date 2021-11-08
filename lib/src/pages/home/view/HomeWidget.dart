@@ -19,7 +19,7 @@ import 'package:tutorial/tutorial.dart';
 import 'package:gpmobile/src/pages/bcoHoras/view/BcoHorasWidget.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
 import 'package:gpmobile/src/pages/contraCheque/view/ContraChequeWidget.dart';
-import 'package:gpmobile/src/pages/documentos/listar/ListarDocWidget.dart';
+import 'package:gpmobile/src/pages/documentos/view/ListarDocWidget.dart';
 import 'package:gpmobile/src/pages/ferias/view/FeriasWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaBloc.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaWidgetWeb.dart';

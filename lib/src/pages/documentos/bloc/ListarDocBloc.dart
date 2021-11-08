@@ -8,8 +8,9 @@ import 'package:gpmobile/src/util/GenericLogsModel.dart';
 import 'package:gpmobile/src/util/TokenModel.dart';
 import 'package:gpmobile/src/util/TokenServices.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'ListarDocService.dart';
+import '../ListarDocService.dart';
 
 class VizualizarDocBloc extends BlocBase {
   ///////////////////////

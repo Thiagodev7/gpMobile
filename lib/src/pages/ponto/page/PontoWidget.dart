@@ -399,9 +399,9 @@ class _PontoWidgetState extends State<PontoWidget> {
                         'matricula=' +
                         matricula +
                         '&mesReferencia=' +
-                        pmes +
+                        mesAssinatura +
                         '&anoReferencia=' +
-                        pano +
+                        anoAssinatura +
                         '&chrEmpresa=' +
                         empresa;
 

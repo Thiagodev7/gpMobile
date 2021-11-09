@@ -1,3 +1,10 @@
+import 'dart:math';
+
+import 'package:awesome_notifications/awesome_notifications.dart'
+    hide DateUtils;
+import 'package:awesome_notifications/awesome_notifications.dart' as Utils
+    show DateUtils;
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -5,6 +12,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoModel.dart';
+import 'package:gpmobile/src/routes/routes.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
@@ -51,11 +59,67 @@ class _PontoWidgetState extends State<PontoWidget> {
   String retPeriodo;
   String nomePeriodo;
 
+  String _firebaseAppToken = '';
+  bool _notificationsAllowed = false;
+  int _counter = 0;
+
   String mesAssinatura;
   String anoAssinatura;
 
   @override
   void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      _notificationsAllowed = isAllowed;
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
+    // Here you get the token every time its changed by firebase process or by a new installation
+    // AwesomeNotifications().fcmTokenStream.listen((String newFcmToken) {
+    //   print("New FCM token: "+newFcmToken);
+    // });
+
+    AwesomeNotifications()
+        .createdStream
+        .listen((ReceivedNotification notification) {
+      print("Notification created: " +
+          (notification.title ??
+              notification.body ??
+              notification.id.toString()));
+    });
+
+    AwesomeNotifications()
+        .displayedStream
+        .listen((ReceivedNotification notification) {
+      print("Notification displayed: " +
+          (notification.title ??
+              notification.body ??
+              notification.id.toString()));
+    });
+
+    AwesomeNotifications()
+        .dismissedStream
+        .listen((ReceivedAction dismissedAction) {
+      print("Notification dismissed: " +
+          (dismissedAction.title ??
+              dismissedAction.body ??
+              dismissedAction.id.toString()));
+    });
+
+    AwesomeNotifications().actionStream.listen((ReceivedAction action) {
+      print("Action received!");
+
+      // Avoid to open the notification details page twice
+      Navigator.pushNamedAndRemoveUntil(
+          context,
+          PAGE_NOTIFICATION_DETAILS,
+          (route) =>
+              (route.settings.name != PAGE_NOTIFICATION_DETAILS) ||
+              route.isFirst,
+          arguments: action);
+    });
+
     super.initState();
     // ignore: unused_element
     void onSubmitted(String value) {
@@ -414,8 +478,26 @@ class _PontoWidgetState extends State<PontoWidget> {
                 ),
           TimerButton(
               label: 'Bater Ponto',
-              timeOutInSeconds: 10,
-              onPressed: () {},
+              timeOutInSeconds: 6,
+              onPressed: () async {
+                var maxStep = 60;
+                for (var simulatedStep = 1;
+                    simulatedStep <= maxStep + 1;
+                    simulatedStep++) {
+                  await Future.delayed(Duration(seconds: 1), () async {
+                    AwesomeNotifications().createNotification(
+                        content: NotificationContent(
+                            id: 10,
+                            channelKey: 'basic_channel',
+                            title: 'Horario de Almoço',
+                            body: '60s',
+                            notificationLayout: NotificationLayout.ProgressBar,
+                            progress: min(
+                                (simulatedStep / maxStep * 100).round(), 100),
+                            locked: false));
+                  });
+                }
+              },
               disabledColor: Theme.of(context).backgroundColor,
               color: Theme.of(context).backgroundColor,
               activeTextStyle: new TextStyle(color: Colors.white),

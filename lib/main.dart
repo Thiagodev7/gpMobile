@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 //https://blog.codemagic.io/flutter-web-getting-started-with-responsive-design/
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 import 'package:desktop_window/desktop_window.dart';
 import 'package:get/get.dart';
@@ -30,6 +31,16 @@ void main() async {
         (Platform.isMacOS || Platform.isLinux || Platform.isWindows)) {
       await DesktopWindow.setMinWindowSize(const Size(600, 800));
     }
+
+    AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white)
+    ]);
+
     runApp(
       new AppWidget(),
     );

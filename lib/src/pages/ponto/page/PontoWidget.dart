@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:timer_button/timer_button.dart';
 
 class PontoWidget extends StatefulWidget {
   //metodo recebe dados da tela de contra-cheque
@@ -297,6 +298,73 @@ class _PontoWidgetState extends State<PontoWidget> {
     }
   }
 
+  buildBtnPonto() async {
+    ///*[isNull, create new Time]
+    // if ((pmes == null) && (pano == null)) {
+    //   String mes = new DateTime(
+    //           DateTime.now().year, DateTime.now().month, DateTime.now().day)
+    //       .month
+    //       .toString()
+    //       .padLeft(2, '0');
+    //   String ano = new DateTime(
+    //           DateTime.now().year, DateTime.now().month, DateTime.now().day)
+    //       .year
+    //       .toString();
+
+    //   if (retPeriodo != "" && retPeriodo != null) {
+    //     mes = retPeriodo.substring(0, 2);
+    //     ano = retPeriodo.substring(3, 7);
+    //   }
+
+    //   pmes = mes;
+    //   pano = ano;
+    //
+    setState(() {
+      AlertDialogTemplate()
+          .showAlertDialogConfirmReg(
+        context,
+        "Bater Ponto: ",
+        "Senha do app",
+        pmes,
+        pano,
+        1,
+      )
+          .then(
+        (ret) async {
+          if (ret != null) {
+            //setState(() => _isButtonDisabled = true);
+            await AlertDialogTemplate().showAlertDialogSimples(
+                context, "Atencao", "Ponto batido com sucesso!");
+          }
+        },
+      );
+    });
+
+    ///*[isValeu, redirected]
+    // } else {
+    //   setState(() {
+    //     AlertDialogTemplate()
+    //         .showAlertDialogConfirmReg(
+    //       context,
+    //       "Assinar Registro de Ponto: ",
+    //       "Senha do app",
+    //       pmes,
+    //       pano,
+    //       1,
+    //     )
+    //         .then(
+    //       (ret) async {
+    //         if (ret != null) {
+    //           setState(() => _isButtonDisabled = true);
+    //           await AlertDialogTemplate().showAlertDialogSimples(
+    //               context, "Atencao", "Ponto assinado com sucesso!");
+    //         }
+    //       },
+    //     );
+    //   });
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     // This size provide us total height and width  of our screen
@@ -325,25 +393,35 @@ class _PontoWidgetState extends State<PontoWidget> {
       ),
       //////////////////////////////////////////////////////////////
       //botao flutuante ref:(https://medium.com/codechai/anatomy-of-material-buttons-in-flutter-first-part-40eb790979a6)
-      floatingActionButton: _isButtonDisabled
-          ? null
-          : MaterialButton(
-              highlightColor: Theme.of(context).backgroundColor,
-              highlightElevation: 8,
-              elevation: 8,
-              shape: StadiumBorder(),
-              child: Text(
-                "Assinar",
-                style: TextStyle(
-                    color: _isButtonDisabled
-                        ? Colors.black.withOpacity(0.0)
-                        : Colors.white),
-              ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          _isButtonDisabled
+              ? SizedBox()
+              : MaterialButton(
+                  highlightColor: Theme.of(context).backgroundColor,
+                  highlightElevation: 8,
+                  elevation: 8,
+                  shape: StadiumBorder(),
+                  child: Text(
+                    "Assinar",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: Theme.of(context).backgroundColor,
+                  textColor: Estilo().textCor,
+                  enableFeedback: true,
+                  onPressed: () => buildBtnAssinar(),
+                ),
+          TimerButton(
+              label: 'Bater Ponto',
+              timeOutInSeconds: 10,
+              onPressed: () {},
+              disabledColor: Theme.of(context).backgroundColor,
               color: Theme.of(context).backgroundColor,
-              textColor: Estilo().textCor,
-              enableFeedback: true,
-              onPressed: () => buildBtnAssinar(),
-            ),
+              activeTextStyle: new TextStyle(color: Colors.white),
+              buttonType: ButtonType.RaisedButton)
+        ],
+      ),
     );
   }
 
@@ -382,38 +460,44 @@ class _PontoWidgetState extends State<PontoWidget> {
           children: [
             Row(children: [
               IconButton(
-                icon: Icon(
-                  Icons.picture_as_pdf,
-                  size: 30,
-                ),
-                color: new Estilo().iconsCor,
-                onPressed: () => AlertDialogTemplate()
-                    .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
-                    .then((map) async {
-                  if (map == ConfirmAction.OK) {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    String empresa = prefs.getString('empresa');
-                    String matricula = prefs.getString('matricula');
-                    var url = await BuscaUrl().url('pontoPDF') +
-                        'matricula=' +
-                        matricula +
-                        '&mesReferencia=' +
-                        mesAssinatura +
-                        '&anoReferencia=' +
-                        anoAssinatura +
-                        '&chrEmpresa=' +
-                        empresa;
+                  icon: Icon(
+                    Icons.picture_as_pdf,
+                    size: 30,
+                  ),
+                  color: new Estilo().iconsCor,
+                  onPressed: () => _isButtonDisabled
+                      ? AlertDialogTemplate()
+                          .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
+                          .then((map) async {
+                          if (map == ConfirmAction.OK) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            String empresa = prefs.getString('empresa');
+                            String matricula = prefs.getString('matricula');
+                            var url = await BuscaUrl().url('pontoPDF') +
+                                'matricula=' +
+                                matricula +
+                                '&mesReferencia=' +
+                                mesAssinatura +
+                                '&anoReferencia=' +
+                                anoAssinatura +
+                                '&chrEmpresa=' +
+                                empresa;
 
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {
-                      AlertDialogTemplate().showAlertDialogSimples(
-                          context, "Alerta", 'URL não encontrada $url');
-                    }
-                  }
-                }),
-              ),
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              AlertDialogTemplate().showAlertDialogSimples(
+                                  context, "Alerta", 'URL não encontrada $url');
+                            }
+                          }
+                        })
+                      : AlertDialogTemplate()
+                          .showAlertDialogAssPonto(context, "Atenção", "Ponto",
+                              " nao assinado !\nFavor assinar ponto para liberar seu PDF!")
+                          .then((map) async {
+                          if (map == ConfirmAction.OK) {}
+                        })),
             ]),
             IconButton(
               icon: Icon(
@@ -1158,38 +1242,44 @@ class _PontoWidgetState extends State<PontoWidget> {
           children: [
             Row(children: [
               IconButton(
-                icon: Icon(
-                  Icons.picture_as_pdf,
-                  size: 30,
-                ),
-                color: new Estilo().iconsCor,
-                onPressed: () => AlertDialogTemplate()
-                    .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
-                    .then((map) async {
-                  if (map == ConfirmAction.OK) {
-                    SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                    String empresa = prefs.getString('empresa');
-                    String matricula = prefs.getString('matricula');
-                    var url = await BuscaUrl().url('pontoPDF') +
-                        'matricula=' +
-                        matricula +
-                        '&mesReferencia=' +
-                        pmes +
-                        '&anoReferencia=' +
-                        pano +
-                        '&chrEmpresa=' +
-                        empresa;
+                  icon: Icon(
+                    Icons.picture_as_pdf,
+                    size: 30,
+                  ),
+                  color: new Estilo().iconsCor,
+                  onPressed: () => _isButtonDisabled
+                      ? AlertDialogTemplate()
+                          .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
+                          .then((map) async {
+                          if (map == ConfirmAction.OK) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            String empresa = prefs.getString('empresa');
+                            String matricula = prefs.getString('matricula');
+                            var url = await BuscaUrl().url('pontoPDF') +
+                                'matricula=' +
+                                matricula +
+                                '&mesReferencia=' +
+                                pmes +
+                                '&anoReferencia=' +
+                                pano +
+                                '&chrEmpresa=' +
+                                empresa;
 
-                    if (await canLaunch(url)) {
-                      await launch(url);
-                    } else {
-                      AlertDialogTemplate().showAlertDialogSimples(
-                          context, "Alerta", 'URL não encontrada $url');
-                    }
-                  }
-                }),
-              ),
+                            if (await canLaunch(url)) {
+                              await launch(url);
+                            } else {
+                              AlertDialogTemplate().showAlertDialogSimples(
+                                  context, "Alerta", 'URL não encontrada $url');
+                            }
+                          }
+                        })
+                      : AlertDialogTemplate()
+                          .showAlertDialogAssPonto(context, "Atenção", "Ponto",
+                              " nao assinado !\nFavor assinar ponto para liberar seu PDF!")
+                          .then((map) async {
+                          if (map == ConfirmAction.OK) {}
+                        })),
             ]),
             IconButton(
               icon: Icon(

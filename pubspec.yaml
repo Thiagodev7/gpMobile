@@ -108,6 +108,8 @@ dependencies:
   r_get_ip: ^0.1.0
   dart_ipify: ^1.1.1
   universal_platform: ^1.0.0+1
+  timer_button: ^2.0.0
+  flutter_local_notifications: ^9.0.3
 
 
 dev_dependencies:

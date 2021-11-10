@@ -485,16 +485,27 @@ class _PontoWidgetState extends State<PontoWidget> {
                     simulatedStep <= maxStep + 1;
                     simulatedStep++) {
                   await Future.delayed(Duration(seconds: 1), () async {
-                    AwesomeNotifications().createNotification(
-                        content: NotificationContent(
-                            id: 10,
-                            channelKey: 'basic_channel',
-                            title: 'Horario de Almoço',
-                            body: '60s',
-                            notificationLayout: NotificationLayout.ProgressBar,
-                            progress: min(
-                                (simulatedStep / maxStep * 100).round(), 100),
-                            locked: false));
+                    if (simulatedStep > maxStep) {
+                      await AwesomeNotifications().createNotification(
+                          content: NotificationContent(
+                              id: 9,
+                              channelKey: 'basic_channel',
+                              title: 'Acabou seu intervalo',
+                              body: 'bata o ponto',
+                              locked: false));
+                    } else {
+                      await AwesomeNotifications().createNotification(
+                          content: NotificationContent(
+                              id: 10,
+                              channelKey: 'basic_channel',
+                              title: 'Horario de Almoço',
+                              body: '$simulatedStep seg / $maxStep seg',
+                              notificationLayout:
+                                  NotificationLayout.ProgressBar,
+                              progress: min(
+                                  (simulatedStep / maxStep * 100).round(), 100),
+                              locked: false));
+                    }
                   });
                 }
               },

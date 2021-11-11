@@ -1,8 +1,16 @@
+import 'dart:isolate';
+import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui';
+
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/rendering.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
+import 'package:gpmobile/main.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
@@ -14,6 +22,8 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timer_button/timer_button.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class PontoWidget extends StatefulWidget {
   //metodo recebe dados da tela de contra-cheque
@@ -56,6 +66,7 @@ class _PontoWidgetState extends State<PontoWidget> {
 
   @override
   void initState() {
+    tz.initializeTimeZones();
     super.initState();
     // ignore: unused_element
     void onSubmitted(String value) {
@@ -414,8 +425,11 @@ class _PontoWidgetState extends State<PontoWidget> {
                 ),
           TimerButton(
               label: 'Bater Ponto',
-              timeOutInSeconds: 10,
-              onPressed: () {},
+              timeOutInSeconds: 1,
+              onPressed: () async {
+                await _showNotificationWithShedule();
+                await _showNotificationWithChronometer();
+              },
               disabledColor: Theme.of(context).backgroundColor,
               color: Theme.of(context).backgroundColor,
               activeTextStyle: new TextStyle(color: Colors.white),
@@ -423,6 +437,45 @@ class _PontoWidgetState extends State<PontoWidget> {
         ],
       ),
     );
+  }
+
+  Future<void> _showNotificationWithShedule() async {
+    final String currentTimeZone =
+        await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Seu almoço acabou',
+        'Vai bater o ponto',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10)),
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'your channel id', 'your channel name',
+                channelDescription: 'your channel description')),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime);
+  }
+
+  Future<void> _showNotificationWithChronometer() async {
+    const int insistentFlag = 2;
+    final AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails('1', 'Ponto',
+            channelDescription: 'Horario de Almoço',
+            importance: Importance.max,
+            priority: Priority.high,
+            when: DateTime.now().millisecondsSinceEpoch + 10 * 1000,
+            visibility: NotificationVisibility.public,
+            usesChronometer: true,
+            autoCancel: true,
+            additionalFlags: Int32List.fromList(<int>[insistentFlag]),
+            color: Colors.red);
+    final NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Hora do Almoço', '', platformChannelSpecifics,
+        payload: 'item x');
   }
 
   //MOBILE

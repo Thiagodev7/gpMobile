@@ -110,6 +110,7 @@ dependencies:
   universal_platform: ^1.0.0+1
   timer_button: ^2.0.0
   flutter_local_notifications: ^9.0.3
+  flutter_native_timezone: ^2.0.0
 
 
 dev_dependencies:

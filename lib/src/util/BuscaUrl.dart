@@ -8,7 +8,7 @@ class BuscaUrl {
     String senhaAmbiente;
     await SharedPreferencesBloc().buscaParametro("ambiente").then((ret) async {
       //forçar ambiente de teste(Obs: ambiente setado no caminho: LoginBloc)
-      ret = "Produção";
+      ret = "Homologação";
 
       if (ret == "Produção") {
         portaAmbiente = "9911";
@@ -99,6 +99,11 @@ class BuscaUrl {
         url = "https://pasoe.grupohegidio.com.br:" +
             portaAmbiente +
             "/rest/WebServiceFusionService/wsProcAssinarPonto?token="; //POST
+      }
+      if (nomeUrl == "pontoBater") {
+        url = "https://pasoe.grupohegidio.com.br:" +
+            portaAmbiente +
+            "/rest/WebServiceFusionService/wsProcBaterPonto?token="; //POST
       }
       if (nomeUrl == "enviarArq") {
         url = "https://pasoe.grupohegidio.com.br:" +

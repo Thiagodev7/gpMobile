@@ -4,11 +4,18 @@ import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
+import 'package:gpmobile/src/util/GetIp.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_platform/universal_platform.dart';
+
+import '../model/BaterPontoModel.dart';
 
 class PontoService {
   var _ponto;
   var _pontoAssinar;
+  String ip;
+  var _baterPonto;
   //METODO PRINCIPAL
   Future<PontoModel> getPonto(
     BuildContext context,
@@ -51,6 +58,63 @@ class PontoService {
     } catch (e) {
       await new AlertDialogTemplate().showAlertDialogSimples(
           context, "Error", "Error ao buscar o Ponto! \n " + e.toString());
+      return null;
+    }
+  }
+
+  Future<BaterPontoModel> postBaterPonto(BuildContext context, String token,
+      String matricula, String empresa, String entrSaida) async {
+    try {
+      await GetIp().getIp().then((map) async {
+        if (map == null) {
+          ip = "";
+        } else {
+          ip = map;
+        }
+      });
+
+      final response = await http.post(
+        await new BuscaUrl().url("pontoBater") + token,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode({
+          'request': {
+            'ttBatidasJson': {
+              'ttBatidasJson': [
+                {
+                  "cdnEmpresa": empresa,
+                  "cdnEstab": "",
+                  "cdnFuncionario": matricula,
+                  "datMarcacPtoeletBatida": "17/08/2021",
+                  "numHorarMarcacPtoelet": "10:01",
+                  "idiMarcacPtoeletEntrSaida": entrSaida,
+                  "cdnMotivMarcac": 992,
+                  "operacao": 1
+                }
+              ]
+            }
+          }
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        var descodeJson = jsonDecode(response.body);
+        _baterPonto = BaterPontoModel.fromJson(descodeJson);
+
+        return _baterPonto;
+      } else {
+        await new AlertDialogTemplate().showAlertDialogSimples(
+            context,
+            "Error",
+            "Error ao buscar usuario! \n" +
+                "Código Erro: " +
+                response.statusCode.toString());
+        return null;
+      }
+    } catch (e) {
+      await new AlertDialogTemplate().showAlertDialogSimples(
+          context, "Error", "Error ao buscar usuario! \n " + e.toString());
       return null;
     }
   }

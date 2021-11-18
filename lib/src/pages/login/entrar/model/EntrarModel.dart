@@ -82,6 +82,10 @@ class TtUsuario2 {
   int num_ddd;
   int num_telefone;
   String email;
+  bool permiteBaterPonto;
+  bool permiteBaterPontoOffline;
+  String tipoLiberacaoRegistroPonto;
+  String ipsLiberadosConexoesInternas;
 
   TtUsuario2(
       {this.usuario,
@@ -96,7 +100,11 @@ class TtUsuario2 {
       //
       this.num_ddd,
       this.num_telefone,
-      this.email});
+      this.email,
+      this.permiteBaterPonto,
+      this.permiteBaterPontoOffline,
+      this.tipoLiberacaoRegistroPonto,
+      this.ipsLiberadosConexoesInternas});
 
   TtUsuario2.fromJson(Map<String, dynamic> json) {
     usuario = json['usuario'];
@@ -112,6 +120,10 @@ class TtUsuario2 {
     num_ddd = json['num_ddd'];
     num_telefone = json['num_telefone'];
     email = json['email'];
+    permiteBaterPonto = json['permiteBaterPonto'];
+    permiteBaterPontoOffline = json['permiteBaterPontoOffline'];
+    tipoLiberacaoRegistroPonto = json['tipoLiberacaoRegistroPonto'];
+    ipsLiberadosConexoesInternas = json['ipsLiberadosConexoesInternas'];
   }
 
   Map<String, dynamic> toJson() {
@@ -129,6 +141,10 @@ class TtUsuario2 {
     data['num_ddd'] = this.num_ddd;
     data['num_telefone'] = this.num_telefone;
     data['email'] = this.email;
+    data['permiteBaterPonto'] = this.permiteBaterPonto;
+    data['permiteBaterPontoOffline'] = this.permiteBaterPontoOffline;
+    data['tipoLiberacaoRegistroPonto'] = this.tipoLiberacaoRegistroPonto;
+    data['ipsLiberadosConexoesInternas'] = this.ipsLiberadosConexoesInternas;
     //
     return data;
   }

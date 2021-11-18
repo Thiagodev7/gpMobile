@@ -288,6 +288,11 @@ class _HomeWidgetState extends State<HomeWidget>
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: width * 0.02, vertical: height * 0.02),
+                        child: _buttonAttPonto(context, 'web'),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: width * 0.02, vertical: height * 0.02),
                         child: _buttonLogoffWeb(context, 'web'),
                       ),
                     ],
@@ -850,6 +855,26 @@ class _HomeWidgetState extends State<HomeWidget>
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buttonAttPonto(BuildContext context, tipoDispositivo) {
+    return Container(
+      child: new ElevatedButton(
+        onPressed: () => null,
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.transparent))),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+        ),
+        child: Icon(
+          Icons.restore_page_outlined,
+          size: 22,
+          color: ThemeData.light().buttonColor,
+        ),
       ),
     );
   }

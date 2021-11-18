@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //https://androidkt.com/flutter-alertdialog-example/
@@ -5,13 +7,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
 import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
 import 'package:gpmobile/src/pages/documentos/ListarDocService.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarWidget.dart';
+import 'package:gpmobile/src/pages/login/entrar/view/EntrarWidget.dart';
+import 'package:gpmobile/src/pages/mensagens/model/MensagemEnvioModel.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
+import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
 import 'package:intl/intl.dart';
+import 'package:path/path.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+import 'package:responsive_widgets/responsive_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -40,6 +46,8 @@ DateTime contraChequeDataAtualMenos6 =
     DateTime(contraChequeDataAtual.year, contraChequeDataAtual.month - 6, 1);
 DateTime contraChequeDataAtualMenos7 =
     DateTime(contraChequeDataAtual.year, contraChequeDataAtual.month - 7, 1);
+
+bool intervalo = false;
 
 String contraChequePeriodoAtualGeral =
     f.format(contraChequeDataAtual.day).toString() +
@@ -812,6 +820,229 @@ class AlertDialogTemplate extends State<StatefulWidget>
           ],
         );
       },
+    );
+  }
+
+  Future<ConfirmAction> ShowDialogSenhaPonto(BuildContext context,
+      String titulo, String subTitulo, String descController) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String senhaAtual = prefs.getString('senha');
+    String senhaPonto = prefs.getString('senhaPonto');
+    final crtlAssinatura = new TextEditingController();
+    String matriculaInformada = crtlAssinatura.text;
+    String campoVazio = 'Campo não pode ser vazio!';
+    String campoSenhaErrada = 'Senha incorreta!';
+
+    ///[metodos]
+
+    dynamic validarCampoSenhaMensa(value) {
+      if (value.isEmpty) {
+        return campoVazio;
+      } else if (value != senhaPonto) {
+        return campoSenhaErrada;
+      }
+
+      return null;
+    }
+
+    return showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Form(
+          key: _formKey,
+          child: AlertDialog(
+            title: Column(
+              children: [
+                Text(titulo, style: TextStyle(color: Color(0xFFC42224))),
+                SizedBox(height: 10),
+                Text(subTitulo),
+              ],
+            ),
+            content: new TextFormField(
+              controller: crtlAssinatura,
+              keyboardType: TextInputType.multiline,
+              obscureText: true,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: descController,
+                labelStyle: TextStyle(color: AppColors.black),
+                fillColor: Color(0xFFDBEDFF),
+                focusedBorder: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  borderSide: new BorderSide(color: AppColors.black),
+                ),
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  borderSide: new BorderSide(color: AppColors.black),
+                ),
+              ),
+              onChanged: (value) {
+                matriculaInformada = value;
+              },
+              validator: (value) => validarCampoSenhaMensa(value),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: AppColors.black,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) => Color(0xFFC42224)),
+                  ),
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      //forca validacao de matricula!!
+                      if (_formKey.currentState.validate() == true) {
+                        Navigator.of(context).pop(ConfirmAction.OK);
+                        intervalo
+                            ? Notific().showNotificationWithChronometer()
+                            : null;
+                        intervalo
+                            ? Notific().showNotificationWithShedule()
+                            : null;
+                        PontoBloc().blocBaterPonto(context, true, '1');
+
+                        return ConfirmAction.OK;
+                      }
+                    }
+                  }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //Bater Ponto com as 4 opções
+
+  Future<ConfirmAction> ShowAlertDialogBater(BuildContext context) async {
+    return showDialog<ConfirmAction>(
+        context: context,
+        barrierDismissible: false, // user must tap button for close dialog!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white70.withOpacity(0.9),
+            content: Container(
+              constraints: BoxConstraints.expand(height: 220),
+              child: Column(
+                children: [
+                  Text(
+                    'Bata o ponto:',
+                    style: TextStyle(
+                      color: Color(0xff757575),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.green,
+                            //width: 5.0,
+
+                            child: Bot(context, 'Entrada', null, Colors.green,
+                                Icon(Icons.door_back_door)),
+                          ),
+                          Container(
+                            child: Bot(context, 'Intervalo', null, Colors.red,
+                                Icon(Icons.coffee),
+                                int: true),
+
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.red,
+                            //width: 5.0,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            child: Bot(context, 'Retorno', null, Colors.green,
+                                Icon(Icons.coffee_outlined)),
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.green,
+                            //width: 5.0,
+                          ),
+                          Container(
+                            child: Bot(context, 'Saida', null, Colors.red,
+                                Icon(Icons.exit_to_app)),
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.red,
+                            //width: 5.0,
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Padding Bot(Context, String text, acao, Color cor, Icon iconp, {bool int}) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) => cor),
+          ),
+          onPressed: () async {
+            Navigator.of(Context).pop();
+            (int == true) ? (intervalo = true) : (intervalo = false);
+            await ShowDialogSenhaPonto(
+              Context,
+              'Atenção',
+              'Confirme sua Senha',
+              'Senha',
+            );
+          },
+          child: Row(children: [
+            iconp,
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              text,
+              style: TextStyle(fontSize: 15),
+            ),
+          ])),
     );
   }
 

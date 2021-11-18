@@ -1,6 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarModel.dart';
+import 'package:gpmobile/src/pages/login/entrar/model/EntrarModel.dart';
 
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/TokenModel.dart';

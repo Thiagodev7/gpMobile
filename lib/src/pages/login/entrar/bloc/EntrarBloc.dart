@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:gpmobile/src/pages/home/view/HomeWidget.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarModel.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarServices.dart';
+import 'package:gpmobile/src/pages/login/entrar/model/EntrarModel.dart';
+import 'package:gpmobile/src/pages/login/entrar/services/EntrarServices.dart';
 
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/TokenModel.dart';
@@ -12,6 +12,7 @@ import 'package:gpmobile/src/util/TokenServices.dart';
 import 'package:gpmobile/src/versao/ValidaVersaoBloc.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_io/io.dart';
 
 class EntrarBloc extends BlocBase {
   validarUsuario(BuildContext context, String usuario, String senhaAtual,
@@ -53,10 +54,25 @@ class EntrarBloc extends BlocBase {
             //
             SharedPreferences prefs = await SharedPreferences.getInstance();
             //
+            prefs.setString(
+                'permiteBaterPontoOffline',
+                userGroup
+                    .response.ttUsuario.ttUsuario[0].permiteBaterPontoOffline
+                    .toString());
+            //
+            prefs.setString(
+                'ipsLiberadosConexoesInternas',
+                userGroup.response.ttUsuario.ttUsuario[0]
+                    .ipsLiberadosConexoesInternas
+                    .toString());
+            //
             prefs.setString('usuario',
                 userGroup.response.ttUsuario.ttUsuario[0].usuario.toString());
             //
             prefs.setString('senha',
+                userGroup.response.ttUsuario.ttUsuario[0].senha.toString());
+            //
+            prefs.setString('senhaPonto',
                 userGroup.response.ttUsuario.ttUsuario[0].senha.toString());
             //
             prefs.setString('nomecolaborador',
@@ -88,6 +104,9 @@ class EntrarBloc extends BlocBase {
 
             ///[true] = forçar usuario admin!
             prefs.setBool('userAdmin', true);
+
+            prefs.setBool('permiteBaterPonto',
+                userGroup.response.ttUsuario.ttUsuario[0].permiteBaterPonto);
 
             prefs.setString(
                 'userTelefone',
@@ -122,6 +141,38 @@ class EntrarBloc extends BlocBase {
       }
     });
   }
+  //validador do ponto off
+
+  // Future<bool> verificarInternet() async {
+  //   try {
+  //     final result = await InternetAddress.lookup('google.com');
+  //     if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+  //       print('connected');
+  //       bool connect = true;
+  //       return connect;
+  //     }
+  //   } on SocketException catch (_) {
+  //     print('not connected');
+
+  //     bool connect = false;
+  //     return connect;
+  //   }
+  // }
+
+  // // validado de permições
+
+  // Future<bool> verificarPermicao() async {
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   bool res1 = prefs.getBool('permiteBaterPonto');
+  //   bool res2 = prefs.getBool('permiteBaterPontoOffline');
+  //   if (res1 & res2) {
+  //     bool perm = true;
+  //     return perm;
+  //   } else {
+  //     bool perm = false;
+  //     return perm;
+  //   }
+  // }
 
   Future<bool> versaoEstaAtualizada(BuildContext context) async {
     dynamic versaoApp = ValidaVersaoBloc.getVersaoAppDp();

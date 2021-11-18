@@ -1,15 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_conditional_rendering/conditional_switch.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarBloc.dart';
+import 'package:gpmobile/src/pages/login/entrar/bloc/EntrarBloc.dart';
 import 'package:gpmobile/src/pages/login/recuperar_senha/RecuperarSenhaBloc.dart';
 
 import 'package:gpmobile/src/pages/login/recuperar_senha/RecuperarSenhaWidget.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/AtualizarPorTimer.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
+import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
 
 import 'package:gradient_input_border/gradient_input_border.dart';
 import 'package:gradients/gradients.dart';
@@ -49,6 +52,9 @@ class _EntrarWidgetState extends State<EntrarWidget> {
   int acaoLogar = 1; //acao 1 = logar
   int acaoConsultar = 4; //acao 4 = consultar
 
+  bool conectado = true;
+  bool verf = false;
+
   final _formKeyEntarMob = GlobalKey<FormState>();
   final _formKeyEntarWeb = GlobalKey<FormState>();
 
@@ -64,9 +70,8 @@ class _EntrarWidgetState extends State<EntrarWidget> {
 
   //INICIO
   @override
-  void initState() {
+  Future<void> initState() {
     super.initState();
-
     _passwordVisible = false;
 
     getData().then((value) {
@@ -120,6 +125,18 @@ class _EntrarWidgetState extends State<EntrarWidget> {
     });
   }
 
+  // Future<bool> Verificador() async {
+  //   await EntrarBloc().verificarInternet().then((value) {
+  //     conectado = value;
+  //   });
+  //   if (conectado = true) {
+  //     await EntrarBloc().verificarPermicao().then((value) => {
+  //           verf = value,
+  //         });
+  //     return verf;
+  //   }
+  // }
+
   @override
   void dispose() {
     super.dispose();
@@ -129,6 +146,7 @@ class _EntrarWidgetState extends State<EntrarWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     //BODY
     return Scaffold(
       backgroundColor: theme.backgroundColor,
@@ -162,6 +180,9 @@ class _EntrarWidgetState extends State<EntrarWidget> {
           shrinkWrap: true,
           padding: EdgeInsets.only(left: 24.0, right: 24.0),
           children: <Widget>[
+            SizedBox(
+              height: height * 0.15,
+            ),
             logoTop(context),
             SizedBox(height: height * 0.1), //48
             cpfColaborador(context),
@@ -173,6 +194,15 @@ class _EntrarWidgetState extends State<EntrarWidget> {
             btnEntrar(context, 'mob'),
             SizedBox(width: width * 3, height: height * 0.01),
             recuperarSenha("mob"),
+            Column(
+              children: [
+                SizedBox(
+                  height: height * 0.15,
+                ),
+                // verf ? SizedBox() : botaoPontoOff(),
+              ],
+            )
+
             // logoBotton(context),
           ],
         ),
@@ -390,9 +420,11 @@ class _EntrarWidgetState extends State<EntrarWidget> {
 
                         value: userSalvo,
                         onChanged: (value) async {
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
                           // String senhaCtrlUpperCase = senhaCtrl.text.toUpperCase();
-                          if (value == true && inputText(usuarioCtrl, senhaCtrl) != "") {
+                          if (value == true &&
+                              inputText(usuarioCtrl, senhaCtrl) != "") {
                             setState(() => userSalvo = true);
                             setState(() => camposBloq = userSalvo);
                             prefs.setString('usuarioSalvo', "sim");
@@ -417,7 +449,7 @@ class _EntrarWidgetState extends State<EntrarWidget> {
 
   Widget btnEntrar(BuildContext context, tipoPlataforma) {
     return Card(
-     color: Estilo().backgroundBtnEntrar, //Geovane
+      color: Estilo().backgroundBtnEntrar, //Geovane
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(10.0),
@@ -651,7 +683,8 @@ class _EntrarWidgetState extends State<EntrarWidget> {
     if (camposValidos == true) {
       //define tipo plataforma (mobile or web) antes de consultar o cpf
       new RecuperarSenhaBloc()
-          .blocConsultarCPF(context, usuarioCtrl.text, acaoConsultar, true, plataforma)
+          .blocConsultarCPF(
+              context, usuarioCtrl.text, acaoConsultar, true, plataforma)
           .then((objDadosUsuario) {
         if (objDadosUsuario != null &&
             objDadosUsuario.response.pIntCodErro == 0) {
@@ -689,7 +722,9 @@ class _EntrarWidgetState extends State<EntrarWidget> {
       usuarioCtrl.text = prefs.getString('usuario');
       senhaCtrl.text = prefs.getString('senha');
     });
-    if (prefs.getString('usuario') != null && prefs.getString('senha') != null && usuarioSalvo == "sim") {
+    if (prefs.getString('usuario') != null &&
+        prefs.getString('senha') != null &&
+        usuarioSalvo == "sim") {
       return true;
     } else {
       senhaCtrl.text = "";
@@ -724,5 +759,30 @@ class _EntrarWidgetState extends State<EntrarWidget> {
       TextEditingController usuarioCtrl, TextEditingController senhaCtrl) {
     setData(usuarioCtrl, senhaCtrl, false);
     print('usuario: ${usuarioCtrl.text}, salva!');
+  }
+}
+
+class botaoPontoOff extends StatelessWidget {
+  const botaoPontoOff({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        RaisedButton(
+          onPressed: () async {
+            await AlertDialogTemplate().ShowAlertDialogBater(
+              context,
+            );
+          },
+          child: Column(
+            children: [Icon(Icons.touch_app), Text('Ponto off')],
+          ),
+        )
+      ],
+    );
   }
 }

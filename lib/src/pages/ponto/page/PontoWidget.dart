@@ -10,6 +10,8 @@ import 'package:gpmobile/src/pages/ponto/model/PontoModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
+import 'package:gpmobile/src/util/Globals.dart';
+import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -426,9 +428,16 @@ class _PontoWidgetState extends State<PontoWidget> {
                   label: 'Bater Ponto',
                   timeOutInSeconds: 10,
                   onPressed: () async {
-                    await AlertDialogTemplate().ShowAlertDialogBater(
+                    await AlertDialogTemplate()
+                        .ShowAlertDialogBater(
                       context,
-                    );
+                    )
+                        .then((map) async {
+                      if (map == ConfirmAction.OK) {
+                        PontoBloc().blocBaterPonto(context, true, '1', 1);
+                      }
+                      ;
+                    });
                   },
                   disabledColor: Theme.of(context).backgroundColor,
                   color: Theme.of(context).backgroundColor,

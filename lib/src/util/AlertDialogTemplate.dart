@@ -1,25 +1,20 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //https://androidkt.com/flutter-alertdialog-example/
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
-import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
-import 'package:gpmobile/src/pages/documentos/ListarDocService.dart';
 import 'package:gpmobile/src/pages/login/entrar/view/EntrarWidget.dart';
-import 'package:gpmobile/src/pages/mensagens/model/MensagemEnvioModel.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
 import 'package:progress_dialog/progress_dialog.dart';
-import 'package:responsive_widgets/responsive_widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'Globals.dart';
 
 //https://www.youtube.com/watch?v=58_IM0OTU2M
 
@@ -906,20 +901,10 @@ class AlertDialogTemplate extends State<StatefulWidget>
                     ),
                   ),
                   onPressed: () async {
-                    if (_formKey.currentState.validate()) {
-                      //forca validacao de matricula!!
-                      if (_formKey.currentState.validate() == true) {
-                        Navigator.of(context).pop(ConfirmAction.OK);
-                        intervalo
-                            ? Notific().showNotificationWithChronometer()
-                            : null;
-                        intervalo
-                            ? Notific().showNotificationWithShedule()
-                            : null;
-                        PontoBloc().blocBaterPonto(context, true, '1');
-
-                        return ConfirmAction.OK;
-                      }
+                    //forca validacao de matricula!!
+                    if (_formKey.currentState.validate() == true) {
+                      Navigator.of(context).pop(ConfirmAction.OK);
+                      return ConfirmAction.OK;
                     }
                   }),
             ],
@@ -1024,14 +1009,19 @@ class AlertDialogTemplate extends State<StatefulWidget>
                 (Set<MaterialState> states) => cor),
           ),
           onPressed: () async {
-            Navigator.of(Context).pop();
             (int == true) ? (intervalo = true) : (intervalo = false);
             await ShowDialogSenhaPonto(
               Context,
               'Atenção',
               'Confirme sua Senha',
               'Senha',
-            );
+            ).then((map) async {
+              if (map == ConfirmAction.OK) {
+                Navigator.of(Context).pop(ConfirmAction.OK);
+                return ConfirmAction.OK;
+              }
+              ;
+            });
           },
           child: Row(children: [
             iconp,

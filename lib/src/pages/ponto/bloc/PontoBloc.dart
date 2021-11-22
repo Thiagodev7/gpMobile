@@ -1,16 +1,17 @@
 import 'dart:async';
-import 'dart:ffi';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:gpmobile/src/pages/ponto/model/BaterPontoModel.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/service/PontoServices.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/GetIp.dart';
+import 'package:gpmobile/src/util/Globals.dart';
 import 'package:gpmobile/src/util/TokenModel.dart';
 import 'package:gpmobile/src/util/TokenServices.dart';
+import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
+import 'package:path/path.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +19,8 @@ import '../model/PontoModel.dart';
 
 class PontoBloc extends BlocBase {
   bool ver;
+  BaterPontoModel baterPontoModel;
+
   //validando assinatura...
   Future<PontoAssinaturaModel> blocPontoAssinar(
       BuildContext context, String mesRef, String anoRef, int assinar) async {
@@ -79,7 +82,7 @@ class PontoBloc extends BlocBase {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool res = prefs.getBool('permiteBaterPonto');
     await verificacaoIP();
-    if (res & ver) {
+    if (res) {
       bool permit = true;
       return permit;
     } else {
@@ -90,19 +93,16 @@ class PontoBloc extends BlocBase {
 
   //Bater o ponto..
 
-  Future<BaterPontoModel> blocBaterPonto(
-    BuildContext context,
-    bool barraStatus,
-    String entrSaida,
-  ) async {
+  Future<BaterPontoModel> blocBaterPonto(BuildContext context, bool barraStatus,
+      String entrSaida, int operacao) async {
     /// *[VARIAVEIS]
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String empresa = prefs.getString('empresa');
     String matricula = prefs.getString('matricula');
-
+    final snackBar = SnackBar(
+      content: const Text('Confirmado! Voce Bateu o ponto!'),
+    );
     TokenModel token;
-    BaterPontoModel _baterPontoModel;
-    List<BaterPontoModel> listaMensBack = [];
     ProgressDialog progressDialog2 =
         new AlertDialogTemplate().showProgressDialog(context, "Aguarde...");
     //
@@ -119,11 +119,12 @@ class PontoBloc extends BlocBase {
           return null;
         } else {
           await new PontoService()
-              .postBaterPonto(
-                  context, token.response.token, matricula, empresa, entrSaida)
+              .postBaterPonto(context, token.response.token, matricula, empresa,
+                  entrSaida, operacao)
               .then((retornoDoPost) async {
-            _baterPontoModel = retornoDoPost;
-            if (_baterPontoModel != null) {
+            baterPontoModel = retornoDoPost;
+
+            if (baterPontoModel != null) {
               //Caso retorne null
               if (barraStatus == false) {
                 progressDialog2.hide();
@@ -131,24 +132,33 @@ class PontoBloc extends BlocBase {
                     context,
                     "Atencao",
                     "Erro ao Bater o Ponto! \nerro:" +
-                        _baterPontoModel.response.pChrDescErro);
+                        baterPontoModel.response.pChrDescErro);
               }
               return null;
             }
             progressDialog2.hide();
-            final snackBar = SnackBar(
-              content: const Text('Confirmado! Voce Bateu o ponto!'),
-            );
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
           });
         }
       });
     }
-    final snackBar = SnackBar(
-      content: const Text('Confirmado! Voce Bateu o ponto!'),
-    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    return _baterPontoModel;
+    intervalo ? Notific().showNotificationWithChronometer() : null;
+    intervalo ? Notific().showNotificationWithShedule() : null;
+    intervalo ? Globals.card = true : Globals.card = false;
+    return baterPontoModel;
+  }
+
+  //Calcula tempo restante ponto almoco
+
+  calculaPonto() async {
+    // PontoBloc().blocBaterPonto( true, '1', 1);
+    int temp =
+        baterPontoModel.response.ttRetornoErro.horaUltimaBatidaEmSegundos;
+    var currDt = DateTime.now();
+    int total =
+        (60 * (60 * (currDt.hour))) + (60 * (currDt.minute)) + currDt.second;
+    int res = total - temp;
+    return res;
   }
 
   //apos validar assinatura..

@@ -37,22 +37,38 @@ class Response {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['pIntCodErro'] = this.pIntCodErro;
     data['pChrDescErro'] = this.pChrDescErro;
-
+    if (this.ttRetornoErro != null) {
+      data['ttRetornoErro'] = this.ttRetornoErro.toJson();
+    }
     return data;
   }
 }
 
 class TtRetornoErro {
-  List<Null> ttRetornoErro;
+  int numErro;
+  String desErro;
+  bool logErro;
+  int horaUltimaBatidaEmSegundos;
 
-  TtRetornoErro({this.ttRetornoErro});
+  TtRetornoErro(
+      {this.numErro,
+      this.desErro,
+      this.logErro,
+      this.horaUltimaBatidaEmSegundos});
 
   TtRetornoErro.fromJson(Map<String, dynamic> json) {
-    if (json['ttRetornoErro'] != null) {
-      ttRetornoErro = new List<Null>();
-      json['ttRetornoErro'].forEach((v) {
-        //ttRetornoErro.add(new Null.fromJson(v));
-      });
-    }
+    numErro = json['numErro'];
+    desErro = json['desErro'];
+    logErro = json['logErro'];
+    horaUltimaBatidaEmSegundos = json['horaUltimaBatidaEmSegundos'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['numErro'] = this.numErro;
+    data['desErro'] = this.desErro;
+    data['logErro'] = this.logErro;
+    data['horaUltimaBatidaEmSegundos'] = this.horaUltimaBatidaEmSegundos;
+    return data;
   }
 }

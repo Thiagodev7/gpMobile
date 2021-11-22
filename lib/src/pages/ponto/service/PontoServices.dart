@@ -6,6 +6,7 @@ import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/GetIp.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -63,7 +64,7 @@ class PontoService {
   }
 
   Future<BaterPontoModel> postBaterPonto(BuildContext context, String token,
-      String matricula, String empresa, String entrSaida) async {
+      String matricula, String empresa, String entrSaida, int operacao) async {
     try {
       await GetIp().getIp().then((map) async {
         if (map == null) {
@@ -73,6 +74,14 @@ class PontoService {
         }
       });
 
+      var currDt = DateTime.now();
+      var f = NumberFormat("00");
+      int aa = currDt.year;
+      String mm = f.format(currDt.month);
+      String dd = f.format(currDt.day);
+      String hr = f.format(currDt.hour);
+      String mn = f.format(currDt.minute);
+      //currDt.minute;
       final response = await http.post(
         await new BuscaUrl().url("pontoBater") + token,
         headers: <String, String>{
@@ -86,11 +95,13 @@ class PontoService {
                   "cdnEmpresa": empresa,
                   "cdnEstab": "",
                   "cdnFuncionario": matricula,
-                  "datMarcacPtoeletBatida": "17/08/2021",
-                  "numHorarMarcacPtoelet": "10:01",
+                  "datMarcacPtoeletBatida": "30/08/2021",
+                  "numHorarMarcacPtoelet": "$hr:$mn",
                   "idiMarcacPtoeletEntrSaida": entrSaida,
                   "cdnMotivMarcac": 992,
-                  "operacao": 1
+                  "operacao": operacao,
+                  "ipPublicoRegPonto": "1",
+                  "inicioIntervalo": true,
                 }
               ]
             }

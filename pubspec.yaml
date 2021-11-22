@@ -111,6 +111,8 @@ dependencies:
   timer_button: ^2.0.0
   flutter_local_notifications: ^9.0.3
   flutter_native_timezone: ^2.0.0
+  flutter_countdown_timer: ^4.1.0
+  stop_watch_timer: ^0.6.0+1
 
 
 dev_dependencies:

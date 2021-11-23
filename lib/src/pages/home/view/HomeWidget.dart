@@ -6,14 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_countdown_timer/index.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
 import 'package:gpmobile/src/pages/mensagens/vizualizar_mensagens/VisualizaMensaWidget.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
+import 'package:gpmobile/src/pages/ponto/model/BaterPontoModel.dart';
 import 'package:gpmobile/src/util/Globals.dart';
+import 'package:gpmobile/src/widgets/card_time.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -330,13 +331,11 @@ class _HomeWidgetState extends State<HomeWidget>
       ),
       body: Column(
         children: [
-          // Container(
-          //   child: Globals.card ? CardAlmoco() : SizedBox(),
-          // ),
+          Container(child: CardAlmoco()),
           Container(
             color: Colors.transparent,
             // decoration: AppGradients.gradient,
-            height: height * 1, //1.2
+            height: height * 0.8, //1.2
             // key: keyHomeBoxMensagens,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -671,9 +670,7 @@ class _HomeWidgetState extends State<HomeWidget>
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.width;
 
-    setState(() {
-      Globals.card;
-    });
+    setState(() {});
 
     return Scaffold(
       key: _chaveHomeWeb,
@@ -751,7 +748,7 @@ class _HomeWidgetState extends State<HomeWidget>
                 Expanded(
                   child: _boxMensageWeb(context),
                 ),
-                // Globals.card ? CardAlmoco() : SizedBox()
+                CardAlmoco()
               ],
             ),
           ),
@@ -1311,72 +1308,6 @@ class _HomeWidgetState extends State<HomeWidget>
       iconData: Icons.settings,
     ),
   ];
-}
-
-class CardAlmoco extends StatefulWidget {
-  const CardAlmoco({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  State<CardAlmoco> createState() => _CardAlmocoState();
-}
-
-class _CardAlmocoState extends State<CardAlmoco> {
-  int endTime =
-      DateTime.now().millisecondsSinceEpoch + 1000 * PontoBloc().calculaPonto();
-
-  @override
-  void initState() {
-    _incrementCounter();
-    super.initState();
-  }
-
-  void _incrementCounter() {
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        endTime--;
-        //x = 3600 - PontoBloc().calculaPonto();
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: Colors.transparent,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.restaurant_menu,
-            color: Colors.white,
-            size: 35,
-          ),
-          SizedBox(
-            width: 7,
-          ),
-          Column(
-            children: [
-              Text(
-                'Horario de Almoço',
-                style: TextStyle(color: Colors.white),
-              ),
-              CountdownTimer(
-                textStyle: TextStyle(color: Colors.white),
-                endTime: endTime,
-              ),
-              // Text(
-              //   '$_counter',
-              //   style: TextStyle(color: Colors.white),
-              // ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 abstract class BottomMenuItemWidget {

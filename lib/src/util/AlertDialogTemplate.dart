@@ -43,6 +43,7 @@ DateTime contraChequeDataAtualMenos7 =
     DateTime(contraChequeDataAtual.year, contraChequeDataAtual.month - 7, 1);
 
 bool intervalo = false;
+String entradaSaida;
 
 String contraChequePeriodoAtualGeral =
     f.format(contraChequeDataAtual.day).toString() +
@@ -951,11 +952,18 @@ class AlertDialogTemplate extends State<StatefulWidget>
                             //width: 5.0,
 
                             child: Bot(context, 'Entrada', null, Colors.green,
-                                Icon(Icons.door_back_door)),
+                                Icon(Icons.door_back_door), '1'),
                           ),
                           Container(
-                            child: Bot(context, 'Intervalo', null, Colors.red,
-                                Icon(Icons.coffee),
+                            child: Bot(
+                                context,
+                                'Intervalo',
+                                null,
+                                Colors.red,
+                                Icon(
+                                  Icons.coffee,
+                                ),
+                                '2',
                                 int: true),
 
                             constraints:
@@ -971,7 +979,7 @@ class AlertDialogTemplate extends State<StatefulWidget>
                         children: [
                           Container(
                             child: Bot(context, 'Retorno', null, Colors.green,
-                                Icon(Icons.coffee_outlined)),
+                                Icon(Icons.coffee_outlined), '1'),
                             constraints:
                                 BoxConstraints.expand(height: 90, width: 160),
                             // decoration: BoxDecoration(
@@ -981,7 +989,7 @@ class AlertDialogTemplate extends State<StatefulWidget>
                           ),
                           Container(
                             child: Bot(context, 'Saida', null, Colors.red,
-                                Icon(Icons.exit_to_app)),
+                                Icon(Icons.exit_to_app), '2'),
                             constraints:
                                 BoxConstraints.expand(height: 90, width: 160),
                             // decoration: BoxDecoration(
@@ -1000,7 +1008,8 @@ class AlertDialogTemplate extends State<StatefulWidget>
         });
   }
 
-  Padding Bot(Context, String text, acao, Color cor, Icon iconp, {bool int}) {
+  Padding Bot(Context, String text, acao, Color cor, Icon iconp, String entra,
+      {bool int}) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ElevatedButton(
@@ -1010,6 +1019,7 @@ class AlertDialogTemplate extends State<StatefulWidget>
           ),
           onPressed: () async {
             (int == true) ? (intervalo = true) : (intervalo = false);
+            entradaSaida = entra;
             await ShowDialogSenhaPonto(
               Context,
               'Atenção',

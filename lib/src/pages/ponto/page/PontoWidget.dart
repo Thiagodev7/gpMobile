@@ -434,7 +434,7 @@ class _PontoWidgetState extends State<PontoWidget> {
                     )
                         .then((map) async {
                       if (map == ConfirmAction.OK) {
-                        PontoBloc().blocBaterPonto(context, true, '1', 1);
+                        PontoBloc().blocBaterPonto(context, true, 1);
                       }
                       ;
                     });

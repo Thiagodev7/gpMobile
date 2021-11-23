@@ -63,8 +63,14 @@ class PontoService {
     }
   }
 
-  Future<BaterPontoModel> postBaterPonto(BuildContext context, String token,
-      String matricula, String empresa, String entrSaida, int operacao) async {
+  Future<BaterPontoModel> postBaterPonto(
+      BuildContext context,
+      String token,
+      String matricula,
+      String empresa,
+      String entrSaida,
+      int operacao,
+      bool inicioIntervalo) async {
     try {
       await GetIp().getIp().then((map) async {
         if (map == null) {
@@ -92,16 +98,16 @@ class PontoService {
             'ttBatidasJson': {
               'ttBatidasJson': [
                 {
-                  "cdnEmpresa": empresa,
-                  "cdnEstab": "",
-                  "cdnFuncionario": matricula,
-                  "datMarcacPtoeletBatida": "30/08/2021",
-                  "numHorarMarcacPtoelet": "$hr:$mn",
+                  "cdnEmpresa": "1",
+                  "cdnEstab": "1",
+                  "cdnFuncionario": 4766,
+                  "datMarcacPtoeletBatida": "28/06/2021",
+                  "numHorarMarcacPtoelet": "18:00",
                   "idiMarcacPtoeletEntrSaida": entrSaida,
                   "cdnMotivMarcac": 992,
                   "operacao": operacao,
                   "ipPublicoRegPonto": "1",
-                  "inicioIntervalo": true,
+                  "inicioIntervalo": inicioIntervalo,
                 }
               ]
             }

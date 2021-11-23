@@ -93,8 +93,8 @@ class PontoBloc extends BlocBase {
 
   //Bater o ponto..
 
-  Future<BaterPontoModel> blocBaterPonto(BuildContext context, bool barraStatus,
-      String entrSaida, int operacao) async {
+  Future<BaterPontoModel> blocBaterPonto(
+      BuildContext context, bool barraStatus, int operacao) async {
     /// *[VARIAVEIS]
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String empresa = prefs.getString('empresa');
@@ -113,21 +113,71 @@ class PontoBloc extends BlocBase {
         token = mapToken;
         if (token == null) {
           //validar token
-          progressDialog2.hide();
+          await progressDialog2.hide();
+          AlertDialogTemplate()
+              .showAlertDialogSimples(context, "Erro", "Erro ao buscar token");
+          return null;
+        } else {
+          await progressDialog2.hide();
+          await new PontoService()
+              .postBaterPonto(context, token.response.token, matricula, empresa,
+                  entradaSaida, operacao, intervalo)
+              .then((retornoDoPost) async {
+            baterPontoModel = retornoDoPost;
+
+            if (baterPontoModel == null ||
+                baterPontoModel.response.pIntCodErro != 0) {
+              await progressDialog2.hide();
+              await AlertDialogTemplate().showAlertDialogSimples(
+                  context,
+                  "Atencao",
+                  "Erro ao Bater o Ponto! \nerro:" +
+                      baterPontoModel.response.pChrDescErro);
+              return null;
+            } else {
+              await progressDialog2.hide();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+              intervalo ? Notific().showNotificationWithChronometer() : null;
+              intervalo ? Notific().showNotificationWithShedule() : null;
+            }
+          });
+        }
+      });
+    }
+    return baterPontoModel;
+  }
+
+  //retorno time
+
+  Future<BaterPontoModel> retornoTime(
+      BuildContext context, bool barraStatus, int operacao) async {
+    /// *[VARIAVEIS]
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String empresa = prefs.getString('empresa');
+    String matricula = prefs.getString('matricula');
+
+    TokenModel token;
+    //
+
+    if (barraStatus == true) {
+      await new TokenServices().getToken().then((mapToken) async {
+        //pegar token
+        token = mapToken;
+        if (token == null) {
+          //validar token
           AlertDialogTemplate()
               .showAlertDialogSimples(context, "Erro", "Erro ao buscar token");
           return null;
         } else {
           await new PontoService()
               .postBaterPonto(context, token.response.token, matricula, empresa,
-                  entrSaida, operacao)
+                  entradaSaida, operacao, intervalo)
               .then((retornoDoPost) async {
             baterPontoModel = retornoDoPost;
 
             if (baterPontoModel != null) {
               //Caso retorne null
               if (barraStatus == false) {
-                progressDialog2.hide();
                 await AlertDialogTemplate().showAlertDialogSimples(
                     context,
                     "Atencao",
@@ -136,29 +186,11 @@ class PontoBloc extends BlocBase {
               }
               return null;
             }
-            progressDialog2.hide();
           });
         }
       });
     }
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    intervalo ? Notific().showNotificationWithChronometer() : null;
-    intervalo ? Notific().showNotificationWithShedule() : null;
-    intervalo ? Globals.card = true : Globals.card = false;
     return baterPontoModel;
-  }
-
-  //Calcula tempo restante ponto almoco
-
-  calculaPonto() async {
-    // PontoBloc().blocBaterPonto( true, '1', 1);
-    int temp =
-        baterPontoModel.response.ttRetornoErro.horaUltimaBatidaEmSegundos;
-    var currDt = DateTime.now();
-    int total =
-        (60 * (60 * (currDt.hour))) + (60 * (currDt.minute)) + currDt.second;
-    int res = total - temp;
-    return res;
   }
 
   //apos validar assinatura..

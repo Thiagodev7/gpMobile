@@ -45,18 +45,42 @@ class Response {
 }
 
 class TtRetornoErro {
+  List<TtRetornoErro2> ttRetornoErro;
+
+  TtRetornoErro({this.ttRetornoErro});
+
+  TtRetornoErro.fromJson(Map<String, dynamic> json) {
+    if (json['ttRetornoErro'] != null) {
+      ttRetornoErro = new List<TtRetornoErro2>();
+      json['ttRetornoErro'].forEach((v) {
+        ttRetornoErro.add(new TtRetornoErro2.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    if (this.ttRetornoErro != null) {
+      data['ttRetornoErro'] =
+          this.ttRetornoErro.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class TtRetornoErro2 {
   int numErro;
   String desErro;
   bool logErro;
   int horaUltimaBatidaEmSegundos;
 
-  TtRetornoErro(
+  TtRetornoErro2(
       {this.numErro,
       this.desErro,
       this.logErro,
       this.horaUltimaBatidaEmSegundos});
 
-  TtRetornoErro.fromJson(Map<String, dynamic> json) {
+  TtRetornoErro2.fromJson(Map<String, dynamic> json) {
     numErro = json['numErro'];
     desErro = json['desErro'];
     logErro = json['logErro'];

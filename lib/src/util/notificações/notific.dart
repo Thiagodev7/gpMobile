@@ -12,9 +12,9 @@ class Notific extends StatelessWidget {
   const Notific({Key key}) : super(key: key);
 
   Future showNotificationWithShedule() async {
-    final String currentTimeZone =
-        await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    tz.initializeTimeZones();
+    final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
@@ -37,7 +37,7 @@ class Notific extends StatelessWidget {
             channelDescription: 'Horario de Almoço',
             importance: Importance.max,
             priority: Priority.high,
-            when: DateTime.now().millisecondsSinceEpoch + 10 * 1000,
+            when: DateTime.now().millisecondsSinceEpoch + 1000 * 10,
             visibility: NotificationVisibility.public,
             usesChronometer: true,
             autoCancel: true,
@@ -48,7 +48,6 @@ class Notific extends StatelessWidget {
     await flutterLocalNotificationsPlugin.show(
         0, 'Hora do Almoço', '', platformChannelSpecifics,
         payload: 'item x');
-    print('ate aqui funfou 2');
   }
 
   @override

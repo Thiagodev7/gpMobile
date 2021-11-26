@@ -20,7 +20,7 @@ class Notific extends StatelessWidget {
         0,
         'Seu almoço acabou',
         'Vai bater o ponto',
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10)),
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3600)),
         const NotificationDetails(
             android: AndroidNotificationDetails(
                 'your channel id', 'your channel name',
@@ -37,7 +37,7 @@ class Notific extends StatelessWidget {
             channelDescription: 'Horario de Almoço',
             importance: Importance.max,
             priority: Priority.high,
-            when: DateTime.now().millisecondsSinceEpoch + 1000 * 10,
+            when: DateTime.now().millisecondsSinceEpoch + 1000 * 3600,
             visibility: NotificationVisibility.public,
             usesChronometer: true,
             autoCancel: true,

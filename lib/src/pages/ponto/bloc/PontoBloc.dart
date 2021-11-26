@@ -2,16 +2,15 @@ import 'dart:async';
 
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'package:gpmobile/src/pages/home/view/HomeWidget.dart';
 import 'package:gpmobile/src/pages/ponto/model/BaterPontoModel.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/service/PontoServices.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/GetIp.dart';
-import 'package:gpmobile/src/util/Globals.dart';
 import 'package:gpmobile/src/util/TokenModel.dart';
 import 'package:gpmobile/src/util/TokenServices.dart';
 import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
-import 'package:path/path.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -108,26 +107,28 @@ class PontoBloc extends BlocBase {
     //
 
     if (barraStatus == true) {
+      progressDialog2.show();
       await new TokenServices().getToken().then((mapToken) async {
         //pegar token
         token = mapToken;
+
         if (token == null) {
           //validar token
-          await progressDialog2.hide();
+          progressDialog2.hide();
           AlertDialogTemplate()
               .showAlertDialogSimples(context, "Erro", "Erro ao buscar token");
           return null;
         } else {
-          await progressDialog2.hide();
+          progressDialog2.isShowing();
           await new PontoService()
               .postBaterPonto(context, token.response.token, matricula, empresa,
                   entradaSaida, operacao, intervalo)
               .then((retornoDoPost) async {
+            ;
             baterPontoModel = retornoDoPost;
-
+            progressDialog2.hide();
             if (baterPontoModel == null ||
                 baterPontoModel.response.pIntCodErro != 0) {
-              await progressDialog2.hide();
               await AlertDialogTemplate().showAlertDialogSimples(
                   context,
                   "Atencao",
@@ -135,10 +136,16 @@ class PontoBloc extends BlocBase {
                       baterPontoModel.response.pChrDescErro);
               return null;
             } else {
-              await progressDialog2.hide();
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
               intervalo ? Notific().showNotificationWithChronometer() : null;
               intervalo ? Notific().showNotificationWithShedule() : null;
+              intervalo
+                  ? prefs.setBool('intervalo', true)
+                  : prefs.setBool('intervalo', false);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomeWidget()),
+              );
             }
           });
         }

@@ -73,18 +73,21 @@ class TtRetornoErro2 {
   String desErro;
   bool logErro;
   int horaUltimaBatidaEmSegundos;
+  bool inicioIntervalo;
 
   TtRetornoErro2(
       {this.numErro,
       this.desErro,
       this.logErro,
-      this.horaUltimaBatidaEmSegundos});
+      this.horaUltimaBatidaEmSegundos,
+      this.inicioIntervalo});
 
   TtRetornoErro2.fromJson(Map<String, dynamic> json) {
     numErro = json['numErro'];
     desErro = json['desErro'];
     logErro = json['logErro'];
     horaUltimaBatidaEmSegundos = json['horaUltimaBatidaEmSegundos'];
+    inicioIntervalo = json['inicioIntervalo'];
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +96,7 @@ class TtRetornoErro2 {
     data['desErro'] = this.desErro;
     data['logErro'] = this.logErro;
     data['horaUltimaBatidaEmSegundos'] = this.horaUltimaBatidaEmSegundos;
+    data['inicioIntervalo'] = this.inicioIntervalo;
     return data;
   }
 }

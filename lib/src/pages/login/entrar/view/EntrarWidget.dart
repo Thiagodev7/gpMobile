@@ -12,15 +12,12 @@ import 'package:gpmobile/src/pages/login/recuperar_senha/RecuperarSenhaWidget.da
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/AtualizarPorTimer.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
-import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
-
 import 'package:gradient_input_border/gradient_input_border.dart';
 import 'package:gradients/gradients.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:gpmobile/src/util/images.dart';
-import 'package:gpmobile/src/util/constants.dart';
 
 class EntrarWidget extends StatefulWidget {
   @override
@@ -35,7 +32,8 @@ class _EntrarWidgetState extends State<EntrarWidget> {
   final isMobile = (defaultTargetPlatform == TargetPlatform.iOS ||
       defaultTargetPlatform == TargetPlatform.android);
 
-  dynamic url = 'http://intranet.grupohegidio.com.br:81/app/gpmobile.apk';
+  dynamic url =
+      'https://play.google.com/store/apps/details?id=com.hegidio.gpmobile';
   bool _passwordVisible; //BLOQUEAR VISILIBILIDADE DA SENHA
   bool statusVersao = true; //VERIFICAR STATUS DA VERSAO
   bool camposBloq = true; // CAMPOS BLOQUEADOS

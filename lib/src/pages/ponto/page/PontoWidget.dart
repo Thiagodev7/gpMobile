@@ -10,15 +10,12 @@ import 'package:gpmobile/src/pages/ponto/model/PontoModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
-import 'package:gpmobile/src/util/Globals.dart';
-import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
 import 'package:horizontal_data_table/horizontal_data_table.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:timer_button/timer_button.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
 
 class PontoWidget extends StatefulWidget {
   //metodo recebe dados da tela de contra-cheque

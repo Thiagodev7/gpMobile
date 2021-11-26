@@ -7,8 +7,6 @@ import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/GetIp.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_platform/universal_platform.dart';
 
 import '../model/BaterPontoModel.dart';
 
@@ -98,11 +96,11 @@ class PontoService {
             'ttBatidasJson': {
               'ttBatidasJson': [
                 {
-                  "cdnEmpresa": "1",
-                  "cdnEstab": "1",
-                  "cdnFuncionario": 4766,
-                  "datMarcacPtoeletBatida": "28/06/2021",
-                  "numHorarMarcacPtoelet": "18:00",
+                  "cdnEmpresa": empresa,
+                  "cdnEstab": "",
+                  "cdnFuncionario": 4994,
+                  "datMarcacPtoeletBatida": "24/$mm/$aa",
+                  "numHorarMarcacPtoelet": "09:$mn",
                   "idiMarcacPtoeletEntrSaida": entrSaida,
                   "cdnMotivMarcac": 992,
                   "operacao": operacao,

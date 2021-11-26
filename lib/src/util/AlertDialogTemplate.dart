@@ -8,13 +8,10 @@ import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
-import 'package:gpmobile/src/util/notifica%C3%A7%C3%B5es/notific.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'Globals.dart';
 
 //https://www.youtube.com/watch?v=58_IM0OTU2M
 
@@ -1018,7 +1015,7 @@ class AlertDialogTemplate extends State<StatefulWidget>
                 (Set<MaterialState> states) => cor),
           ),
           onPressed: () async {
-            (int == true) ? (intervalo = true) : (intervalo = false);
+            (int == true) ? intervalo = true : intervalo = false;
             entradaSaida = entra;
             await ShowDialogSenhaPonto(
               Context,

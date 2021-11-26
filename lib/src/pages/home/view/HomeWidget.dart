@@ -11,10 +11,8 @@ import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
 import 'package:gpmobile/src/pages/mensagens/vizualizar_mensagens/VisualizaMensaWidget.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
-import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
-import 'package:gpmobile/src/pages/ponto/model/BaterPontoModel.dart';
 import 'package:gpmobile/src/util/Globals.dart';
-import 'package:gpmobile/src/widgets/card_time.dart';
+import 'package:gpmobile/src/widgets/countdown_timer.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -77,6 +75,10 @@ class _HomeWidgetState extends State<HomeWidget>
   //
   int _seletedItem;
   int index = 1;
+
+//
+  int resp;
+  bool verificacao = false;
   //
   bool _userAdmin;
   bool _habilitaButton = false;
@@ -100,6 +102,24 @@ class _HomeWidgetState extends State<HomeWidget>
     );
 
     setState(() {
+      _seletedItem = index;
+    });
+
+    setState(() {
+      PontoBloc()
+          .retornoTime(context, true, 2)
+          .then((value) => {
+                resp = value.response.ttRetornoErro.ttRetornoErro[0]
+                    .horaUltimaBatidaEmSegundos
+              })
+          .whenComplete(() {
+        PontoBloc().retornoTime(context, true, 2).then((value) => {
+              verificacao =
+                  value.response.ttRetornoErro.ttRetornoErro[0].inicioIntervalo
+            });
+      });
+    });
+    setState(() {
       SharedPreferencesBloc().buscaParametroBool("userAdmin").then((retorno) {
         _userAdmin = retorno;
 
@@ -110,11 +130,6 @@ class _HomeWidgetState extends State<HomeWidget>
         }
       });
     });
-
-    setState(() {
-      _seletedItem = index;
-    });
-
     Timer(
         Duration(seconds: 1),
         () => setState(() {
@@ -143,7 +158,6 @@ class _HomeWidgetState extends State<HomeWidget>
         closeTopContainer = controller.offset > 50;
       });
     });
-
     //Msg Back
     SharedPreferences.getInstance().then((prefs) {
       listaMensaBloc.getMessageBack(context, true).then((map1) {
@@ -329,9 +343,15 @@ class _HomeWidgetState extends State<HomeWidget>
           ),
         ),
       ),
-      body: Column(
+      body: ListView(
         children: [
-          Container(child: CardAlmoco()),
+          Container(
+            child: verificacao
+                ? CountDownTimer(
+                    resp: resp == null ? 0 : resp,
+                  )
+                : SizedBox(),
+          ),
           Container(
             color: Colors.transparent,
             // decoration: AppGradients.gradient,
@@ -748,7 +768,9 @@ class _HomeWidgetState extends State<HomeWidget>
                 Expanded(
                   child: _boxMensageWeb(context),
                 ),
-                CardAlmoco()
+                verificacao
+                    ? CountDownTimer(resp: resp == null ? 0 : resp)
+                    : SizedBox(),
               ],
             ),
           ),

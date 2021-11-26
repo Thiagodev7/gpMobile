@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_conditional_rendering/conditional_switch.dart';
 
-import 'package:gpmobile/src/pages/login/entrar/EntrarModel.dart';
+import 'package:gpmobile/src/pages/login/entrar/model/EntrarModel.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:gpmobile/src/util/constants.dart';
 import 'package:responsive_builder/responsive_builder.dart';

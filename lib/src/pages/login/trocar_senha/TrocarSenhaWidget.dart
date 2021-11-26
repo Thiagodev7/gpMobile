@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarWidget.dart';
+import 'package:gpmobile/src/pages/login/entrar/view/EntrarWidget.dart';
 
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/Estilo.dart';

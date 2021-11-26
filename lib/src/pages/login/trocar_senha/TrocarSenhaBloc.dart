@@ -1,6 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarModel.dart';
+import 'package:gpmobile/src/pages/login/entrar/model/EntrarModel.dart';
 
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/TokenModel.dart';
@@ -34,14 +34,8 @@ class TrocarSenhaBloc extends BlocBase {
             .showAlertDialogSimples(context, "Atencão", "Erro ao buscar token");
       } else {
         await new TrocarSenhaServices()
-            .postTrocaDeSenha(
-          context,
-          token.response.token,
-          _usuarioPrefs,
-          blocNovaSenha,
-          blocNotificar,
-          blocTrocarSenha
-        )
+            .postTrocaDeSenha(context, token.response.token, _usuarioPrefs,
+                blocNovaSenha, blocNotificar, blocTrocarSenha)
             .then((map) async {
           _trocaSenhaModel = map;
           progressDialog2.hide();

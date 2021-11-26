@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 //https://androidkt.com/flutter-alertdialog-example/
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarWidget.dart';
+import 'package:gpmobile/src/pages/login/entrar/view/EntrarWidget.dart';
 import 'package:gpmobile/src/pages/ponto/model/PontoAssinaturaModel.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
+import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:intl/intl.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 //https://www.youtube.com/watch?v=58_IM0OTU2M
 
@@ -36,6 +38,9 @@ DateTime contraChequeDataAtualMenos6 =
     DateTime(contraChequeDataAtual.year, contraChequeDataAtual.month - 6, 1);
 DateTime contraChequeDataAtualMenos7 =
     DateTime(contraChequeDataAtual.year, contraChequeDataAtual.month - 7, 1);
+
+bool intervalo = false;
+String entradaSaida;
 
 String contraChequePeriodoAtualGeral =
     f.format(contraChequeDataAtual.day).toString() +
@@ -87,6 +92,24 @@ final List<PeriodoItem> listaTxtDatasContraCheque = [
   ),
   PeriodoItem(
     title: "$contraChequePeriodoAtualMenos4",
+  ),
+];
+
+final List<PeriodoItem> listaTxtDatas = [
+  PeriodoItem(
+    title: "2021",
+  ),
+  PeriodoItem(
+    title: "2020",
+  ),
+  PeriodoItem(
+    title: "2019",
+  ),
+  PeriodoItem(
+    title: "2018",
+  ),
+  PeriodoItem(
+    title: "2017",
   ),
 ];
 
@@ -266,87 +289,6 @@ class AlertDialogTemplate extends State<StatefulWidget>
     );
   }
 
-//
-  // Future<void> showAlertDialogSenhaRecuperada(
-  //     BuildContext context, String titulo, String mensagem, String type) {
-  //   int _notificacao = 1; // int _notificacao = 1;
-  //   int _acaoRecuperSenha = 2; // int _acaoRecuperSenha = 2;
-  //   //chamar bloc passando parametros
-  //   enviarEmail() async {
-  //     await new RecuperarSenhaBloc()
-  //         .blocRecPorEmail(context, _notificacao, _acaoRecuperSenha, '', true);
-  //   }
-
-  //   enviarSMS() async {
-  //     // await new EntrarBloc().validarUsuario(
-  //     //     context, usuarioController.text, senhaCtrl.text, acao, true);
-  //   }
-  //   // abrirGmail() async {
-
-  //   //   final Uri params = Uri(
-  //   //     scheme: 'mailto',
-  //   //     path: 'tarcisio.word@gmail.com',
-  //   //     query:
-  //   //         'subject=Recuperacao de senha&body=sua senha é: ${minhaSenha.toString()}',
-  //   //   );
-  //   //   String url = params.toString();
-  //   //   if (await canLaunch(url)) {
-  //   //     await launch(url);
-  //   //   } else {
-  //   //     print('Could not launch $url');
-  //   //   }
-  //   // }
-
-  //   // enviarSms() async {
-  //   //   var url = "sms:62997004940?body= sua senha é: ${minhaSenha.toString()}";
-  //   //   if (await canLaunch(url)) {
-  //   //     await launch(url);
-  //   //   } else {
-  //   //     throw 'Could not launch $url';
-  //   //   }
-  //   // }
-
-  //   return showDialog<void>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       final corBackground = Colors.white70.withOpacity(1);
-  //       return AlertDialog(
-  //         backgroundColor: corBackground,
-  //         title: Text(
-  //           titulo,
-  //           style: TextStyle(fontSize: 15),
-  //         ),
-  //         content: Text(
-  //           mensagem,
-  //           style: TextStyle(fontSize: 12),
-  //         ),
-  //         actions: <Widget>[
-  //           FlatButton(
-  //             child: Text('OK'),
-  //             onPressed: () {
-  //               switch (type) {
-  //                 //type ? email : sms
-  //                 case "email":
-  //                   Navigator.of(context).pop(enviarEmail());
-  //                   break;
-  //                 case "sms":
-  //                   Navigator.of(context).pop(enviarSMS());
-  //                   break;
-  //                 default:
-  //               }
-
-  //               // Navigator.of(context)
-  //               //     .pop(Share.share('verifique a caixa de email...'));
-  //             },
-  //             color: Theme.of(context).backgroundColor,
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
-  ////////////////////////////////////////////////////////////////////////////
   //TELA ENVIAR-MENSAGENS
   Future<void> showAlertDialogSimplesEnviarMensa(
       BuildContext context, String titulo, String mensagem) {
@@ -874,6 +816,233 @@ class AlertDialogTemplate extends State<StatefulWidget>
     );
   }
 
+  Future<ConfirmAction> ShowDialogSenhaPonto(BuildContext context,
+      String titulo, String subTitulo, String descController) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String senhaAtual = prefs.getString('senha');
+    String senhaPonto = prefs.getString('senhaPonto');
+    final crtlAssinatura = new TextEditingController();
+    String matriculaInformada = crtlAssinatura.text;
+    String campoVazio = 'Campo não pode ser vazio!';
+    String campoSenhaErrada = 'Senha incorreta!';
+
+    ///[metodos]
+
+    dynamic validarCampoSenhaMensa(value) {
+      if (value.isEmpty) {
+        return campoVazio;
+      } else if (value != senhaPonto) {
+        return campoSenhaErrada;
+      }
+
+      return null;
+    }
+
+    return showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Form(
+          key: _formKey,
+          child: AlertDialog(
+            title: Column(
+              children: [
+                Text(titulo, style: TextStyle(color: Color(0xFFC42224))),
+                SizedBox(height: 10),
+                Text(subTitulo),
+              ],
+            ),
+            content: new TextFormField(
+              controller: crtlAssinatura,
+              keyboardType: TextInputType.multiline,
+              obscureText: true,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: descController,
+                labelStyle: TextStyle(color: AppColors.black),
+                fillColor: Color(0xFFDBEDFF),
+                focusedBorder: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  borderSide: new BorderSide(color: AppColors.black),
+                ),
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  borderSide: new BorderSide(color: AppColors.black),
+                ),
+              ),
+              onChanged: (value) {
+                matriculaInformada = value;
+              },
+              validator: (value) => validarCampoSenhaMensa(value),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: AppColors.black,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) => Color(0xFFC42224)),
+                  ),
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () async {
+                    //forca validacao de matricula!!
+                    if (_formKey.currentState.validate() == true) {
+                      Navigator.of(context).pop(ConfirmAction.OK);
+                      return ConfirmAction.OK;
+                    }
+                  }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //Bater Ponto com as 4 opções
+
+  Future<ConfirmAction> ShowAlertDialogBater(BuildContext context) async {
+    return showDialog<ConfirmAction>(
+        context: context,
+        barrierDismissible: false, // user must tap button for close dialog!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white70.withOpacity(0.9),
+            content: Container(
+              constraints: BoxConstraints.expand(height: 220),
+              child: Column(
+                children: [
+                  Text(
+                    'Bata o ponto:',
+                    style: TextStyle(
+                      color: Color(0xff757575),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.green,
+                            //width: 5.0,
+
+                            child: Bot(context, 'Entrada', null, Colors.green,
+                                Icon(Icons.door_back_door), '1'),
+                          ),
+                          Container(
+                            child: Bot(
+                                context,
+                                'Intervalo',
+                                null,
+                                Colors.red,
+                                Icon(
+                                  Icons.coffee,
+                                ),
+                                '2',
+                                int: true),
+
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.red,
+                            //width: 5.0,
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            child: Bot(context, 'Retorno', null, Colors.green,
+                                Icon(Icons.coffee_outlined), '1'),
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.green,
+                            //width: 5.0,
+                          ),
+                          Container(
+                            child: Bot(context, 'Saida', null, Colors.red,
+                                Icon(Icons.exit_to_app), '2'),
+                            constraints:
+                                BoxConstraints.expand(height: 90, width: 160),
+                            // decoration: BoxDecoration(
+                            //   border: Border.all(
+                            // color: Colors.red,
+                            //width: 5.0,
+                          ),
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Padding Bot(Context, String text, acao, Color cor, Icon iconp, String entra,
+      {bool int}) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                (Set<MaterialState> states) => cor),
+          ),
+          onPressed: () async {
+            (int == true) ? intervalo = true : intervalo = false;
+            entradaSaida = entra;
+            await ShowDialogSenhaPonto(
+              Context,
+              'Atenção',
+              'Confirme sua Senha',
+              'Senha',
+            ).then((map) async {
+              if (map == ConfirmAction.OK) {
+                Navigator.of(Context).pop(ConfirmAction.OK);
+                return ConfirmAction.OK;
+              }
+              ;
+            });
+          },
+          child: Row(children: [
+            iconp,
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              text,
+              style: TextStyle(fontSize: 15),
+            ),
+          ])),
+    );
+  }
+
   //TELA CONTRA-CHEQUE ref(https://medium.com/flutter-community/make-text-styling-more-effective-with-richtext-widget-b0e0cb4771ef)
   Future<ConfirmAction> showAlertDialogAssPonto(
       BuildContext context, String titulo, String subA, String subB) async {
@@ -1094,6 +1263,70 @@ class AlertDialogTemplate extends State<StatefulWidget>
         );
       },
     );
+  }
+
+  Future<String> showAlertDialogAno(
+    BuildContext context,
+    String titulo,
+  ) async {
+    return showDialog<String>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) {
+          //
+          final corBackground = Colors.white70.withOpacity(1);
+          final corTitulo = Color(0xff212121);
+          PeriodoItem _selected;
+          int indice;
+
+          return SimpleDialog(
+            backgroundColor: corBackground,
+            title: Text(
+              titulo,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: corTitulo,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            children: [
+              CheckData(
+                  items: listaTxtDatas,
+                  selected: _selected,
+                  origem: "cedulaC",
+                  style: GroupStyle(
+                      activeColor: Colors.red,
+                      checkPosition: ListTileControlAffinity.leading,
+                      titleAlign: TextAlign.left,
+                      titleStyle: TextStyle(fontSize: 12)),
+                  onSelected: (item) async {
+                    print(item.title);
+
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    String empresa = prefs.getString('empresa');
+                    String matricula = prefs.getString('matricula');
+                    String usuario = prefs.getString('usuario');
+                    var url = await BuscaUrl().url('cedulaC') +
+                        "matricula=" +
+                        matricula +
+                        "&cpfcolaborador=" +
+                        usuario +
+                        "&intano=" +
+                        item.title +
+                        "&chrEmpresa=" +
+                        empresa;
+
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      AlertDialogTemplate().showAlertDialogSimples(
+                          context, "Alerta", 'URL não encontrada $url');
+                    }
+                  }),
+            ],
+          );
+        });
   }
 }
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 //import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarModel.dart';
+import 'package:gpmobile/src/pages/login/entrar/model/EntrarModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/GetIp.dart';
@@ -17,12 +17,10 @@ class RecuperarSenhaServices {
   Future<LoginModel> postRecuperarSenha(BuildContext context, String token,
       String usuario, int acaoNotificar, int acaoRecuperarSenha) async {
     try {
-
       await GetIp().getIp().then((map) async {
         if (map == null) {
           ip = "";
-        }
-        else{
+        } else {
           ip = map;
         }
       });

@@ -10,7 +10,9 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
 import 'package:gpmobile/src/pages/mensagens/vizualizar_mensagens/VisualizaMensaWidget.dart';
+import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/util/Globals.dart';
+import 'package:gpmobile/src/widgets/countdown_timer.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -19,7 +21,7 @@ import 'package:tutorial/tutorial.dart';
 import 'package:gpmobile/src/pages/bcoHoras/view/BcoHorasWidget.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
 import 'package:gpmobile/src/pages/contraCheque/view/ContraChequeWidget.dart';
-import 'package:gpmobile/src/pages/documentos/listar/ListarDocWidget.dart';
+import 'package:gpmobile/src/pages/documentos/view/ListarDocWidget.dart';
 import 'package:gpmobile/src/pages/ferias/view/FeriasWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaBloc.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaWidgetWeb.dart';
@@ -73,6 +75,10 @@ class _HomeWidgetState extends State<HomeWidget>
   //
   int _seletedItem;
   int index = 1;
+
+//
+  int resp;
+  bool verificacao = false;
   //
   bool _userAdmin;
   bool _habilitaButton = false;
@@ -96,6 +102,24 @@ class _HomeWidgetState extends State<HomeWidget>
     );
 
     setState(() {
+      _seletedItem = index;
+    });
+
+    setState(() {
+      PontoBloc()
+          .retornoTime(context, true, 2)
+          .then((value) => {
+                resp = value.response.ttRetornoErro.ttRetornoErro[0]
+                    .horaUltimaBatidaEmSegundos
+              })
+          .whenComplete(() {
+        PontoBloc().retornoTime(context, true, 2).then((value) => {
+              verificacao =
+                  value.response.ttRetornoErro.ttRetornoErro[0].inicioIntervalo
+            });
+      });
+    });
+    setState(() {
       SharedPreferencesBloc().buscaParametroBool("userAdmin").then((retorno) {
         _userAdmin = retorno;
 
@@ -106,11 +130,6 @@ class _HomeWidgetState extends State<HomeWidget>
         }
       });
     });
-
-    setState(() {
-      _seletedItem = index;
-    });
-
     Timer(
         Duration(seconds: 1),
         () => setState(() {
@@ -139,7 +158,6 @@ class _HomeWidgetState extends State<HomeWidget>
         closeTopContainer = controller.offset > 50;
       });
     });
-
     //Msg Back
     SharedPreferences.getInstance().then((prefs) {
       listaMensaBloc.getMessageBack(context, true).then((map1) {
@@ -166,7 +184,7 @@ class _HomeWidgetState extends State<HomeWidget>
             Globals.bloqueiaMenu = false;
           }
         });
-      }); //ms
+      });
     });
     super.initState();
   }
@@ -285,6 +303,12 @@ class _HomeWidgetState extends State<HomeWidget>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      //CardAlmoco(),
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(
+                      //       horizontal: width * 0.02, vertical: height * 0.02),
+                      //   child: _buttonAttPonto(context, 'web'),
+                      // ),
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: width * 0.02, vertical: height * 0.02),
@@ -319,15 +343,26 @@ class _HomeWidgetState extends State<HomeWidget>
           ),
         ),
       ),
-      body: Container(
-        color: Colors.transparent,
-        // decoration: AppGradients.gradient,
-        height: height * 2, //1.2
-        // key: keyHomeBoxMensagens,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: _boxMensageMobile(context),
-        ),
+      body: ListView(
+        children: [
+          Container(
+            child: verificacao
+                ? CountDownTimer(
+                    resp: resp == null ? 0 : resp,
+                  )
+                : SizedBox(),
+          ),
+          Container(
+            color: Colors.transparent,
+            // decoration: AppGradients.gradient,
+            height: height * 0.8, //1.2
+            // key: keyHomeBoxMensagens,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: _boxMensageMobile(context),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Padding(
         key: keyHomeBotoes,
@@ -655,6 +690,8 @@ class _HomeWidgetState extends State<HomeWidget>
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.width;
 
+    setState(() {});
+
     return Scaffold(
       key: _chaveHomeWeb,
       backgroundColor: Colors.transparent,
@@ -731,6 +768,9 @@ class _HomeWidgetState extends State<HomeWidget>
                 Expanded(
                   child: _boxMensageWeb(context),
                 ),
+                verificacao
+                    ? CountDownTimer(resp: resp == null ? 0 : resp)
+                    : SizedBox(),
               ],
             ),
           ),
@@ -853,6 +893,26 @@ class _HomeWidgetState extends State<HomeWidget>
       ),
     );
   }
+
+  // Widget _buttonAttPonto(BuildContext context, tipoDispositivo) {
+  //   return Container(
+  //     child: new ElevatedButton(
+  //       onPressed: () => null,
+  //       style: ButtonStyle(
+  //         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+  //             RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(18.0),
+  //                 side: BorderSide(color: Colors.transparent))),
+  //         backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+  //       ),
+  //       child: Icon(
+  //         Icons.restore_page_outlined,
+  //         size: 22,
+  //         color: ThemeData.light().buttonColor,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buttonLogoffWeb(BuildContext context, tipoDispositivo) {
     return Container(

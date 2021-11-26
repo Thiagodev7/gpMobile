@@ -2,7 +2,7 @@ import 'dart:convert';
 
 //import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarModel.dart';
+import 'package:gpmobile/src/pages/login/entrar/model/EntrarModel.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/GetIp.dart';
@@ -15,20 +15,17 @@ class TrocarSenhaServices {
   String ip;
 
   Future<LoginModel> postTrocaDeSenha(
-    BuildContext context,
-    String token,
-    String postUsuario,
-    String postNovaSenha,
-    int postNotificar,
-    int postTrocarSenha
-  ) async {
+      BuildContext context,
+      String token,
+      String postUsuario,
+      String postNovaSenha,
+      int postNotificar,
+      int postTrocarSenha) async {
     try {
-
       await GetIp().getIp().then((map) async {
         if (map == null) {
           ip = "";
-        }
-        else{
+        } else {
           ip = map;
         }
       });
@@ -55,7 +52,7 @@ class TrocarSenhaServices {
           }
         }),
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 0) {
         var descodeJson = jsonDecode(response.body);
         _trocarServices = LoginModel.fromJson(descodeJson);
         return _trocarServices;
@@ -63,14 +60,14 @@ class TrocarSenhaServices {
         await new AlertDialogTemplate().showAlertDialogSimples(
             context,
             "Error",
-            "Error ao buscar usuario! \n" +
+            "Error ao buscar ponto! \n" +
                 "Código Erro: " +
                 response.statusCode.toString());
         return null;
       }
     } catch (e) {
       await new AlertDialogTemplate().showAlertDialogSimples(
-          context, "Error", "Error ao buscar usuario! \n " + e.toString());
+          context, "Error", "Error ao buscar ponto! \n " + e.toString());
       return null;
     }
   }

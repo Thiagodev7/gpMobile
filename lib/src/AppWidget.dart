@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gpmobile/src/pages/login/entrar/EntrarWidget.dart';
+import 'package:gpmobile/src/pages/login/entrar/view/EntrarWidget.dart';
 import 'package:gpmobile/src/util/constants.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'splash/SplashWidget.dart';

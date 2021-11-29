@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
-import 'package:gpmobile/src/pages/aniversariantes/view/NiverWidget.dart';
 import 'package:gpmobile/src/pages/documentos/view/ListarDocWidget.dart';
 import 'package:gpmobile/src/pages/ferias/view/FeriasWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaWidget.dart';
-import 'package:gpmobile/src/pages/mensagens/model/MensagemEnvioModel.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
 import 'package:gpmobile/src/pages/myDay/view/MyDayWidget.dart';
+import 'package:gpmobile/src/pages/quiz/view/quizWidget.dart';
 import 'package:gpmobile/src/pages/sugestoes/view/SugestoesWidget.dart';
 import 'package:gpmobile/src/pages/ponto/page/PontoWidget.dart';
 
@@ -73,6 +72,12 @@ class NavigationBloc extends BlocBase {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ConfigWidget()),
+      );
+    }
+    if (index == "9") {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => Quiz()),
       );
     }
   }

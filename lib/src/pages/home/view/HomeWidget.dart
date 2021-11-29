@@ -258,6 +258,11 @@ class _HomeWidgetState extends State<HomeWidget>
             print("Sobre o App");
           }
           break;
+        case 9:
+          {
+            print("Quiz:");
+          }
+          break;
       }
     });
   }
@@ -303,12 +308,6 @@ class _HomeWidgetState extends State<HomeWidget>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      //CardAlmoco(),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(
-                      //       horizontal: width * 0.02, vertical: height * 0.02),
-                      //   child: _buttonAttPonto(context, 'web'),
-                      // ),
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: width * 0.02, vertical: height * 0.02),
@@ -354,20 +353,108 @@ class _HomeWidgetState extends State<HomeWidget>
           ),
           Container(
             color: Colors.transparent,
-            // decoration: AppGradients.gradient,
-            height: height * 0.8, //1.2
-            // key: keyHomeBoxMensagens,
+            height: height * 0.8,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
               child: _boxMensageMobile(context),
             ),
           ),
+          Questionario()
         ],
       ),
       bottomNavigationBar: Padding(
         key: keyHomeBotoes,
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: footerMenuMobile(),
+      ),
+    );
+  }
+
+  Container Questionario() {
+    return Container(
+      color: Colors.transparent.withOpacity(0.2),
+      height: 300,
+      child: ListView(
+        children: [
+          Center(
+            child: Text(
+              'Questionarios:',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Pergunta 1'),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Pergunta 2'),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Pergunta 3'),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Pergunta 4'),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Pergunta 5'),
+                ],
+              ),
+            ),
+          ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Pergunta 6'),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -667,19 +754,27 @@ class _HomeWidgetState extends State<HomeWidget>
     //   text: "Aniver.",
     //   iconData: Icons.cake,
     // ),
-    // [6]
+
+    // [5]
     MenuItemWidget(
       text: "Mens.",
       iconData: Icons.messenger,
     ),
-    // [7]
+    // [6]
     MenuItemWidget(text: "Anexos", iconData: Icons.image_rounded),
 
-    // [8]
+    // [7]
     MenuItemWidget(text: "Sugestões", iconData: Icons.thumbs_up_down_rounded),
+
+    //[8]
     MenuItemWidget(
       text: "Config. ",
       iconData: Icons.settings,
+    ),
+    // [9]
+    MenuItemWidget(
+      text: "Quiz.",
+      iconData: Icons.quiz_outlined,
     ),
   ];
 

@@ -8,7 +8,7 @@ class BuscaUrl {
     String senhaAmbiente;
     await SharedPreferencesBloc().buscaParametro("ambiente").then((ret) async {
       //forçar ambiente de teste(Obs: ambiente setado no caminho: LoginBloc)
-      ret = "Homologação";
+      ret = "Produção";
 
       if (ret == "Produção") {
         portaAmbiente = "9911";

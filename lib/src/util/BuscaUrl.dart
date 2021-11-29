@@ -42,7 +42,7 @@ class BuscaUrl {
       }
       if (nomeUrl == "cedulaC") {
         url =
-            "http://intranet.grupohegidio.com.br:81/cgi-bin/equiplex.pl/gp/mobile/frcedulaCpdf?"; //GET
+            "https://intranet.grupohegidio.com.br:81/cgi-bin/equiplex.pl/gp/mobile/frcedulaCpdf?"; //GET
       }
       if (nomeUrl == "pontoPDF") {
         url =

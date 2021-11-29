@@ -359,7 +359,13 @@ class _HomeWidgetState extends State<HomeWidget>
               child: _boxMensageMobile(context),
             ),
           ),
-          Questionario()
+          Container(
+              color: Colors.transparent,
+              height: height * 0.8,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Documento(),
+              ))
         ],
       ),
       bottomNavigationBar: Padding(
@@ -370,91 +376,36 @@ class _HomeWidgetState extends State<HomeWidget>
     );
   }
 
-  Container Questionario() {
+  Container Documento() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.width;
     return Container(
-      color: Colors.transparent.withOpacity(0.2),
-      height: 300,
-      child: ListView(
-        children: [
-          Center(
-            child: Text(
-              'Questionarios:',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
+      color: Colors.transparent,
+      child: SmartRefresher(
+        header: WaterDropHeader(waterDropColor: Colors.green),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        child: //listaFinal.isEmpty
+            //? SizedBox() :
+            Container(
+          color: Colors.transparent.withOpacity(0.2),
+          child: ListView(
+            children: [
+              Center(
+                child: Text(
+                  'Documentos:',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
               ),
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Pergunta 1'),
-                ],
+              SizedBox(
+                height: 20,
               ),
-            ),
+            ],
           ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Pergunta 2'),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Pergunta 3'),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Pergunta 4'),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Pergunta 5'),
-                ],
-              ),
-            ),
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Pergunta 6'),
-                ],
-              ),
-            ),
-          )
-        ],
+        ),
       ),
     );
   }
@@ -523,7 +474,7 @@ class _HomeWidgetState extends State<HomeWidget>
                                                 Icons.messenger,
                                                 color: Colors.green,
 
-                                                // : Colors.purple[200] ,
+                                                //: Colors.purple[200] ,
                                                 size: 30,
                                               )
                                             : Icon(

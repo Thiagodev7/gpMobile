@@ -8,7 +8,7 @@ class BuscaUrl {
     String senhaAmbiente;
     await SharedPreferencesBloc().buscaParametro("ambiente").then((ret) async {
       //forçar ambiente de teste(Obs: ambiente setado no caminho: LoginBloc)
-      ret = "Produção";
+      ret = "Homologação";
 
       if (ret == "Produção") {
         portaAmbiente = "9911";
@@ -42,7 +42,7 @@ class BuscaUrl {
       }
       if (nomeUrl == "cedulaC") {
         url =
-            "http://intranet.grupohegidio.com.br:81/cgi-bin/equiplex.pl/gp/mobile/frcedulaCpdf?"; //GET
+            "https://intranet.grupohegidio.com.br:81/cgi-bin/equiplex.pl/gp/mobile/frcedulaCpdf?"; //GET
       }
       if (nomeUrl == "pontoPDF") {
         url =

@@ -423,18 +423,11 @@ class _PontoWidgetState extends State<PontoWidget> {
           _baterPontoDisabled == true
               ? TimerButton(
                   label: 'Bater Ponto',
-                  timeOutInSeconds: 10,
+                  timeOutInSeconds: 1,
                   onPressed: () async {
-                    await AlertDialogTemplate()
-                        .ShowAlertDialogBater(
+                    await AlertDialogTemplate().ShowAlertDialogBater(
                       context,
-                    )
-                        .then((map) async {
-                      if (map == ConfirmAction.OK) {
-                        PontoBloc().blocBaterPonto(context, true, 1);
-                      }
-                      ;
-                    });
+                    );
                   },
                   disabledColor: Theme.of(context).backgroundColor,
                   color: Theme.of(context).backgroundColor,

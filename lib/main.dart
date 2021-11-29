@@ -19,6 +19,12 @@ import 'src/AppWidget.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('ic_launcher');
+
+final InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+
 void main() async {
   Get.lazyPut<ThemeController>(
       () => ThemeController()); //definir o mode antes de inicializar o app
@@ -35,12 +41,6 @@ void main() async {
         (Platform.isMacOS || Platform.isLinux || Platform.isWindows)) {
       await DesktopWindow.setMinWindowSize(const Size(600, 800));
     }
-
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
-
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 

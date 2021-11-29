@@ -50,7 +50,7 @@ class BuscaUrl {
       }
       if (nomeUrl == "contraChequePDF") {
         url =
-            "https://datasul.equiplex.com.br/cgi-bin/equiplex.pl/gp/mobile/frholeritepdfapp?"; //GET
+            "https://intranet.grupohegidio.com.br/cgi-bin/equiplex.pl/gp/mobile/frholeritepdfapp?"; //GET
         // "http://datasul.equiplex.com.br:81/cgi-bin/equiplex.pl/gp/mobile/frholeritepdf?"; //GET
       }
       if (nomeUrl == "ponto") {

@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:gpmobile/src/pages/documentos/model/ListarDocModel.dart';
+import 'package:gpmobile/src/pages/documentos/view/DocsWidget.dart';
 
 //https://github.com/iang12/flutter_url_launcher_example/blob/master/lib/main.dart
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:gpmobile/src/util/BuscaUrl.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
-import 'package:gpmobile/src/util/GenericLogsModel.dart';
 import 'package:gpmobile/src/util/SharedPreferencesBloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -30,8 +31,8 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
   bool _habilitaButton = false;
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  List<TtLog2> listArquivos = List();
-  GenericLogsModel objPDF = new GenericLogsModel();
+  ListarDocModel listDocs = new ListarDocModel();
+  List<TtRetorno2> listArquivos = List();
   @override
   initState() {
     super.initState();
@@ -48,10 +49,16 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
       });
     });
 
-    VizualizarDocBloc().getBlocPdf(context, true).then((map) {
+    LisartDocsBloc()
+        .getListDocs(
+            context: context,
+            barraStatus: true,
+            operacao: 1,
+            cienciaConfirmada: false)
+        .then((map) {
       setState(() {
-        objPDF = map;
-        listArquivos = objPDF.response.ttLog.ttLog2;
+        listDocs = map;
+        listArquivos = listDocs.response.ttRetorno.ttRetorno2;
       });
     });
   }
@@ -201,22 +208,27 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                   .length, //passa o tamanho da lista
                               itemBuilder: (BuildContext ctxt, int index) {
                                 //como será mostrado os dados na tela
-                                final objPDF = listArquivos[
+                                final listDocs = listArquivos[
                                     index]; //variavel recebe cada indice do array(objeto)
 
                                 //atualizado 12/02 as 09:20...
-                                String _description1 = objPDF.chrTexto == null
-                                    ? objPDF.chrTexto.toString()
-                                    : objPDF.chrTexto.split(';')[0];
+                                String _description1 = listDocs.titulo == null
+                                    ? listDocs.titulo.toString()
+                                    : listDocs.titulo;
 
                                 var string = utf8.encode(_description1);
                                 // print("utf8 ${string}");
-                                String _pdfMob = objPDF.chrTexto == null
-                                    ? objPDF.chrTexto.toString()
-                                    : objPDF.chrTexto.split(';')[1];
+                                String _pdfMob = listDocs.titulo == null
+                                    ? listDocs.titulo.toString()
+                                    : listDocs.titulo;
 
                                 return InkWell(
-                                  onTap: () => _viewFile(_pdfMob),
+                                  onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DocsWidget(file: _pdfMob)),
+                                  ),
                                   child: Container(
                                       margin:
                                           new EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -438,17 +450,17 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                 listArquivos.length, //passa o tamanho da lista
                             itemBuilder: (BuildContext ctxt, int index) {
                               //como será mostrado os dados na tela
-                              final objPDF = listArquivos[
+                              final listDocs = listArquivos[
                                   index]; //variavel recebe cada indice do array(objeto)
 
                               //atualizado 12/02 as 09:20...
-                              String _description1 = objPDF.chrTexto == null
-                                  ? objPDF.chrTexto.toString()
-                                  : objPDF.chrTexto.split(';')[0];
+                              String _description1 = listDocs.titulo == null
+                                  ? listDocs.titulo.toString()
+                                  : listDocs.titulo.split(';')[0];
 
-                              String _pdfTablet = objPDF.chrTexto == null
-                                  ? objPDF.chrTexto.toString()
-                                  : objPDF.chrTexto.split(';')[1];
+                              String _pdfTablet = listDocs.titulo == null
+                                  ? listDocs.titulo.toString()
+                                  : listDocs.titulo.split(';')[1];
 
                               return Container(
                                   child: Column(
@@ -596,17 +608,17 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                               listArquivos.length, //passa o tamanho da lista
                           itemBuilder: (BuildContext ctxt, int index) {
                             //como será mostrado os dados na tela
-                            final objPDF = listArquivos[
+                            final listDocs = listArquivos[
                                 index]; //variavel recebe cada indice do array(objeto)
 
                             //atualizado 12/02 as 09:20...
-                            String _description1 = objPDF.chrTexto == null
-                                ? objPDF.chrTexto.toString()
-                                : objPDF.chrTexto.split(';')[0];
+                            String _description1 = listDocs.titulo == null
+                                ? listDocs.titulo.toString()
+                                : listDocs.titulo.split(';')[0];
 
-                            String _pdfWeb = objPDF.chrTexto == null
-                                ? objPDF.chrTexto.toString()
-                                : objPDF.chrTexto.split(';')[1];
+                            String _pdfWeb = listDocs.titulo == null
+                                ? listDocs.titulo.toString()
+                                : listDocs.titulo.split(';')[1];
 
                             return Container(
                                 margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -676,10 +688,16 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
 
   _refreshAction() {
     setState(() {
-      VizualizarDocBloc().getBlocPdf(context, true).then((map) {
+      LisartDocsBloc()
+          .getListDocs(
+              context: context,
+              barraStatus: true,
+              operacao: 1,
+              cienciaConfirmada: false)
+          .then((map) {
         setState(() {
-          objPDF = map;
-          listArquivos = objPDF.response.ttLog.ttLog2;
+          listDocs = map;
+          listArquivos = listDocs.response.ttRetorno.ttRetorno2;
         });
       });
     });
@@ -694,7 +712,10 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
 
   void _viewFile(file) async {
     if (await canLaunch(file)) {
-      await launch(file);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => DocsWidget(file: file)),
+      );
     } else {
       AlertDialogTemplate().showAlertDialogSimples(context, "Alerta", file);
     }

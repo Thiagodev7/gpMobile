@@ -114,7 +114,7 @@ dependencies:
   stop_watch_timer: ^0.6.0+1
   flutter_countdown_timer: ^4.1.0
   syncfusion_flutter_charts: ^18.4.49
-
+  native_pdf_view: ^5.0.0
 
 dev_dependencies:
   analyzer: ^1.5.0

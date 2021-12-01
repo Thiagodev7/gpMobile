@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
+import 'package:gpmobile/src/util/pdf_view.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+
 import 'package:native_pdf_view/native_pdf_view.dart';
 
 class DocsWidget extends StatefulWidget {
@@ -41,6 +43,7 @@ Widget _docsWidgetMobile(file) {
   final pdfController = PdfController(
     document: PdfDocument.openFile(file),
   );
+
   return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(

@@ -32,7 +32,7 @@ class ListarDocService {
             "ttParametros": {
               "ttParametros": [
                 {
-                  "codDocumento": "",
+                  "codDocumento": codDocumento,
                   "empresa": empresa,
                   "usuario": usuario,
                   "matricula": matricula,

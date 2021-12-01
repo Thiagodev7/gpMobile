@@ -13,6 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 
 import '../bloc/ListarDocBloc.dart';
 //new 17/09
@@ -223,12 +224,9 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                     : listDocs.titulo;
 
                                 return InkWell(
-                                  onTap: () => Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            DocsWidget(file: _pdfMob)),
-                                  ),
+                                  onTap: () async {
+                                    await _viewFile(index);
+                                  },
                                   child: Container(
                                       margin:
                                           new EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -486,7 +484,7 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                         Icons.file_download,
                                         color: Estilo().branca,
                                       ),
-                                      onTap: () => _viewFile(_pdfTablet),
+                                      onTap: () => _viewFile(index),
                                     ),
                                   ),
                                 ],
@@ -614,11 +612,11 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                             //atualizado 12/02 as 09:20...
                             String _description1 = listDocs.titulo == null
                                 ? listDocs.titulo.toString()
-                                : listDocs.titulo.split(';')[0];
+                                : listDocs.titulo;
 
                             String _pdfWeb = listDocs.titulo == null
                                 ? listDocs.titulo.toString()
-                                : listDocs.titulo.split(';')[1];
+                                : listDocs.titulo;
 
                             return Container(
                                 margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
@@ -645,7 +643,7 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                           mouseCursor: SystemMouseCursors.basic,
                                           autofocus: true,
                                           child: GestureDetector(
-                                            onTap: () => _viewFile(_pdfWeb),
+                                            onTap: () => _viewFile(index),
                                             child: AbsorbPointer(
                                               child: Column(
                                                 mainAxisAlignment:
@@ -710,14 +708,28 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
     _scaffoldKeyListarDocWidget.currentState.openEndDrawer();
   }
 
-  void _viewFile(file) async {
-    if (await canLaunch(file)) {
+  void _viewFile(inde) async {
+    int index = inde + 1;
+    var base;
+    await LisartDocsBloc()
+        .getListDocs(
+            context: context,
+            barraStatus: true,
+            cienciaConfirmada: true,
+            codDocumento: index,
+            operacao: 2)
+        .then((value) =>
+            {base = value.response.ttRetorno.ttRetorno2[0].arquivoBase64})
+        .whenComplete(() {
+      print(base);
+      PdfDocument document = PdfDocument.fromBase64String(base);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => DocsWidget(file: file)),
+        MaterialPageRoute(
+            builder: (document) => DocsWidget(
+                  file: base,
+                )),
       );
-    } else {
-      AlertDialogTemplate().showAlertDialogSimples(context, "Alerta", file);
-    }
+    });
   }
 }

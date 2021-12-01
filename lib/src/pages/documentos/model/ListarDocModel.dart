@@ -75,7 +75,7 @@ class TtRetorno2 {
   String empresa;
   String descricao;
   String pathArquivo;
-  Null arquivoBase64;
+  String arquivoBase64;
 
   TtRetorno2(
       {this.codDocumento,

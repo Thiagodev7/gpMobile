@@ -871,7 +871,9 @@ class _PontoWidgetState extends State<PontoWidget> {
               Text(
                 _periodo[index].horaIni /*? '08:06' : '07:59'*/,
                 style: TextStyle(
-                  color: Estilo().conteudoTabelaPonto,
+                  color: _periodo[index].obs == ""
+                      ? Estilo().conteudoTabelaPonto
+                      : Colors.orange[300],
                 ),
               )
             ],
@@ -887,7 +889,10 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].horaAlmIni,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+                color: _periodo[index].obs == ""
+                    ? Estilo().conteudoTabelaPonto
+                    : Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           // width: 90,
@@ -899,7 +904,10 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].horaAlmFim,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+                color: _periodo[index].obs == ""
+                    ? Estilo().conteudoTabelaPonto
+                    : Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           // width: 90,
@@ -911,7 +919,10 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].horaFim,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+                color: _periodo[index].obs == ""
+                    ? Estilo().conteudoTabelaPonto
+                    : Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           // width: 90,
@@ -923,7 +934,7 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].obs,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(color: Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           width: width * 0.61,
@@ -1143,7 +1154,7 @@ class _PontoWidgetState extends State<PontoWidget> {
   //             //         ? Icons.notifications_off
   //             //         : Icons.notifications_active,
   //             //     color:
-  //             //         ponto._periodo[index]. ? Colors.red : Colors.green),
+  //             //         ponto._periodo[index]. ? Colors.orange[300] : Colors.green),
   //             Text(
   //               _periodo[index].horaIni /? '08:06' : '07:59'/,
   //               style: TextStyle(
@@ -1230,7 +1241,7 @@ class _PontoWidgetState extends State<PontoWidget> {
       body: Container(
         color: Estilo().backgroundPonto.withOpacity(0),
         child: HorizontalDataTable(
-          leftHandSideColumnWidth: width * 0.08,
+          leftHandSideColumnWidth: width * 0.09,
           rightHandSideColumnWidth: width * 0.56,
           isFixedHeader: true,
           headerWidgets: _getTitleWidgetWeb(),
@@ -1449,7 +1460,7 @@ class _PontoWidgetState extends State<PontoWidget> {
               color: new Estilo().textoTitulosLateralEsquerPonto,
               fontWeight: FontWeight.bold)),
       color: Estilo().backgroundTitulosLateralEsquerPonto,
-      width: width * 0.08,
+      width: width * 0.09,
       height: 50,
       alignment: Alignment.centerLeft,
     );
@@ -1575,7 +1586,9 @@ class _PontoWidgetState extends State<PontoWidget> {
               Text(
                 _periodo[index].horaIni /*? '08:06' : '07:59'*/,
                 style: TextStyle(
-                  color: Estilo().conteudoTabelaPonto,
+                  color: _periodo[index].obs == ""
+                      ? Estilo().conteudoTabelaPonto
+                      : Colors.orange[300],
                 ),
               )
             ],
@@ -1592,7 +1605,9 @@ class _PontoWidgetState extends State<PontoWidget> {
           child: Text(
             _periodo[index].horaAlmIni,
             style: TextStyle(
-              color: Estilo().conteudoTabelaPonto,
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
             ),
           ),
           color: Estilo().backgroundTabelaPonto,
@@ -1606,7 +1621,9 @@ class _PontoWidgetState extends State<PontoWidget> {
           child: Text(
             _periodo[index].horaAlmFim,
             style: TextStyle(
-              color: Estilo().conteudoTabelaPonto,
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
             ),
           ),
           color: Estilo().backgroundTabelaPonto,
@@ -1620,7 +1637,9 @@ class _PontoWidgetState extends State<PontoWidget> {
           child: Text(
             _periodo[index].horaFim,
             style: TextStyle(
-              color: Estilo().conteudoTabelaPonto,
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
             ),
           ),
           color: Estilo().backgroundTabelaPonto,
@@ -1633,7 +1652,11 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].obs,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
+            ),
           ),
           color: Estilo().backgroundTabelaPonto,
           width: width * 0.24,

@@ -98,7 +98,7 @@ class PontoService {
                 {
                   "cdnEmpresa": empresa,
                   "cdnEstab": "",
-                  "cdnFuncionario": 5014,
+                  "cdnFuncionario": matricula,
                   "datMarcacPtoeletBatida": "$dd/$mm/$aa",
                   "numHorarMarcacPtoelet": "$hr:$mn",
                   "idiMarcacPtoeletEntrSaida": entrSaida,

@@ -105,7 +105,7 @@ class _EntrarWidgetState extends State<EntrarWidget> {
               await AlertDialogTemplate().showAlertDialogSimples(
                   context,
                   "Atenção",
-                  "A versão desse aplicativo está desatualizada, \nserá baixado uma nova versão! \nFavor desinstalar versão corrente e instalar a nova após o download...");
+                  "A versão desse aplicativo está desatualizada, \n\nVoce sera direcionado para a nossa paginia da Google Play...");
               statusVersao = value; //forcar atualizacao do app...
 
               if (await canLaunch(url)) {
@@ -635,7 +635,7 @@ class _EntrarWidgetState extends State<EntrarWidget> {
       EntrarBloc().versaoEstaAtualizada(context).then((value) async {
         if (value == false) {
           await AlertDialogTemplate().showAlertDialogSimples(context, "Atencão",
-              "Favor desinstalar aplicativo e instalar nova versao, apos o download...");
+              "A versão desse aplicativo está desatualizada, \n\nVoce sera direcionado para a nossa paginia da Google Play...");
           if (await canLaunch(url)) {
             //logica de atualizacao do app...
             await launch(url);

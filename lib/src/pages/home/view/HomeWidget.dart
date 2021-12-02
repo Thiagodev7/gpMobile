@@ -110,7 +110,7 @@ class _HomeWidgetState extends State<HomeWidget>
           .retornoTime(context, true, 2)
           .then((value) => {
                 resp = value.response.ttRetornoErro.ttRetornoErro[0]
-                    .horaUltimaBatidaEmSegundos
+                    .tempoRestanteIntervaloEmSegundos
               })
           .whenComplete(() {
         PontoBloc().retornoTime(context, true, 2).then((value) => {
@@ -119,6 +119,7 @@ class _HomeWidgetState extends State<HomeWidget>
             });
       });
     });
+
     setState(() {
       SharedPreferencesBloc().buscaParametroBool("userAdmin").then((retorno) {
         _userAdmin = retorno;
@@ -411,7 +412,7 @@ class _HomeWidgetState extends State<HomeWidget>
                         child: Container(
                           margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
                           width: width * 0.89, // 0.29 web
-                          height: 55.0, //height * 0.07
+                          height: height * 0.07,
 
                           decoration: BoxDecoration(
                             border: Border.fromBorderSide(

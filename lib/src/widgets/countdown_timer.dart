@@ -38,10 +38,7 @@ class _CountDownTimerState extends State<CountDownTimer>
   }
 
   time(context) async {
-    var currDt = DateTime.now();
-    int total =
-        (60 * (60 * (currDt.hour))) + (60 * (currDt.minute)) + currDt.second;
-    res = (widget.resp + 3600) - total;
+    res = widget.resp;
     res = res <= 0 ? 0 : res;
     controller = AnimationController(
       vsync: this,

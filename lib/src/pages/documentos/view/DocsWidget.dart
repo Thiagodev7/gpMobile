@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
-import 'package:gpmobile/src/util/pdf_view.dart';
+//import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-
-import 'package:native_pdf_view/native_pdf_view.dart';
+//import 'package:pdf_render/pdf_render.dart';
 
 class DocsWidget extends StatefulWidget {
   var file;
@@ -40,25 +41,20 @@ class _DocsWidgetState extends State<DocsWidget> {
 }
 
 Widget _docsWidgetMobile(file) {
-  final pdfController = PdfController(
-    document: PdfDocument.openFile(file),
-  );
-
   return Scaffold(
+    backgroundColor: Colors.transparent,
+    appBar: AppBar(
       backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        title: Text(
-          'Questionário',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.w500,
-          ),
+      elevation: 0,
+      centerTitle: true,
+      title: Text(
+        'Questionário',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
         ),
       ),
-      body: PdfView(
-        controller: pdfController,
-      ));
+    ),
+    //  body: PdfDocumentLoader.openData(file),
+  );
 }

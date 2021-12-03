@@ -137,8 +137,11 @@ class PontoBloc extends BlocBase {
               return null;
             } else {
               ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              intervalo ? Notific().showNotificationWithChronometer() : null;
-              intervalo ? Notific().showNotificationWithShedule() : null;
+
+              //-----------------Notificação------------------------
+              // intervalo ? Notific().showNotificationWithChronometer() : null;
+              // intervalo ? Notific().showNotificationWithShedule() : null;
+
               intervalo
                   ? prefs.setBool('intervalo', true)
                   : prefs.setBool('intervalo', false);

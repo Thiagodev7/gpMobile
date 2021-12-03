@@ -482,42 +482,59 @@ class _PontoWidgetState extends State<PontoWidget> {
                     size: 30,
                   ),
                   color: new Estilo().iconsCor,
-                  onPressed: () => _isButtonDisabled
-                      ? AlertDialogTemplate()
-                          .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            String empresa = prefs.getString('empresa');
-                            String matricula = prefs.getString('matricula');
-                            var url = await BuscaUrl().url('pontoPDF') +
-                                'matricula=' +
-                                matricula +
-                                '&mesReferencia=' +
-                                (mesAssinatura == null
-                                    ? widget.pmes
-                                    : mesAssinatura) +
-                                '&anoReferencia=' +
-                                (anoAssinatura == null
-                                    ? widget.pano
-                                    : anoAssinatura) +
-                                empresa;
+                  onPressed: () {
+                    var dataAtualPdf = DateTime.now().month;
+                    String messagePdf;
+                    String titlePdf;
+                    if (mesAssinatura == dataAtualPdf.toString()) {
+                      messagePdf = " indisponivel ate o fechamento do ponto!";
+                      titlePdf = "Relatorio PDF";
+                    } else {
+                      messagePdf =
+                          " nao assinado!\nFavor assinar ponto para liberar seu PDF!";
+                      titlePdf = "Ponto";
+                    }
+                    ;
+                    _isButtonDisabled
+                        ? AlertDialogTemplate()
+                            .showAlertDialogPDF(
+                                context, "Gerar Pdf", "Confirma?")
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String empresa = prefs.getString('empresa');
+                              String matricula = prefs.getString('matricula');
+                              var url = await BuscaUrl().url('pontoPDF') +
+                                  'matricula=' +
+                                  matricula +
+                                  '&mesReferencia=' +
+                                  (mesAssinatura == null
+                                      ? widget.pmes
+                                      : mesAssinatura) +
+                                  '&anoReferencia=' +
+                                  (anoAssinatura == null
+                                      ? widget.pano
+                                      : anoAssinatura) +
+                                  empresa;
 
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              AlertDialogTemplate().showAlertDialogSimples(
-                                  context, "Alerta", 'URL não encontrada $url');
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                AlertDialogTemplate().showAlertDialogSimples(
+                                    context,
+                                    "Alerta",
+                                    'URL não encontrada $url');
+                              }
                             }
-                          }
-                        })
-                      : AlertDialogTemplate()
-                          .showAlertDialogAssPonto(context, "Atenção", "Ponto",
-                              " nao assinado !\nFavor assinar ponto para liberar seu PDF!")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {}
-                        })),
+                          })
+                        : AlertDialogTemplate()
+                            .showAlertDialogAssPonto(
+                                context, "Atenção", titlePdf, messagePdf)
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {}
+                          });
+                  }),
             ]),
             IconButton(
               icon: Icon(
@@ -1283,43 +1300,59 @@ class _PontoWidgetState extends State<PontoWidget> {
                     size: 30,
                   ),
                   color: new Estilo().iconsCor,
-                  onPressed: () => _isButtonDisabled
-                      ? AlertDialogTemplate()
-                          .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            String empresa = prefs.getString('empresa');
-                            String matricula = prefs.getString('matricula');
-                            var url = await BuscaUrl().url('pontoPDF') +
-                                'matricula=' +
-                                matricula +
-                                '&mesReferencia=' +
-                                (mesAssinatura == null
-                                    ? widget.pmes
-                                    : mesAssinatura) +
-                                '&anoReferencia=' +
-                                (anoAssinatura == null
-                                    ? widget.pano
-                                    : anoAssinatura) +
-                                '&chrEmpresa=' +
-                                empresa;
+                  onPressed: () {
+                    var dataAtualPdf = DateTime.now().month;
+                    String messagePdf;
+                    String titlePdf;
+                    if (mesAssinatura == dataAtualPdf.toString()) {
+                      messagePdf = " indisponivel ate o fechamento do ponto!";
+                      titlePdf = "Relatorio PDF";
+                    } else {
+                      messagePdf =
+                          " nao assinado!\nFavor assinar ponto para liberar seu PDF!";
+                      titlePdf = "Ponto";
+                    }
+                    _isButtonDisabled
+                        ? AlertDialogTemplate()
+                            .showAlertDialogPDF(
+                                context, "Gerar Pdf", "Confirma?")
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String empresa = prefs.getString('empresa');
+                              String matricula = prefs.getString('matricula');
+                              var url = await BuscaUrl().url('pontoPDF') +
+                                  'matricula=' +
+                                  matricula +
+                                  '&mesReferencia=' +
+                                  (mesAssinatura == null
+                                      ? widget.pmes
+                                      : mesAssinatura) +
+                                  '&anoReferencia=' +
+                                  (anoAssinatura == null
+                                      ? widget.pano
+                                      : anoAssinatura) +
+                                  '&chrEmpresa=' +
+                                  empresa;
 
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              AlertDialogTemplate().showAlertDialogSimples(
-                                  context, "Alerta", 'URL não encontrada $url');
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                AlertDialogTemplate().showAlertDialogSimples(
+                                    context,
+                                    "Alerta",
+                                    'URL não encontrada $url');
+                              }
                             }
-                          }
-                        })
-                      : AlertDialogTemplate()
-                          .showAlertDialogAssPonto(context, "Atenção", "Ponto",
-                              " nao assinado !\nFavor assinar ponto para liberar seu PDF!")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {}
-                        })),
+                          })
+                        : AlertDialogTemplate()
+                            .showAlertDialogAssPonto(
+                                context, "Atenção", titlePdf, messagePdf)
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {}
+                          });
+                  }),
             ]),
             IconButton(
               icon: Icon(

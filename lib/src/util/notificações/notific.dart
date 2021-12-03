@@ -18,8 +18,8 @@ class Notific extends StatelessWidget {
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
-        'Seu almoço acabou',
-        'Vai bater o ponto',
+        'O tempo de intervalo acabou',
+        'Retorne ao apicativo para bater o ponto',
         tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3600)),
         const NotificationDetails(
             android: AndroidNotificationDetails(

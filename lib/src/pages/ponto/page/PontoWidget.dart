@@ -19,6 +19,8 @@ import 'package:timer_button/timer_button.dart';
 
 class PontoWidget extends StatefulWidget {
   //metodo recebe dados da tela de contra-cheque
+  String pmes;
+  String pano;
   PontoWidget(String cmes, String cano, {Key key, this.title})
       : super(key: key) {
     pmes = cmes;
@@ -30,9 +32,6 @@ class PontoWidget extends StatefulWidget {
   @override
   _PontoWidgetState createState() => _PontoWidgetState();
 }
-
-String pmes;
-String pano;
 
 class _PontoWidgetState extends State<PontoWidget> {
   SearchBar searchBar; // final controller = FloatingSearchBarController();
@@ -73,7 +72,7 @@ class _PontoWidgetState extends State<PontoWidget> {
     }
 
     ///*[...........TELA-PONTO............]
-    if ((pmes == null) && (pano == null)) {
+    if ((widget.pmes == null) && (widget.pano == null)) {
       String mes = new DateTime(
               DateTime.now().year, DateTime.now().month, DateTime.now().day)
           .month
@@ -89,8 +88,8 @@ class _PontoWidgetState extends State<PontoWidget> {
         ano = retPeriodo.substring(3, 7);
       }
 
-      pmes = mes;
-      pano = ano;
+      widget.pmes = mes;
+      widget.pano = ano;
       _appBarMostrarMes(mes, ano);
       mesAssinatura = mes;
       anoAssinatura = ano;
@@ -134,9 +133,9 @@ class _PontoWidgetState extends State<PontoWidget> {
 
       ///*[...........TELA-CONTRA-CHEQUE............]
     } else {
-      var mes = pmes;
-      var ano = pano;
-      _appBarMostrarMes(pmes, pano);
+      var mes = widget.pmes;
+      var ano = widget.pano;
+      _appBarMostrarMes(widget.pmes, widget.pano);
       //habilita botao ( if(_isButtonDisabled == true) )
       PontoBloc().blocPontoAssinar(context, mes, ano, 0).then((map2) async {
         if (map2.response != null && map2.response.plogAssinado == 0) {
@@ -240,7 +239,7 @@ class _PontoWidgetState extends State<PontoWidget> {
 
   buildBtnAssinar() async {
     ///*[isNull, create new Time]
-    if ((pmes == null) && (pano == null)) {
+    if ((widget.pmes == null) && (widget.pano == null)) {
       String mes = new DateTime(
               DateTime.now().year, DateTime.now().month, DateTime.now().day)
           .month
@@ -256,52 +255,52 @@ class _PontoWidgetState extends State<PontoWidget> {
         ano = retPeriodo.substring(3, 7);
       }
 
-      pmes = mes;
-      pano = ano;
+      widget.pmes = mes;
+      widget.pano = ano;
       //
-      setState(() {
-        AlertDialogTemplate()
-            .showAlertDialogConfirmReg(
-          context,
-          "Assinar Registro de Ponto: ",
-          "Senha do app",
-          pmes,
-          pano,
-          1,
-        )
-            .then(
-          (ret) async {
-            if (ret != null) {
-              setState(() => _isButtonDisabled = true);
-              await AlertDialogTemplate().showAlertDialogSimples(
-                  context, "Atencao", "Ponto assinado com sucesso!");
-            }
-          },
-        );
-      });
+      //  setState(() {
+      AlertDialogTemplate()
+          .showAlertDialogConfirmReg(
+        context,
+        "Assinar Registro de Ponto: ",
+        "Senha do app",
+        widget.pmes,
+        widget.pano,
+        1,
+      )
+          .then(
+        (ret) async {
+          if (ret != null) {
+            setState(() => _isButtonDisabled = true);
+            await AlertDialogTemplate().showAlertDialogSimples(
+                context, "Atencao", "Ponto assinado com sucesso!");
+          }
+        },
+      );
+      //  });
 
       ///*[isValeu, redirected]
     } else {
-      setState(() {
-        AlertDialogTemplate()
-            .showAlertDialogConfirmReg(
-          context,
-          "Assinar Registro de Ponto: ",
-          "Senha do app",
-          pmes,
-          pano,
-          1,
-        )
-            .then(
-          (ret) async {
-            if (ret != null) {
-              setState(() => _isButtonDisabled = true);
-              await AlertDialogTemplate().showAlertDialogSimples(
-                  context, "Atencao", "Ponto assinado com sucesso!");
-            }
-          },
-        );
-      });
+      //     setState(() {
+      AlertDialogTemplate()
+          .showAlertDialogConfirmReg(
+        context,
+        "Assinar Registro de Ponto: ",
+        "Senha do app",
+        widget.pmes,
+        widget.pano,
+        1,
+      )
+          .then(
+        (ret) async {
+          if (ret != null) {
+            setState(() => _isButtonDisabled = true);
+            await AlertDialogTemplate().showAlertDialogSimples(
+                context, "Atencao", "Ponto assinado com sucesso!");
+          }
+        },
+      );
+      //    });
     }
   }
 
@@ -326,26 +325,26 @@ class _PontoWidgetState extends State<PontoWidget> {
     //   pmes = mes;
     //   pano = ano;
     //
-    setState(() {
-      AlertDialogTemplate()
-          .showAlertDialogConfirmReg(
-        context,
-        "Bater Ponto: ",
-        "Senha do app",
-        pmes,
-        pano,
-        1,
-      )
-          .then(
-        (ret) async {
-          if (ret != null) {
-            //setState(() => _isButtonDisabled = true);
-            await AlertDialogTemplate().showAlertDialogSimples(
-                context, "Atencao", "Ponto batido com sucesso!");
-          }
-        },
-      );
-    });
+    //setState(() {
+    AlertDialogTemplate()
+        .showAlertDialogConfirmReg(
+      context,
+      "Bater Ponto: ",
+      "Senha do app",
+      widget.pmes,
+      widget.pano,
+      1,
+    )
+        .then(
+      (ret) async {
+        if (ret != null) {
+          //setState(() => _isButtonDisabled = true);
+          await AlertDialogTemplate().showAlertDialogSimples(
+              context, "Atencao", "Ponto batido com sucesso!");
+        }
+      },
+    );
+    //});
 
     ///*[isValeu, redirected]
     // } else {
@@ -377,9 +376,10 @@ class _PontoWidgetState extends State<PontoWidget> {
     // This size provide us total height and width  of our screen
     // responsive pattern
     //https://stackoverflow.com/questions/49553402/flutter-screen-size
+    var dataAtual = DateTime.now().month;
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.transparent.withOpacity(0.2),
 
       ///////////////////////////////////////////////////////////
       body: Container(
@@ -394,8 +394,8 @@ class _PontoWidgetState extends State<PontoWidget> {
           tablet: pontoWidgetWeb(),
           desktop: Center(
               child: Container(
-                  color: Colors.transparent,
-                  width: 1200,
+                  color: Color(0xff872535),
+                  width: 1400,
                   child: pontoWidgetWeb())),
         ),
       ),
@@ -404,7 +404,7 @@ class _PontoWidgetState extends State<PontoWidget> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          _isButtonDisabled
+          (_isButtonDisabled == true || mesAssinatura == dataAtual.toString())
               ? SizedBox()
               : MaterialButton(
                   highlightColor: Theme.of(context).backgroundColor,
@@ -420,21 +420,17 @@ class _PontoWidgetState extends State<PontoWidget> {
                   enableFeedback: true,
                   onPressed: () => buildBtnAssinar(),
                 ),
+          SizedBox(
+            height: 5,
+          ),
           _baterPontoDisabled == true
               ? TimerButton(
                   label: 'Bater Ponto',
-                  timeOutInSeconds: 10,
+                  timeOutInSeconds: 1,
                   onPressed: () async {
-                    await AlertDialogTemplate()
-                        .ShowAlertDialogBater(
+                    await AlertDialogTemplate().ShowAlertDialogBater(
                       context,
-                    )
-                        .then((map) async {
-                      if (map == ConfirmAction.OK) {
-                        PontoBloc().blocBaterPonto(context, true, 1);
-                      }
-                      ;
-                    });
+                    );
                   },
                   disabledColor: Theme.of(context).backgroundColor,
                   color: Theme.of(context).backgroundColor,
@@ -486,39 +482,59 @@ class _PontoWidgetState extends State<PontoWidget> {
                     size: 30,
                   ),
                   color: new Estilo().iconsCor,
-                  onPressed: () => _isButtonDisabled
-                      ? AlertDialogTemplate()
-                          .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            String empresa = prefs.getString('empresa');
-                            String matricula = prefs.getString('matricula');
-                            var url = await BuscaUrl().url('pontoPDF') +
-                                'matricula=' +
-                                matricula +
-                                '&mesReferencia=' +
-                                mesAssinatura +
-                                '&anoReferencia=' +
-                                anoAssinatura +
-                                '&chrEmpresa=' +
-                                empresa;
+                  onPressed: () {
+                    var dataAtualPdf = DateTime.now().month;
+                    String messagePdf;
+                    String titlePdf;
+                    if (mesAssinatura == dataAtualPdf.toString()) {
+                      messagePdf = " indisponivel ate o fechamento do ponto!";
+                      titlePdf = "Relatorio PDF";
+                    } else {
+                      messagePdf =
+                          " nao assinado!\nFavor assinar ponto para liberar seu PDF!";
+                      titlePdf = "Ponto";
+                    }
+                    ;
+                    _isButtonDisabled
+                        ? AlertDialogTemplate()
+                            .showAlertDialogPDF(
+                                context, "Gerar Pdf", "Confirma?")
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String empresa = prefs.getString('empresa');
+                              String matricula = prefs.getString('matricula');
+                              var url = await BuscaUrl().url('pontoPDF') +
+                                  'matricula=' +
+                                  matricula +
+                                  '&mesReferencia=' +
+                                  (mesAssinatura == null
+                                      ? widget.pmes
+                                      : mesAssinatura) +
+                                  '&anoReferencia=' +
+                                  (anoAssinatura == null
+                                      ? widget.pano
+                                      : anoAssinatura) +
+                                  empresa;
 
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              AlertDialogTemplate().showAlertDialogSimples(
-                                  context, "Alerta", 'URL não encontrada $url');
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                AlertDialogTemplate().showAlertDialogSimples(
+                                    context,
+                                    "Alerta",
+                                    'URL não encontrada $url');
+                              }
                             }
-                          }
-                        })
-                      : AlertDialogTemplate()
-                          .showAlertDialogAssPonto(context, "Atenção", "Ponto",
-                              " nao assinado !\nFavor assinar ponto para liberar seu PDF!")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {}
-                        })),
+                          })
+                        : AlertDialogTemplate()
+                            .showAlertDialogAssPonto(
+                                context, "Atenção", titlePdf, messagePdf)
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {}
+                          });
+                  }),
             ]),
             IconButton(
               icon: Icon(
@@ -536,6 +552,11 @@ class _PontoWidgetState extends State<PontoWidget> {
 
                 mesAssinatura = retPeriodo.substring(0, 2);
                 anoAssinatura = retPeriodo.substring(3, 7);
+                if (mesAssinatura == null && anoAssinatura == null) {
+                  mesAssinatura = widget.pmes;
+                  anoAssinatura = widget.pano;
+                }
+
                 _appBarMostrarMes(mesAssinatura, anoAssinatura);
 
                 if ((mesAssinatura != null || mesAssinatura != "") &&
@@ -663,8 +684,8 @@ class _PontoWidgetState extends State<PontoWidget> {
                 context,
                 "Assinar Registro de Ponto: ",
                 "Matricula",
-                pmes,
-                pano,
+                widget.pmes,
+                widget.pano,
                 1,
               );
               // }); //setState
@@ -867,7 +888,9 @@ class _PontoWidgetState extends State<PontoWidget> {
               Text(
                 _periodo[index].horaIni /*? '08:06' : '07:59'*/,
                 style: TextStyle(
-                  color: Estilo().conteudoTabelaPonto,
+                  color: _periodo[index].obs == ""
+                      ? Estilo().conteudoTabelaPonto
+                      : Colors.orange[300],
                 ),
               )
             ],
@@ -883,7 +906,10 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].horaAlmIni,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+                color: _periodo[index].obs == ""
+                    ? Estilo().conteudoTabelaPonto
+                    : Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           // width: 90,
@@ -895,7 +921,10 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].horaAlmFim,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+                color: _periodo[index].obs == ""
+                    ? Estilo().conteudoTabelaPonto
+                    : Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           // width: 90,
@@ -907,7 +936,10 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].horaFim,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+                color: _periodo[index].obs == ""
+                    ? Estilo().conteudoTabelaPonto
+                    : Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           // width: 90,
@@ -919,7 +951,7 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].obs,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(color: Colors.orange[300]),
           ),
           color: new Estilo().backgroundTabelaPonto,
           width: width * 0.61,
@@ -1139,9 +1171,9 @@ class _PontoWidgetState extends State<PontoWidget> {
   //             //         ? Icons.notifications_off
   //             //         : Icons.notifications_active,
   //             //     color:
-  //             //         ponto._periodo[index]. ? Colors.red : Colors.green),
+  //             //         ponto._periodo[index]. ? Colors.orange[300] : Colors.green),
   //             Text(
-  //               _periodo[index].horaIni /*? '08:06' : '07:59'*/,
+  //               _periodo[index].horaIni /? '08:06' : '07:59'/,
   //               style: TextStyle(
   //                 color: Theme.of(context).backgroundColor,
   //               ),
@@ -1221,12 +1253,12 @@ class _PontoWidgetState extends State<PontoWidget> {
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       key: _chavePontoWeb,
-      backgroundColor: Estilo().backgroundPonto,
+      backgroundColor: Estilo().backgroundPonto.withOpacity(0),
       appBar: appbarWeb(),
       body: Container(
-        color: Estilo().backgroundPonto,
+        color: Estilo().backgroundPonto.withOpacity(0),
         child: HorizontalDataTable(
-          leftHandSideColumnWidth: width * 0.08,
+          leftHandSideColumnWidth: width * 0.09,
           rightHandSideColumnWidth: width * 0.56,
           isFixedHeader: true,
           headerWidgets: _getTitleWidgetWeb(),
@@ -1268,39 +1300,59 @@ class _PontoWidgetState extends State<PontoWidget> {
                     size: 30,
                   ),
                   color: new Estilo().iconsCor,
-                  onPressed: () => _isButtonDisabled
-                      ? AlertDialogTemplate()
-                          .showAlertDialogPDF(context, "Gerar Pdf", "Confirma?")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {
-                            SharedPreferences prefs =
-                                await SharedPreferences.getInstance();
-                            String empresa = prefs.getString('empresa');
-                            String matricula = prefs.getString('matricula');
-                            var url = await BuscaUrl().url('pontoPDF') +
-                                'matricula=' +
-                                matricula +
-                                '&mesReferencia=' +
-                                pmes +
-                                '&anoReferencia=' +
-                                pano +
-                                '&chrEmpresa=' +
-                                empresa;
+                  onPressed: () {
+                    var dataAtualPdf = DateTime.now().month;
+                    String messagePdf;
+                    String titlePdf;
+                    if (mesAssinatura == dataAtualPdf.toString()) {
+                      messagePdf = " indisponivel ate o fechamento do ponto!";
+                      titlePdf = "Relatorio PDF";
+                    } else {
+                      messagePdf =
+                          " nao assinado!\nFavor assinar ponto para liberar seu PDF!";
+                      titlePdf = "Ponto";
+                    }
+                    _isButtonDisabled
+                        ? AlertDialogTemplate()
+                            .showAlertDialogPDF(
+                                context, "Gerar Pdf", "Confirma?")
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
+                              String empresa = prefs.getString('empresa');
+                              String matricula = prefs.getString('matricula');
+                              var url = await BuscaUrl().url('pontoPDF') +
+                                  'matricula=' +
+                                  matricula +
+                                  '&mesReferencia=' +
+                                  (mesAssinatura == null
+                                      ? widget.pmes
+                                      : mesAssinatura) +
+                                  '&anoReferencia=' +
+                                  (anoAssinatura == null
+                                      ? widget.pano
+                                      : anoAssinatura) +
+                                  '&chrEmpresa=' +
+                                  empresa;
 
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            } else {
-                              AlertDialogTemplate().showAlertDialogSimples(
-                                  context, "Alerta", 'URL não encontrada $url');
+                              if (await canLaunch(url)) {
+                                await launch(url);
+                              } else {
+                                AlertDialogTemplate().showAlertDialogSimples(
+                                    context,
+                                    "Alerta",
+                                    'URL não encontrada $url');
+                              }
                             }
-                          }
-                        })
-                      : AlertDialogTemplate()
-                          .showAlertDialogAssPonto(context, "Atenção", "Ponto",
-                              " nao assinado !\nFavor assinar ponto para liberar seu PDF!")
-                          .then((map) async {
-                          if (map == ConfirmAction.OK) {}
-                        })),
+                          })
+                        : AlertDialogTemplate()
+                            .showAlertDialogAssPonto(
+                                context, "Atenção", titlePdf, messagePdf)
+                            .then((map) async {
+                            if (map == ConfirmAction.OK) {}
+                          });
+                  }),
             ]),
             IconButton(
               icon: Icon(
@@ -1441,7 +1493,7 @@ class _PontoWidgetState extends State<PontoWidget> {
               color: new Estilo().textoTitulosLateralEsquerPonto,
               fontWeight: FontWeight.bold)),
       color: Estilo().backgroundTitulosLateralEsquerPonto,
-      width: width * 0.08,
+      width: width * 0.09,
       height: 50,
       alignment: Alignment.centerLeft,
     );
@@ -1567,7 +1619,9 @@ class _PontoWidgetState extends State<PontoWidget> {
               Text(
                 _periodo[index].horaIni /*? '08:06' : '07:59'*/,
                 style: TextStyle(
-                  color: Estilo().conteudoTabelaPonto,
+                  color: _periodo[index].obs == ""
+                      ? Estilo().conteudoTabelaPonto
+                      : Colors.orange[300],
                 ),
               )
             ],
@@ -1584,7 +1638,9 @@ class _PontoWidgetState extends State<PontoWidget> {
           child: Text(
             _periodo[index].horaAlmIni,
             style: TextStyle(
-              color: Estilo().conteudoTabelaPonto,
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
             ),
           ),
           color: Estilo().backgroundTabelaPonto,
@@ -1598,7 +1654,9 @@ class _PontoWidgetState extends State<PontoWidget> {
           child: Text(
             _periodo[index].horaAlmFim,
             style: TextStyle(
-              color: Estilo().conteudoTabelaPonto,
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
             ),
           ),
           color: Estilo().backgroundTabelaPonto,
@@ -1612,7 +1670,9 @@ class _PontoWidgetState extends State<PontoWidget> {
           child: Text(
             _periodo[index].horaFim,
             style: TextStyle(
-              color: Estilo().conteudoTabelaPonto,
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
             ),
           ),
           color: Estilo().backgroundTabelaPonto,
@@ -1625,7 +1685,11 @@ class _PontoWidgetState extends State<PontoWidget> {
         Container(
           child: Text(
             _periodo[index].obs,
-            style: TextStyle(color: Estilo().conteudoTabelaPonto),
+            style: TextStyle(
+              color: _periodo[index].obs == ""
+                  ? Estilo().conteudoTabelaPonto
+                  : Colors.orange[300],
+            ),
           ),
           color: Estilo().backgroundTabelaPonto,
           width: width * 0.24,

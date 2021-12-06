@@ -98,9 +98,9 @@ class PontoService {
                 {
                   "cdnEmpresa": empresa,
                   "cdnEstab": "",
-                  "cdnFuncionario": 4994,
-                  "datMarcacPtoeletBatida": "24/$mm/$aa",
-                  "numHorarMarcacPtoelet": "09:$mn",
+                  "cdnFuncionario": matricula,
+                  "datMarcacPtoeletBatida": "$dd/$mm/$aa",
+                  "numHorarMarcacPtoelet": "$hr:$mn",
                   "idiMarcacPtoeletEntrSaida": entrSaida,
                   "cdnMotivMarcac": 992,
                   "operacao": operacao,
@@ -114,7 +114,7 @@ class PontoService {
       );
 
       if (response.statusCode == 200) {
-        var descodeJson = jsonDecode(response.body);
+        var descodeJson = jsonDecode(utf8.decode(response.bodyBytes));
         _baterPonto = BaterPontoModel.fromJson(descodeJson);
 
         return _baterPonto;

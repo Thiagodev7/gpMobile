@@ -901,8 +901,7 @@ class AlertDialogTemplate extends State<StatefulWidget>
                   onPressed: () async {
                     //forca validacao de matricula!!
                     if (_formKey.currentState.validate() == true) {
-                      Navigator.of(context).pop(ConfirmAction.OK);
-                      return ConfirmAction.OK;
+                      PontoBloc().blocBaterPonto(context, true, 1);
                     }
                   }),
             ],
@@ -1014,21 +1013,16 @@ class AlertDialogTemplate extends State<StatefulWidget>
             backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (Set<MaterialState> states) => cor),
           ),
-          onPressed: () async {
+          onPressed: () {
             (int == true) ? intervalo = true : intervalo = false;
             entradaSaida = entra;
-            await ShowDialogSenhaPonto(
+            ShowDialogSenhaPonto(
               Context,
               'Atenção',
               'Confirme sua Senha',
               'Senha',
-            ).then((map) async {
-              if (map == ConfirmAction.OK) {
-                Navigator.of(Context).pop(ConfirmAction.OK);
-                return ConfirmAction.OK;
-              }
-              ;
-            });
+            );
+            Navigator.pop(Context);
           },
           child: Row(children: [
             iconp,

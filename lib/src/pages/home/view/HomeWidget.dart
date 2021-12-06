@@ -110,46 +110,53 @@ class _HomeWidgetState extends State<HomeWidget>
           .retornoTime(context, true, 2)
           .then((value) => {
                 resp = value.response.ttRetornoErro.ttRetornoErro[0]
-                    .horaUltimaBatidaEmSegundos
+                    .tempoRestanteIntervaloEmSegundos
               })
           .whenComplete(() {
-        PontoBloc().retornoTime(context, true, 2).then((value) => {
-              verificacao =
-                  value.response.ttRetornoErro.ttRetornoErro[0].inicioIntervalo
-            });
-      });
-    });
-    setState(() {
-      SharedPreferencesBloc().buscaParametroBool("userAdmin").then((retorno) {
-        _userAdmin = retorno;
+        PontoBloc()
+            .retornoTime(context, true, 2)
+            .then((value) => {
+                  verificacao = value
+                      .response.ttRetornoErro.ttRetornoErro[0].inicioIntervalo
+                })
+            .whenComplete(() => {
+                  setState(() {
+                    SharedPreferencesBloc()
+                        .buscaParametroBool("userAdmin")
+                        .then((retorno) {
+                      _userAdmin = retorno;
 
-        if (_userAdmin == false) {
-          _habilitaButton = _userAdmin;
-        } else {
-          _habilitaButton = _userAdmin;
-        }
+                      if (_userAdmin == false) {
+                        _habilitaButton = _userAdmin;
+                      } else {
+                        _habilitaButton = _userAdmin;
+                      }
+                    });
+                  }),
+                });
       });
+
+      Timer(
+          Duration(seconds: 1),
+          () => setState(() {
+                HomeBloc().getNomeColaborador().then((map) async {
+                  nomeColaborador = map;
+                });
+                HomeBloc().getCargo().then((map) async {
+                  cargo = map;
+                });
+                HomeBloc().getNomeEmpresa().then((map) async {
+                  nomeEmpresa = map;
+                });
+                HomeBloc().getMatricula().then((map) async {
+                  matricula = map;
+                });
+                //
+                HomeBloc().getEmpresa().then((map) async {
+                  empresa = map;
+                });
+              }));
     });
-    Timer(
-        Duration(seconds: 1),
-        () => setState(() {
-              HomeBloc().getNomeColaborador().then((map) async {
-                nomeColaborador = map;
-              });
-              HomeBloc().getCargo().then((map) async {
-                cargo = map;
-              });
-              HomeBloc().getNomeEmpresa().then((map) async {
-                nomeEmpresa = map;
-              });
-              HomeBloc().getMatricula().then((map) async {
-                matricula = map;
-              });
-              //
-              HomeBloc().getEmpresa().then((map) async {
-                empresa = map;
-              });
-            }));
 
     controller.addListener(() {
       double value = controller.offset / 119;
@@ -158,7 +165,7 @@ class _HomeWidgetState extends State<HomeWidget>
         closeTopContainer = controller.offset > 50;
       });
     });
-    //Msg Back
+
     SharedPreferences.getInstance().then((prefs) {
       listaMensaBloc.getMessageBack(context, true).then((map1) {
         setState(() {
@@ -355,7 +362,7 @@ class _HomeWidgetState extends State<HomeWidget>
           Container(
             color: Colors.transparent,
             // decoration: AppGradients.gradient,
-            height: height * 0.8, //1.2
+            height: height * 1.2, //1.2
             // key: keyHomeBoxMensagens,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -411,7 +418,7 @@ class _HomeWidgetState extends State<HomeWidget>
                         child: Container(
                           margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
                           width: width * 0.89, // 0.29 web
-                          height: 55.0, //height * 0.07
+                          height: 55.0,
 
                           decoration: BoxDecoration(
                             border: Border.fromBorderSide(

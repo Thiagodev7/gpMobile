@@ -516,6 +516,7 @@ class _PontoWidgetState extends State<PontoWidget> {
                                   (anoAssinatura == null
                                       ? widget.pano
                                       : anoAssinatura) +
+                                  '&chrEmpresa=' +
                                   empresa;
 
                               if (await canLaunch(url)) {

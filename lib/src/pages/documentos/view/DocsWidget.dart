@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
@@ -18,6 +19,16 @@ class DocsWidget extends StatefulWidget {
 class _DocsWidgetState extends State<DocsWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKeyDocsWidgetWidget =
       GlobalKey<ScaffoldState>();
+  bool releaseButton = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  ReleaseButton() {
+    releaseButton = true;
+  }
 
   ///////////////////////////////////////////////////////////
   @override
@@ -29,8 +40,8 @@ class _DocsWidgetState extends State<DocsWidget> {
         child: ScreenTypeLayout(
           breakpoints: ScreenBreakpoints(desktop: 899, tablet: 730, watch: 279),
           mobile: OrientationLayoutBuilder(
-            portrait: (context) => _docsWidgetMobile(widget.file),
-            landscape: (context) => _docsWidgetMobile(widget.file),
+            portrait: (context) => _docsWidgetMobile(),
+            landscape: (context) => _docsWidgetMobile(),
           ),
           //  tablet: _buildWeb(),
           // desktop: _buildWeb(),
@@ -38,23 +49,36 @@ class _DocsWidgetState extends State<DocsWidget> {
       ),
     );
   }
-}
 
-Widget _docsWidgetMobile(file) {
-  var decoded = base64.decode(file);
-  return Scaffold(
+  Scaffold _docsWidgetMobile() {
+    var decoded = base64.decode(widget.file);
+    return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Questionário',
+          'Documentos',
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
         ),
       ),
-      body: PdfViewer.openData(decoded));
+      bottomNavigationBar: ElevatedButton(
+          onPressed: () {
+            releaseButton ? print('funfou') : print('nao funfou');
+          },
+          child: Text('Assinar')),
+      body: PdfViewer.openData(
+        decoded,
+        params: PdfViewerParams(
+          onInteractionEnd: : ReleaseButton(),
+        ),
+      ),
+
+      // ElevatedButton(onPressed: null, child: Text('Assinar'))
+    );
+  }
 }

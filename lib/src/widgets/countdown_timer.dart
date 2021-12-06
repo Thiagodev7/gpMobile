@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'dart:math' as math;
-
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/util/AlertDialogTemplate.dart';
 import 'package:mobx/mobx.dart';
@@ -38,10 +36,7 @@ class _CountDownTimerState extends State<CountDownTimer>
   }
 
   time(context) async {
-    var currDt = DateTime.now();
-    int total =
-        (60 * (60 * (currDt.hour))) + (60 * (currDt.minute)) + currDt.second;
-    res = (widget.resp + 3600) - total;
+    res = widget.resp;
     res = res <= 0 ? 0 : res;
     controller = AnimationController(
       vsync: this,
@@ -202,7 +197,7 @@ class CustomTimerPainter extends CustomPainter {
     paint.color = color;
     //double progress = (1.0 - animation.value);
     double progress = (cont * (animation.value * 6.3)) / 3600;
-    print(progress);
+
     canvas.drawArc(Offset.zero & size, 4.65, progress, false, paint);
     // canvas.drawArc((Offset.zero & size, math.pi * 1.5, -progress, false, paint);
   }

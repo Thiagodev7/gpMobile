@@ -114,7 +114,7 @@ class PontoService {
       );
 
       if (response.statusCode == 200) {
-        var descodeJson = jsonDecode(response.body);
+        var descodeJson = jsonDecode(utf8.decode(response.bodyBytes));
         _baterPonto = BaterPontoModel.fromJson(descodeJson);
 
         return _baterPonto;

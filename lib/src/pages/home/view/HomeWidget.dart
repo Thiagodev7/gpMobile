@@ -265,6 +265,11 @@ class _HomeWidgetState extends State<HomeWidget>
             print("Sobre o App");
           }
           break;
+        case 9:
+          {
+            print("Quiz:");
+          }
+          break;
       }
     });
   }
@@ -310,12 +315,6 @@ class _HomeWidgetState extends State<HomeWidget>
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      //CardAlmoco(),
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(
-                      //       horizontal: width * 0.02, vertical: height * 0.02),
-                      //   child: _buttonAttPonto(context, 'web'),
-                      // ),
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: width * 0.02, vertical: height * 0.02),
@@ -361,20 +360,63 @@ class _HomeWidgetState extends State<HomeWidget>
           ),
           Container(
             color: Colors.transparent,
+
             // decoration: AppGradients.gradient,
             height: height * 1.2, //1.2
             // key: keyHomeBoxMensagens,
+
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
               child: _boxMensageMobile(context),
             ),
           ),
+          Container(
+              color: Colors.transparent,
+              height: height * 0.8,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Documento(),
+              ))
         ],
       ),
       bottomNavigationBar: Padding(
         key: keyHomeBotoes,
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
         child: footerMenuMobile(),
+      ),
+    );
+  }
+
+  Container Documento() {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.width;
+    return Container(
+      color: Colors.transparent,
+      child: SmartRefresher(
+        header: WaterDropHeader(waterDropColor: Colors.green),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        child: //listaFinal.isEmpty
+            //? SizedBox() :
+            Container(
+          color: Colors.transparent.withOpacity(0.2),
+          child: ListView(
+            children: [
+              Center(
+                child: Text(
+                  'Documentos:',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -443,7 +485,7 @@ class _HomeWidgetState extends State<HomeWidget>
                                                 Icons.messenger,
                                                 color: Colors.green,
 
-                                                // : Colors.purple[200] ,
+                                                //: Colors.purple[200] ,
                                                 size: 30,
                                               )
                                             : Icon(
@@ -674,19 +716,27 @@ class _HomeWidgetState extends State<HomeWidget>
     //   text: "Aniver.",
     //   iconData: Icons.cake,
     // ),
-    // [6]
+
+    // [5]
     MenuItemWidget(
       text: "Mens.",
       iconData: Icons.messenger,
     ),
-    // [7]
+    // [6]
     MenuItemWidget(text: "Anexos", iconData: Icons.image_rounded),
 
-    // [8]
+    // [7]
     MenuItemWidget(text: "Sugestões", iconData: Icons.thumbs_up_down_rounded),
+
+    //[8]
     MenuItemWidget(
       text: "Config. ",
       iconData: Icons.settings,
+    ),
+    // [9]
+    MenuItemWidget(
+      text: "Quiz.",
+      iconData: Icons.quiz_outlined,
     ),
   ];
 

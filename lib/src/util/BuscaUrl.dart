@@ -42,7 +42,9 @@ class BuscaUrl {
       }
       if (nomeUrl == "cedulaC") {
         url =
+
             "https://intranet.grupohegidio.com.br/cgi-bin/equiplex.pl/gp/mobile/frcedulaCpdf?"; //GET
+
       }
       if (nomeUrl == "pontoPDF") {
         url =
@@ -84,17 +86,17 @@ class BuscaUrl {
             portaAmbiente +
             "/rest/WebServiceFusionService/wsProcGpMobileMensPOST?token="; //POST
       }
-      if (nomeUrl == "receberArq") {
-        url = "https://pasoe.grupohegidio.com.br:" +
-            portaAmbiente +
-            "/rest/WebServiceFusionService/wsProcLog?token="; //GET
-      }
       if (nomeUrl == "versionApp") {
         url = "https://pasoe.grupohegidio.com.br:" +
             portaAmbiente +
             "/rest/WebServiceFusionService/wsKetec100?token="; //GET &chrSistema=DATASUL&chrModulo=APP_DP&chrPrograma=ARQUIVOS&chrRotina=ARQUIVOS_REG_INT&intTipoRetonoRegistros=2&dtIniFiltro=02/02/2021&dtFimFiltro=04/02/2021
       }
       ////////////////POSTS/////////////
+      if (nomeUrl == "receberArq") {
+        url = "https://pasoe.grupohegidio.com.br:" +
+            portaAmbiente +
+            "/rest/WebServiceFusionService/wsProcGpMobileDocumPOST?token="; //POST
+      }
       if (nomeUrl == "pontoAssinar") {
         url = "https://pasoe.grupohegidio.com.br:" +
             portaAmbiente +

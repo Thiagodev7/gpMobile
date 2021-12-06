@@ -1015,6 +1015,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  pdf_render:
+    dependency: "direct main"
+    description:
+      name: pdf_render
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.17"
   peanut:
     dependency: "direct main"
     description:
@@ -1050,6 +1057,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+
   photo_view:
     dependency: transitive
     description:
@@ -1070,7 +1078,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.2"
   pool:
     dependency: transitive
     description:

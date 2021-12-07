@@ -8,7 +8,7 @@ String imageLogoGrupoHorizontal = 'images/LogoGrupoHorizontal.png';
 String imageLogoEmpresas = 'images/LogoLogoEmpresas.png';
 String imageLogoMessage = 'images/imageLogoMessage.png';
 String imageBcoHoras = 'images/imageBancoHoras.png';
-String imageQRCode = 'images/1.png';
+String imageQRCode = 'images/1.2.png';
 String imageNoData = 'images/nodata.png';
 
 //NETWORK_IMAGE

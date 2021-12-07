@@ -263,6 +263,16 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                                 ],
                                               ),
                                             ),
+                                            listDocs.documentoLido
+                                                ? Icon(
+                                                    Icons.check_circle_sharp,
+                                                    color: Colors.green,
+                                                    size: 30,
+                                                  )
+                                                : Icon(null),
+                                            SizedBox(
+                                              width: 8,
+                                            )
                                           ],
                                         ),
                                       )),
@@ -711,6 +721,7 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
   void _viewFile(inde) async {
     int index = inde + 1;
     var base;
+    final listDocs = listArquivos[inde];
     await LisartDocsBloc()
         .getListDocs(
             context: context,
@@ -728,6 +739,7 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
         MaterialPageRoute(
             builder: (document) => DocsWidget(
                   file: base,
+                  title: listDocs.titulo.toString(),
                 )),
       );
     });

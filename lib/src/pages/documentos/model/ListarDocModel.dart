@@ -76,6 +76,7 @@ class TtRetorno2 {
   String descricao;
   String pathArquivo;
   String arquivoBase64;
+  bool documentoLido;
 
   TtRetorno2(
       {this.codDocumento,
@@ -85,7 +86,8 @@ class TtRetorno2 {
       this.empresa,
       this.descricao,
       this.pathArquivo,
-      this.arquivoBase64});
+      this.arquivoBase64,
+      this.documentoLido});
 
   TtRetorno2.fromJson(Map<String, dynamic> json) {
     codDocumento = json['codDocumento'];
@@ -96,6 +98,7 @@ class TtRetorno2 {
     descricao = json['descricao'];
     pathArquivo = json['pathArquivo'];
     arquivoBase64 = json['arquivoBase64'];
+    documentoLido = json['documentoLido'];
   }
 
   Map<String, dynamic> toJson() {
@@ -108,6 +111,7 @@ class TtRetorno2 {
     data['descricao'] = this.descricao;
     data['pathArquivo'] = this.pathArquivo;
     data['arquivoBase64'] = this.arquivoBase64;
+    data['documentoLido'] = this.documentoLido;
     return data;
   }
 }

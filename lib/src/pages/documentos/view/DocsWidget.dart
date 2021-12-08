@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_conditional_rendering/conditional_switch.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
@@ -39,6 +40,40 @@ class _DocsWidgetState extends State<DocsWidget> {
           desktop: _buildWeb(context),
           // orig: widget.origemClick,
         ),
+      ),
+      endDrawer: ConditionalSwitch.single<String>(
+        context: context,
+        valueBuilder: (BuildContext context) => widget.origemClick,
+        caseBuilders: {
+          'viewDoc': (BuildContext context) => _docsWidgetMobile()
+        },
+        fallbackBuilder: (BuildContext context) {
+          return Card(
+            color: Colors.white,
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  onPressed: () {
+                    // setState(() {
+                    // widget.count = widget.count - 1;
+                    Navigator.of(context).pop();
+                    // });
+                  },
+                  icon: Icon(Icons.close, size: 60, color: Colors.red),
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
+                const Text(
+                  'tela TESTE vazia!!!',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

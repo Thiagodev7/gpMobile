@@ -1,70 +1,110 @@
 //https://github.com/iang12/flutter_url_launcher_example/blob/master/lib/main.dart
-//https://github.com/tonydavidx/chattie-ui-design - 17/08/21 chat-ui
 
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_conditional_rendering/conditional_switch.dart';
-
+import 'package:flutter_conditional_rendering/flutter_conditional_rendering.dart';
 import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
-import 'package:gpmobile/src/pages/documentos/model/ListarDocModel.dart'
-    as ListarDocModel;
+import 'package:gpmobile/src/pages/documentos/model/ListarDocModel.dart';
 import 'package:gpmobile/src/pages/documentos/view/DocsWidget.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
+import 'package:gpmobile/src/util/Globals.dart';
+import 'package:gpmobile/src/util/SharedPreferencesBloc.dart';
 import 'package:multi_select_item/multi_select_item.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ListaDocWidget extends StatefulWidget {
+class ListaDocLidasWidget extends StatefulWidget {
+  const ListaDocLidasWidget({
+    Key key,
+  }) : super(key: key);
+
   @override
-  _ListaDocWidgetState createState() => _ListaDocWidgetState();
+  _ListaDocLidasWidgetState createState() => _ListaDocLidasWidgetState();
 }
 
-class _ListaDocWidgetState extends State<ListaDocWidget> {
-  RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-  // final _atualizaPorTempo = AtualizarPorTimer(milisegundos: 250);
-  // List heroType = <HeroType>[];
-  ListarDocModel.TtRetorno2 objDocEndDrawer;
-
-  String titulo;
-  String mensg;
-  String data;
-  int sequencia;
-  String matriculasView;
-  bool lido;
-  bool aceite;
-
-  List<ListarDocModel.TtRetorno2> listaFinal = [];
+class _ListaDocLidasWidgetState extends State<ListaDocLidasWidget> {
   //
-  final GlobalKey<ScaffoldState> _scaffoldKeyListaDocWidget =
-      GlobalKey<ScaffoldState>();
-  int indexPage;
-  int count = 0;
+  TtRetorno2 objMensaEndDrawer;
+  //
   String origemClick = "";
   //
+  int indexPage;
+  int count = 0;
+  //
+  int operacaoVisualizar = 2;
+  int operacaoExcluir = 3;
+  //
+  List statusModel = <TtRetorno2>[];
+  List<TtRetorno2> listaFinal = [];
   List mainList = new List();
+  //
+  bool _userAdmin;
+  bool _habilitaButton = false;
+  //
+  List<TtRetorno2> listaMapeada = [];
+  //
+  final GlobalKey<ScaffoldState> _tabKeyListaDocLidasWidget =
+      GlobalKey<ScaffoldState>();
+  //
   Random random = Random();
   MultiSelectController controller;
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
   //
   @override
   void initState() {
+    // mainList.add({"key": "1"});
+    // _animationController = AnimationController(vsync: this);
     controller = MultiSelectController();
     controller.disableEditingWhenNoneSelected = true;
     controller.set(listaFinal.length);
 
-    super.initState();
+    setState(() {
+      SharedPreferencesBloc().buscaParametroBool("userAdmin").then((retorno2) {
+        _userAdmin = retorno2;
 
-    LisartDocsBloc()
-        .getListDocs(context: context, barraStatus: true, operacao: 1)
-        .then((map) {
-      if (map != null) {
-        setState(() {
-          listaFinal = map.response.ttRetorno.ttRetorno2;
-        });
-      }
+        if (_userAdmin == false) {
+          setState(() {
+            _habilitaButton = _userAdmin;
+          });
+        } else {
+          setState(() {
+            _habilitaButton = _userAdmin;
+          });
+        }
+      });
     });
+    super.initState();
+    // _atualizaPorTempo.run(() {
+    //inicio
+    SharedPreferences.getInstance().then((prefs) {
+      LisartDocsBloc()
+          .getListDocs(context: context, barraStatus: true, operacao: 1)
+          .then((map) {
+        setState(() {
+          listaFinal.clear();
+          if (map != null) {
+            //listaGlobal = map1;
+
+            TtRetorno2 mensagem = map.response.ttRetorno.ttRetorno2.firstWhere(
+                (element) =>
+                    element.requerCiencia == true &&
+                    element.documentoLido == null,
+                orElse: () => null);
+            if (mensagem == null) {
+              Globals.bloqueiaMenu = false;
+            } else {
+              Globals.bloqueiaMenu = true;
+            }
+            listaFinal = map.response.ttRetorno.ttRetorno2;
+          } else {
+            Globals.bloqueiaMenu = false;
+          }
+        });
+      });
+    });
+    // });
   }
 
   @override
@@ -72,37 +112,35 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
     super.dispose();
   }
 
-  ///////////////////////////////////////////////////////////
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKeyListaDocWidget,
+      backgroundColor: Colors.transparent,
+      key: _tabKeyListaDocLidasWidget,
       body: Container(
-        decoration: AppGradients.gradient,
-        child: ScreenTypeLayout(
-          breakpoints: ScreenBreakpoints(desktop: 899, tablet: 730, watch: 279),
-          mobile: OrientationLayoutBuilder(
-            portrait: (context) => _listarDocMobile(),
-            landscape: (context) => _listarDocMobile(),
-          ),
-          //  tablet: _buildWeb(),
-          // desktop: _buildWeb(),
+        color: Colors.transparent,
+        // decoration: AppGradients.gradient,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth < 599) return listaDocWeb();
+            if (constraints.maxWidth > 599) listaDocWeb();
+            return listaDocWeb();
+          },
         ),
       ),
-
-      //////////////////////////////////?????????????/////////////////////////////////
       endDrawer: ConditionalSwitch.single<String>(
           context: context,
           valueBuilder: (BuildContext context) => origemClick,
           caseBuilders: {
-            'viewMensa': (BuildContext context) =>
-                // new VisualizaMensaWidget(objDocEndDrawer),
+            'viewDoc': (BuildContext context) =>
+                // new VisualizaMensaWidget(objMensaEndDrawer),
                 new DocsWidget(
-                    file: objDocEndDrawer.arquivoBase64,
-                    title: objDocEndDrawer.titulo),
+                  file: objMensaEndDrawer.arquivoBase64,
+                  title: objMensaEndDrawer.titulo,
+                ),
             // 'createMensa': (BuildContext context) => EnviarMensaWidget(),
-            // 'EnviarMensaWidget': (BuildContext context) => ProductCard(),
-            // 'editMensa': (BuildContext context) => new EditarMensaWidget(objDocEndDrawer),
+            // // 'EnviarMensaWidget': (BuildContext context) => ProductCard(),
+            // 'editMensa': (BuildContext context) => new EditarMensaWidget(objMensaEndDrawer),
           },
           fallbackBuilder: (BuildContext context) {
             return Card(
@@ -129,25 +167,28 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
             );
           }),
       endDrawerEnableOpenDragGesture: false,
+      onEndDrawerChanged: (isOpened) {
+        if (isOpened == false) {
+          refreshAction();
+        }
+      },
     );
   }
-  ///////////////////////////////////////////////////////////
 
-  //MOBILE
-  Widget _listarDocMobile() {
+  //WEB
+  Widget listaDocWeb() {
     //
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    //
+//
     final txtAppBarTitle = (controller.isSelecting)
         ? Text('Selecionado(s) ${controller.selectedIndexes.length}  ')
         : Text(
-            "Documentos",
+            "DOCUMENTOS LIDOS",
             style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-            ),
+                color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
           );
+    //
     // final btnAddMensa = _habilitaButton == false
     //     ? new IconButton(
     //         icon: Icon(Icons.add_comment,
@@ -164,44 +205,33 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
     //         splashColor: Colors.blue,
     //         splashRadius: 20,
     //         onPressed: () {
-    //           int pageRandom = random.nextInt(100); // from 0 upto 99 included
     //           setState(() {
     //             origemClick = "createMensa";
-    //             _openEndDrawer(pageRandom);
-    //             // _onRefresh();
+    //             _openEndDrawer(9999);
     //           });
     //         },
     //       );
-
-    final btnRefresh = new IconButton(
-      icon: Icon(
-        Icons.autorenew,
-        color: AppColors.iconSemFundo,
-        size: 30,
-      ),
-      // onPressed: refreshAction,
-      onPressed: () => null, //_listaMensaBloc.refreshList(context),
-    );
     //
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
         elevation: 0,
         centerTitle: true,
         title: txtAppBarTitle,
         actions: [
           // btnAddMensa,
-          // btnRefresh
+          // btnRefresh,
         ],
       ),
-
+      //
       body: SmartRefresher(
         header: WaterDropHeader(waterDropColor: Colors.green),
         controller: _refreshController,
         onRefresh: _onRefresh,
         //
-        child: listaFinal == null || listaFinal.isEmpty
+        child: listaFinal.isEmpty
             ? Center(
                 child: Text(
                   'Lista vazia no momento!',
@@ -214,20 +244,20 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
             : ListView.builder(
                 itemCount: listaFinal.length,
                 itemBuilder: (BuildContext context, int index) {
-                  ListarDocModel.TtRetorno2 objDocMob = listaFinal[index];
+                  TtRetorno2 objDocWeb = listaFinal[index];
 
                   return MultiSelectItem(
                     isSelecting: controller.isSelecting,
-                    onSelected:
-                        // _habilitaButton == false
-                        //     ? () {}
-                        //     :
-                        () => onSelected(index),
+                    onSelected: _habilitaButton == false
+                        ? () {}
+                        : () => onSelected(index),
                     child: Column(
                       children: [
                         //acao click!
                         GestureDetector(
-                          onTap: () => acaoClick(index),
+                          onTap: () {
+                            _visualizarDocWeb(objDocWeb, index);
+                          },
                           child: Container(
                             margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
                             width: width * 0.89, // 0.29 web
@@ -270,7 +300,7 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
                                       children: [
                                         Expanded(
                                           flex: 1,
-                                          child: objDocMob.documentoLido == null
+                                          child: objDocWeb.documentoLido == null
                                               ? Icon(
                                                   Icons.document_scanner,
                                                   color: Colors.green,
@@ -280,9 +310,8 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
                                                 )
                                               : Icon(
                                                   Icons.document_scanner,
-                                                  // Icons.document_scanner_outline,
                                                   color:
-                                                      objDocMob.documentoLido ==
+                                                      objDocWeb.documentoLido ==
                                                               null
                                                           ? null
                                                           : Colors.grey,
@@ -293,18 +322,18 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
                                           flex: 5,
                                           child: Padding(
                                             padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 20, 0),
+                                                0, 0, 120, 0),
                                             child: Text(
-                                              objDocMob.titulo,
+                                              objDocWeb.titulo,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
                                                 fontWeight:
-                                                    objDocMob.documentoLido ==
+                                                    objDocWeb.documentoLido ==
                                                             null
                                                         ? FontWeight.bold
                                                         : FontWeight.normal,
                                                 color:
-                                                    objDocMob.documentoLido ==
+                                                    objDocWeb.documentoLido ==
                                                             null
                                                         ? null
                                                         : Colors.grey,
@@ -316,33 +345,33 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
                                         // Expanded(
                                         //   flex: 2,
                                         //   child: Text(
-                                        //     objDocMob.dataCriacao ==
+                                        //     objDocWeb.dataCriacao ==
                                         //             DateFormat('dd/MM/yy')
                                         //                 .format(DateTime.now())
                                         //                 .toString()
-                                        //         ? objDocMob.horaCriacao
-                                        //         : objDocMob
+                                        //         ? objDocWeb.horaCriacao
+                                        //         : objDocWeb
                                         //             .dataCriacao, //dias
                                         //     style: TextStyle(
                                         //       fontWeight:
-                                        //           objDocMob.documentoLido == null
+                                        //           objDocWeb.documentoLido == null
                                         //               ? FontWeight.bold
                                         //               : FontWeight.normal,
                                         //       color:
-                                        //           objDocMob.documentoLido == null
+                                        //           objDocWeb.documentoLido == null
                                         //               ? null
                                         //               : Colors.grey,
                                         //       fontSize: 12,
                                         //     ),
                                         //   ),
                                         // ),
-                                        objDocMob == null
+                                        objDocWeb == null
                                             ? Container()
                                             : Expanded(
                                                 flex: 1,
-                                                child: objDocMob.requerCiencia ==
+                                                child: objDocWeb.requerCiencia ==
                                                             true &&
-                                                        objDocMob
+                                                        objDocWeb
                                                                 .documentoLido ==
                                                             null //pendente == isFalse
                                                     ? Icon(
@@ -352,9 +381,9 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
                                                             Colors.orange[200],
                                                         size: 30,
                                                       )
-                                                    : objDocMob.requerCiencia ==
+                                                    : objDocWeb.requerCiencia ==
                                                                 true &&
-                                                            objDocMob
+                                                            objDocWeb
                                                                     .documentoLido !=
                                                                 null
                                                         ? Icon(
@@ -404,7 +433,7 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
                 //     color: AppColors.darkRed,
                 //     size: 30,
                 //   ),
-                //   onPressed: edit,
+                //   onPressed: () => editWeb(),
                 // ),
                 // //3
                 // IconButton(
@@ -422,33 +451,24 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
   }
 
 ////////////////////////////////////////////////////////////////////////////////
-  ///[MOBILE]
-  void acaoClick(index) {
-    //
-    abrirDoc(index);
-    //
-    setState(() {
-      refreshAction();
-    });
-  }
 
   // void edit() {
   //   var list = controller.selectedIndexes;
   //   list.sort((b, a) =>
   //       a.compareTo(b)); //reoder from biggest number, so it wont error
   //   list.forEach((element) {
-  //     ListarDocModel.ListarDocModel.TtRetorno objDoc = listaFinal[element];
-  //     editarMensa(objDoc);
+  //     TtRetorno2 objMensa = listaFinal[element];
+  //     editarMensa(objMensa);
   //   });
   // }
-
+  //
   // void delete() {
   //   var list = controller.selectedIndexes;
   //   //reoder from biggest number, so it wont error
   //   list.forEach((element) async {
-  //     final objDoc = listaFinal[element];
+  //     final objMensa = listaFinal[element];
   //     //action delete obj
-  //     await exlcuirMensa(objDoc);
+  //     await exlcuirMensa(objMensa);
   //   });
   //
   //   setState(() {
@@ -457,41 +477,14 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
   //   });
   // }
 
-  // abrirDoc(
-  //     objAbrirDoc, List<ListarDocModel.TtRetorno2> listOutrosDocs) {
+  // abrirMensa(objAbrirMensa, List<TtRetorno2> listOutrasMensagens) {
   //   setState(() {
   //     ListaMensaBloc()
-  //         .actionOpenMsg(context, objAbrirDoc, true, listOutrosDocs);
+  //         .actionOpenMsg(context, objAbrirMensa, true, listOutrasMensagens);
   //   });
-  //   // refreshAction();
   // }
 
-  void abrirDoc(index) async {
-    var base;
-    final listDocs = listaFinal[index];
-    await LisartDocsBloc()
-        .getListDocs(
-            context: context,
-            barraStatus: true,
-            cienciaConfirmada: true,
-            codDocumento: index,
-            operacao: 2)
-        .then((value) =>
-            {base = value.response.ttRetorno.ttRetorno2[0].arquivoBase64})
-        .whenComplete(() {
-      print(base);
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (document) => DocsWidget(
-                  file: base,
-                  title: listDocs.titulo.toString(),
-                )),
-      );
-    });
-  }
-
-  // editarMensa(objDoc) {
+  // editarMensa(objMensa) {
   //   setState(() {
   //     Navigator.of(context).push(
   //       PageRouteBuilder(
@@ -499,7 +492,7 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
   //         transitionDuration: Duration(milliseconds: 500),
   //         pageBuilder: (BuildContext context, Animation<double> animation,
   //             Animation<double> secondaryAnimation) {
-  //           return EditarMensaWidget(objDoc);
+  //           return EditarMensaWidget(objMensa);
   //         },
   //         transitionsBuilder: (BuildContext context,
   //             Animation<double> animation,
@@ -516,20 +509,20 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
   //     );
   //   });
   // }
-
-  // exlcuirMensa(objDoc) {
+  //
+  // exlcuirMensa(objMensa) {
   //   Alert(
   //     buttons: [
   //       DialogButton(
   //         onPressed: () async {
-  //           titulo = objDoc.titulo;
-  //           mensg = objDoc.mensagem;
-  //           data = objDoc.data;
-  //           sequencia = objDoc.sequencia;
+  //           titulo = objMensa.titulo;
+  //           mensg = objMensa.mensagem;
+  //           data = objMensa.data;
+  //           sequencia = objMensa.sequencia;
   //           //
   //           if (sequencia != null) {
-  //             await new EnviarMensaBloc().postEnviarMensagem(
-  //                 context, titulo, mensg, data, 3, sequencia, null, true);
+  //             await new EnviarMensaBloc().postEnviarMensagem(context, titulo,
+  //                 mensg, data, operacaoExcluir, sequencia, null, true);
   //             Navigator.of(context).pop();
   //           }
   //           refreshAction();
@@ -554,59 +547,54 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
   }
 
 ////////////////////////////////////////////////////////////////////////////////
-//   ///[WEB]
-//   void editWeb() {
-//     var list = controller.selectedIndexes;
-//     list.sort((b, a) =>
-//         a.compareTo(b)); //reoder from biggest number, so it wont error
-//     list.forEach((element) {
-//       setState(() {
-//         origemClick = "editMensa";
-//         _openEndDrawer(element);
-//       });
-//     });
-//   }
+  ///[WEB]
 
-  // void _visualizarMensaWeb(objDoc, pageIndex) {
-  //   // HeroType heroType;
-  //
-  //   setState(() {
-  //     //
-  //     String tituloViewMensa = objDoc.titulo;
-  //     String mensgViewMensa = objDoc.mensagem;
-  //     String dataViewMensa = objDoc.data;
-  //     int sequenciaViewMensa = objDoc.sequencia;
-  //     bool lidoViewMensa = objDoc.lido = true; //objDoc.lido true == lido!
-  //     //
-  //     //atualiza status datasul
-  //
-  //     // EnviarMensaBloc()
-  //     //     .postEnviarMensagem(context, tituloViewMensa, mensgViewMensa,
-  //     //         dataViewMensa, 2, sequenciaViewMensa, objDoc, lidoViewMensa)
-  //     //     .then((map) async {
-  //     //   setState(() {
-  //     //     origemClick = "viewMensa";
-  //     //     objDocEndDrawer = objDoc;
-  //     //     _openEndDrawer(pageIndex);
-  //     //   });
-  //     // });
-  //
-  //     // ListaMensaBloc()
-  //     //     .gravaStatus(context, tituloViewMensa, mensgViewMensa, dataViewMensa,
-  //     //     matriculasView, sequenciaViewMensa, lidoViewMensa, false)
-  //     //     .then((map) async {
-  //     //   setState(() {
-  //     //     origemClick = "view";
-  //     //     _openEndDrawer(pageIndex);
-  //     //   });
-  //     // });
+  void _visualizarDocWeb(objMensa, pageIndex) {
+    setState(() async {
+      final listDocs = listaFinal[pageIndex];
+      var base;
+      await LisartDocsBloc()
+          .getListDocs(
+              context: context,
+              barraStatus: true,
+              cienciaConfirmada: true,
+              codDocumento: pageIndex,
+              operacao: 2)
+          .then((value) =>
+              {base = value.response.ttRetorno.ttRetorno2[0].arquivoBase64})
+          .whenComplete(() {
+        print(base);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (document) => DocsWidget(
+                    file: base,
+                    title: listDocs.titulo,
+                  )),
+        );
+      });
+    });
+  }
+
+  // void editWeb() {
+  //   var list = controller.selectedIndexes;
+  //   list.sort((b, a) =>
+  //       a.compareTo(b)); //reoder from biggest number, so it wont error
+  //   list.forEach((element) {
+  //     StatusModel objMensa = listaFinal[element];
+  //     setState(() {
+  //       origemClick = "editMensa";
+  //       objMensaEndDrawer = objMensa;
+  //       _openEndDrawer(element);
+  //     });
   //   });
   // }
 
   //METODOS COMPARTILHADOS
   Future<int> _openEndDrawer(i) async {
     indexPage = i;
-    _scaffoldKeyListaDocWidget.currentState.openEndDrawer();
+    _tabKeyListaDocLidasWidget.currentState.openEndDrawer();
+    return indexPage;
   }
 
   void closeEndDrawer() {
@@ -630,11 +618,27 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
           LisartDocsBloc()
               .getListDocs(context: context, barraStatus: true, operacao: 1)
               .then((map) {
-            if (map != null) {
-              setState(() {
+            setState(() {
+              listaFinal.clear();
+              if (map != null) {
+                //listaGlobal = map1;
+
+                TtRetorno2 mensagem = map.response.ttRetorno.ttRetorno2
+                    .firstWhere(
+                        (element) =>
+                            element.requerCiencia == true &&
+                            element.documentoLido == null,
+                        orElse: () => null);
+                if (mensagem == null) {
+                  Globals.bloqueiaMenu = false;
+                } else {
+                  Globals.bloqueiaMenu = true;
+                }
                 listaFinal = map.response.ttRetorno.ttRetorno2;
-              });
-            }
+              } else {
+                Globals.bloqueiaMenu = false;
+              }
+            });
           });
         });
       });
@@ -643,20 +647,5 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
     setState(() {
       controller.toggle(value);
     });
-  }
-}
-
-class Flight {
-  static Widget flightShuttleBuilder(
-    BuildContext flightContext,
-    Animation<double> animation,
-    HeroFlightDirection flightDirection,
-    BuildContext fromHeroContext,
-    BuildContext toHeroContext,
-  ) {
-    return DefaultTextStyle(
-      style: DefaultTextStyle.of(toHeroContext).style,
-      child: toHeroContext.widget,
-    );
   }
 }

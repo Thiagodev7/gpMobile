@@ -7,9 +7,9 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:gpmobile/src/pages/documentos/view/ListarDocWidgetWeb.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
-import 'package:gpmobile/src/pages/mensagens/vizualizar_mensagens/VisualizaMensaWidget.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
 import 'package:gpmobile/src/pages/quiz/view/quizWidget.dart';
 import 'package:gpmobile/src/util/Globals.dart';
@@ -22,11 +22,9 @@ import 'package:tutorial/tutorial.dart';
 import 'package:gpmobile/src/pages/bcoHoras/view/BcoHorasWidget.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
 import 'package:gpmobile/src/pages/contraCheque/view/ContraChequeWidget.dart';
-import 'package:gpmobile/src/pages/documentos/view/ListarDocWidget.dart';
 import 'package:gpmobile/src/pages/ferias/view/FeriasWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaBloc.dart';
 import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaWidgetWeb.dart';
-import 'package:gpmobile/src/pages/mensagens/vizualizar_mensagens/PageHeroWidget.dart';
 import 'package:gpmobile/src/pages/myDay/view/MyDayWidget.dart';
 import 'package:gpmobile/src/pages/ponto/page/PontoWidget.dart';
 import 'package:gpmobile/src/pages/sugestoes/view/SugestoesWidget.dart';
@@ -849,7 +847,7 @@ class _HomeWidgetState extends State<HomeWidget>
       new ContraChequeWidget(), //4
       new MyDayWidget(), //5
       // new NiverWidget(), //6
-      new ListarDocWidget(), //7
+      new ListaDocWidgetWeb(), //7
       new SugestoesWidget(), //8
       new ConfigWidget(), //8
       new Quiz(), //10

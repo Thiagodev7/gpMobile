@@ -59,7 +59,7 @@ class NavigationBloc extends BlocBase {
     if (index == "6") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ListarDocWidget()),
+        MaterialPageRoute(builder: (context) => ListaDocWidget()),
       );
     }
     if (index == "7") {

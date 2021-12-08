@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:core';
 import 'package:clay_containers_plus/widgets/clay_containers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -999,48 +1000,56 @@ class _HomeWidgetState extends State<HomeWidget>
       height: 110.0,
       child: Stack(
         children: [
-          ListView.separated(
-              controller: controller,
-              separatorBuilder: (context, index) => SizedBox(
-                    width: 5,
-                  ),
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemCount: cardItensWeb.length,
-              itemBuilder: (context, index) {
-                //
-                MenuItemWidget objCard = cardItensWeb[index];
-                //
-                return Container(
-                  width: width * 0.202, //0.102 alterar largura do carrosel
-                  child: MaterialButton(
-                    color: Color(0xFF8191c), //Theme.of(context).cardColor,
-                    onPressed: () => openPageWeb(index),
-                    // onPressed: () => onHighLight('/routeHomeWidget'),
-                    // onPressed: () => navKey.currentState.pushNamed('/feriasWidget'),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Icon(
-                          // Icons.ac_unit,
-                          objCard.iconData,
-                          color: Colors.white.withOpacity(0.8),
-                          // textDirection: TextDirection.rtl,
-                          size: 30,
-                        ),
-                        Text(
-                          objCard.text,
-                          style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 11),
-                        ),
-                      ],
+          ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              dragDevices: {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+              },
+            ),
+            child: ListView.separated(
+                controller: controller,
+                separatorBuilder: (context, index) => SizedBox(
+                      width: 5,
                     ),
-                  ),
-                );
-              }),
+                scrollDirection: Axis.horizontal,
+                physics: BouncingScrollPhysics(),
+                itemCount: cardItensWeb.length,
+                itemBuilder: (context, index) {
+                  //
+                  MenuItemWidget objCard = cardItensWeb[index];
+                  //
+                  return Container(
+                    width: width * 0.202, //0.102 alterar largura do carrosel
+                    child: MaterialButton(
+                      color: Color(0xFF8191c), //Theme.of(context).cardColor,
+                      onPressed: () => openPageWeb(index),
+                      // onPressed: () => onHighLight('/routeHomeWidget'),
+                      // onPressed: () => navKey.currentState.pushNamed('/feriasWidget'),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(
+                            // Icons.ac_unit,
+                            objCard.iconData,
+                            color: Colors.white.withOpacity(0.8),
+                            // textDirection: TextDirection.rtl,
+                            size: 30,
+                          ),
+                          Text(
+                            objCard.text,
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.8),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 11),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+          ),
 
           ///*[new] 31/08
           Positioned(

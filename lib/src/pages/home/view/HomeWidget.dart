@@ -11,6 +11,7 @@ import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
 import 'package:gpmobile/src/pages/mensagens/vizualizar_mensagens/VisualizaMensaWidget.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
+import 'package:gpmobile/src/pages/quiz/view/quizWidget.dart';
 import 'package:gpmobile/src/util/Globals.dart';
 import 'package:gpmobile/src/widgets/countdown_timer.dart';
 import 'package:intl/intl.dart';
@@ -851,10 +852,11 @@ class _HomeWidgetState extends State<HomeWidget>
       new ListarDocWidget(), //7
       new SugestoesWidget(), //8
       new ConfigWidget(), //8
-      new VisualizaMensaWidget(
-          HeroType(data: data, titulo: titulo, mensagem: mensagem),
-          objBoxMensa,
-          listaFinal),
+      new Quiz(), //10
+      // new VisualizaMensaWidget(
+      //     HeroType(data: data, titulo: titulo, mensagem: mensagem),
+      //     objBoxMensa,
+      //     listaFinal),
     ];
 
     return Expanded(
@@ -1384,6 +1386,11 @@ class _HomeWidgetState extends State<HomeWidget>
     //[9]
     MenuItemWidget(
       text: "Config. ",
+      iconData: Icons.settings,
+    ),
+    //[10]
+    MenuItemWidget(
+      text: "Qiz. ",
       iconData: Icons.settings,
     ),
   ];

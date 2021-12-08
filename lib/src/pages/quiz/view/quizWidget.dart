@@ -18,9 +18,10 @@ class _QuizState extends State<Quiz> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent.withOpacity(0.3),
       key: _scaffoldKeyQuizWidget,
       body: Container(
-        decoration: AppGradients.gradient,
+        color: Colors.transparent,
         child: ScreenTypeLayout(
           breakpoints: ScreenBreakpoints(desktop: 899, tablet: 730, watch: 279),
           mobile: OrientationLayoutBuilder(

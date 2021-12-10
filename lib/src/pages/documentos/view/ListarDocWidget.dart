@@ -169,7 +169,8 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    new Text("Cedula C",
+                                    new Text(
+                                        "Cedula C (extrato imposto de renda)",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyText1),
@@ -411,7 +412,7 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                new Text("Cedula C",
+                                new Text("Cedula C (extrato imposto de renda)",
                                     style:
                                         Theme.of(context).textTheme.bodyText1),
                               ],
@@ -565,7 +566,7 @@ class _ListarDocWidgetState extends State<ListarDocWidget> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                new Text("Cedula C",
+                                new Text("Cedula C (extrato imposto de renda)",
                                     style:
                                         Theme.of(context).textTheme.bodyText1),
                               ],

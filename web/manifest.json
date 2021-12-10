@@ -1,6 +1,6 @@
 {
-    "name": "gpmobile",
-    "short_name": "gpmobile",
+    "name": "GPMobile",
+    "short_name": "GPMobile",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

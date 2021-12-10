@@ -3,14 +3,15 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_conditional_rendering/conditional_switch.dart';
+import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
 import 'package:pdf_render/pdf_render_widgets.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 
 class DocsWidget extends StatefulWidget {
-  var file;
-  String title = 'Documentos';
   String origemClick = "";
-  DocsWidget({this.file, this.title, Key key}) : super(key: key);
+  int index;
+
+  DocsWidget({this.index, Key key}) : super(key: key);
 
   @override
   _DocsWidgetState createState() => _DocsWidgetState();
@@ -20,27 +21,58 @@ class _DocsWidgetState extends State<DocsWidget> {
   final GlobalKey<ScaffoldState> _scaffoldKeyDocsWidgetWidget =
       GlobalKey<ScaffoldState>();
   bool releaseButton = false;
+  String documentofile = "";
+  String title = "";
 
   ///////////////////////////////////////////////////////////
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<String> getFutureDados() async {
+    await LisartDocsBloc()
+        .getListDocs(
+            context: context,
+            barraStatus: true,
+            operacao: 2,
+            codDocumento: widget.index)
+        .then((value) => {
+              documentofile =
+                  value.response.ttRetorno.ttRetorno2[0].arquivoBase64,
+              title = value.response.ttRetorno.ttRetorno2[0].titulo
+            });
+    return documentofile;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Container(
-        color: Color(0xff501d2c),
-        // decoration: AppGradients.gradient,
-        child: ScreenTypeLayout(
-          breakpoints: ScreenBreakpoints(desktop: 899, tablet: 730, watch: 279),
-          mobile: OrientationLayoutBuilder(
-            portrait: (context) => _docsWidgetMobile(),
-            landscape: (context) => _docsWidgetMobile(),
-          ),
-          tablet: _buildWeb(context),
-          desktop: _buildWeb(context),
-          // orig: widget.origemClick,
-        ),
-      ),
+          color: Color(0xff501d2c),
+          // decoration: AppGradients.gradient,
+          child: FutureBuilder(
+              future: getFutureDados(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ScreenTypeLayout(
+                    breakpoints: ScreenBreakpoints(
+                        desktop: 899, tablet: 730, watch: 279),
+                    mobile: OrientationLayoutBuilder(
+                      portrait: (context) => _docsWidgetMobile(),
+                      landscape: (context) => _docsWidgetMobile(),
+                    ),
+                    tablet: _buildWeb(context),
+                    desktop: _buildWeb(context),
+                    // orig: widget.origemClick,
+                  );
+                } else {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              })),
       endDrawer: ConditionalSwitch.single<String>(
         context: context,
         valueBuilder: (BuildContext context) => widget.origemClick,
@@ -79,7 +111,7 @@ class _DocsWidgetState extends State<DocsWidget> {
   }
 
   Scaffold _docsWidgetMobile() {
-    var decoded = base64.decode(widget.file);
+    var decoded = base64.decode(documentofile);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -88,7 +120,7 @@ class _DocsWidgetState extends State<DocsWidget> {
         elevation: 0,
         centerTitle: true,
         title: Text(
-          widget.title,
+          title,
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
@@ -119,7 +151,7 @@ class _DocsWidgetState extends State<DocsWidget> {
   }
 
   Widget _buildWeb(context) {
-    var decoded = base64.decode(widget.file);
+    var decoded = base64.decode(documentofile);
     double width = MediaQuery.of(context).size.width * 0.8;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -136,7 +168,7 @@ class _DocsWidgetState extends State<DocsWidget> {
                 elevation: 0,
                 centerTitle: true,
                 title: Text(
-                  widget.title,
+                  title,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,

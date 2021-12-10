@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
-import 'package:gpmobile/src/pages/documentos/view/ListarDocWidgetWeb.dart';
+import 'package:gpmobile/src/pages/documentos/view/ListaDocNovosWidgets.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
@@ -851,10 +851,6 @@ class _HomeWidgetState extends State<HomeWidget>
       new SugestoesWidget(), //8
       new ConfigWidget(), //8
       new Quiz(), //10
-      // new VisualizaMensaWidget(
-      //     HeroType(data: data, titulo: titulo, mensagem: mensagem),
-      //     objBoxMensa,
-      //     listaFinal),
     ];
 
     return Expanded(
@@ -886,70 +882,70 @@ class _HomeWidgetState extends State<HomeWidget>
     );
   }
 
-  Widget _chatAppbar() {
-    return Card(
-      margin: EdgeInsets.zero,
-      color: const Color(0xFF2A2F32),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: Colors.orange,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                'User name',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            const Spacer(),
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed: () {},
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _chatAppbar() {
+  //   return Card(
+  //     margin: EdgeInsets.zero,
+  //     color: const Color(0xFF2A2F32),
+  //     child: Container(
+  //       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  //       child: Row(
+  //         children: [
+  //           CircleAvatar(
+  //             backgroundColor: Colors.orange,
+  //           ),
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 8.0),
+  //             child: Text(
+  //               'User name',
+  //               overflow: TextOverflow.ellipsis,
+  //             ),
+  //           ),
+  //           const Spacer(),
+  //           IconButton(
+  //             icon: Icon(Icons.search),
+  //             onPressed: () {},
+  //           ),
+  //           IconButton(
+  //             icon: Icon(Icons.more_vert),
+  //             onPressed: () {},
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _botaoHelpWeb(BuildContext context) {
-    return new Container(
-      // color: Colors.transparent,
-      // width: 60,
-      // height: 50,
-      child: new Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            child: new ElevatedButton(
-              onPressed: () {},
-              style: ButtonStyle(
-                  // elevation: MaterialStateProperty.all<double>(1.5),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                          side: BorderSide(color: Colors.transparent))),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(Colors.transparent)),
-              child: Icon(
-                Icons.info_outline,
-                size: 20,
-                color: ThemeData.light().buttonColor,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _botaoHelpWeb(BuildContext context) {
+  //   return new Container(
+  //     // color: Colors.transparent,
+  //     // width: 60,
+  //     // height: 50,
+  //     child: new Row(
+  //       mainAxisAlignment: MainAxisAlignment.end,
+  //       children: [
+  //         Padding(
+  //           padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+  //           child: new ElevatedButton(
+  //             onPressed: () {},
+  //             style: ButtonStyle(
+  //                 // elevation: MaterialStateProperty.all<double>(1.5),
+  //                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+  //                     RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(18.0),
+  //                         side: BorderSide(color: Colors.transparent))),
+  //                 backgroundColor:
+  //                     MaterialStateProperty.all<Color>(Colors.transparent)),
+  //             child: Icon(
+  //               Icons.info_outline,
+  //               size: 20,
+  //               color: ThemeData.light().buttonColor,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // Widget _buttonAttPonto(BuildContext context, tipoDispositivo) {
   //   return Container(

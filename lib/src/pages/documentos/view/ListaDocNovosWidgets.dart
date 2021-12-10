@@ -16,12 +16,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ListaDocNovos extends StatefulWidget {
+class ListaDocWidgetWeb extends StatefulWidget {
   @override
-  _ListaDocNovosState createState() => _ListaDocNovosState();
+  _ListaDocWidgetWebState createState() => _ListaDocWidgetWebState();
 }
 
-class _ListaDocNovosState extends State<ListaDocNovos> {
+class _ListaDocWidgetWebState extends State<ListaDocWidgetWeb> {
   LisartDocsBloc _listaMensaBloc = new LisartDocsBloc();
   List<TtRetorno2> listaGlobal;
   RefreshController _refreshController =
@@ -39,9 +39,10 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
   bool _userAdmin;
   bool _habilitaButton = false;
   //
-  final GlobalKey<ScaffoldState> _scaffoldKeyListaDocNovos =
+  final GlobalKey<ScaffoldState> _scaffoldKeyListaDocWidgetWeb =
       GlobalKey<ScaffoldState>();
-  int indexPage;
+  int index;
+
   int count = 0;
   String origemClick = "";
   //
@@ -49,6 +50,8 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
   List mainList = new List();
   Random random = Random();
   MultiSelectController controller;
+
+  String documentofile;
   //
   @override
   void initState() {
@@ -94,7 +97,7 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
               Globals.bloqueiaMenu = true;
             }
             listaFinal = map.response.ttRetorno.ttRetorno2
-              ..where((element) => element.documentoLido == null).toList();
+              ..where((element) => element.documentoLido == true).toList();
           } else {
             Globals.bloqueiaMenu = false;
           }
@@ -107,19 +110,18 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      key: _scaffoldKeyListaDocNovos,
+      backgroundColor: Colors.transparent.withOpacity(0.3),
+      key: _scaffoldKeyListaDocWidgetWeb,
       body: Container(
         color: Colors.transparent,
-        // decoration: AppGradients.gradient,
         child: ScreenTypeLayout(
           breakpoints: ScreenBreakpoints(desktop: 899, tablet: 730, watch: 279),
           mobile: OrientationLayoutBuilder(
-              //   portrait: (context) => _ListaDocNovosMobile(),
-              // landscape: (context) => _ListaDocNovosMobile(),
+              //   portrait: (context) => _ListaDocWidgetWebMobile(),
+              // landscape: (context) => _ListaDocWidgetWebMobile(),
               ),
-          tablet: _ListaDocNovosWeb(),
-          desktop: _ListaDocNovosWeb(),
+          tablet: _ListaDocWidgetWebWeb(),
+          desktop: _ListaDocWidgetWebWeb(),
         ),
       ),
       endDrawer: ConditionalSwitch.single<String>(
@@ -128,9 +130,8 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
           caseBuilders: {
             'viewDoc': (BuildContext context) =>
                 // new VisualizaMensaWidget(objMensaEndDrawer),
-                new DocsWidget(
-                    file: objMensaEndDrawer.arquivoBase64,
-                    title: objMensaEndDrawer.titulo)
+                DocsWidget(index: listaFinal[index].codDocumento),
+
             // 'createMensa': (BuildContext context) => EnviarMensaWidget(),
             // // 'EnviarMensaWidget': (BuildContext context) => ProductCard(),
             // 'editMensa': (BuildContext context) =>
@@ -168,291 +169,22 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
       },
     );
   }
+
   ///////////////////////////////////////////////////////////
 
-//   //MOBILE
-//   Widget _ListaDocNovosMobile() {
-//     //
-//     double width = MediaQuery.of(context).size.width;
-//     double height = MediaQuery.of(context).size.height;
-//     //
-//     final txtAppBarTitle = (controller.isSelecting)
-//         ? Text('Selecionado(s) ${controller.selectedIndexes.length}  ')
-//         : Text(
-//             "MENSAGENS NOVAS",
-//             style: TextStyle(
-//               color: Colors.white,
-//               fontWeight: FontWeight.w500,
-//               fontSize: 12,
-//             ),
-//           );
-//     final btnAddMensa = _habilitaButton == false
-//         ? new IconButton(
-//             icon: Icon(Icons.add_comment,
-//                 size: 30, color: Colors.amber.withOpacity(0.0)),
-//             splashColor: Colors.blue,
-//             splashRadius: 20,
-//             onPressed: null)
-//         : new IconButton(
-//             icon: Icon(
-//               Icons.add_comment,
-//               color: AppColors.iconSemFundo,
-//               size: 30,
-//             ),
-//             splashColor: Colors.blue,
-//             splashRadius: 20,
-//             onPressed: () {
-//               int pageRandom = random.nextInt(100); // from 0 upto 99 included
-//               setState(() {
-//                 origemClick = "createMensa";
-//                 _openEndDrawer(pageRandom);
-//               });
-//             },
-//           );
-
-//     final btnRefresh = new IconButton(
-//       icon: Icon(
-//         Icons.autorenew,
-//         color: AppColors.iconSemFundo,
-//         size: 30,
-//       ),
-//       onPressed: refreshAction,
-//       // onPressed: () => _listaMensaBloc.refreshList(context),
-//     );
-//     //
-//     return Scaffold(
-//       backgroundColor: Colors.transparent,
-//       appBar: AppBar(
-//         backgroundColor: Colors.transparent,
-//         elevation: 0,
-//         centerTitle: true,
-//         title: txtAppBarTitle,
-//         actions: [
-//           btnAddMensa,
-//           // btnRefresh
-//         ],
-//       ),
-
-//       body: SmartRefresher(
-//         header: WaterDropHeader(waterDropColor: Colors.green),
-//         controller: _refreshController,
-//         onRefresh: _onRefresh,
-// //
-//         child: listaFinal.isEmpty
-//             ? Center(
-//                 child: Text(
-//                   'Lista vazia no momento!',
-//                   style: TextStyle(
-//                     color: AppColors.txtSemFundo,
-//                     fontWeight: FontWeight.w500,
-//                   ),
-//                 ),
-//               )
-//             : ListView.builder(
-//                 itemCount: listaFinal.length,
-//                 itemBuilder: (BuildContext context, int index) {
-//                   TtRetorno2 objMensaMob = listaFinal[index];
-
-//                   return MultiSelectItem(
-//                     isSelecting: controller.isSelecting,
-//                     onSelected: _habilitaButton == false
-//                         ? () {}
-//                         : () => onSelected(index),
-//                     child: Column(
-//                       children: [
-//                         //acao click!
-//                         GestureDetector(
-//                           onTap: () => acaoClick(objMensaMob),
-//                           child: Container(
-//                               margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
-//                               width: width * 0.89, // 0.29 web
-//                               height: 55.0, //height * 0.07
-
-//                               child: Card(
-//                                 clipBehavior: Clip.antiAlias,
-//                                 shape: RoundedRectangleBorder(
-//                                     borderRadius: BorderRadius.circular(8.0)),
-//                                 color: controller.isSelected(index)
-//                                     ? AppColors.black
-//                                     : AppColors.white,
-//                                 child: Row(
-//                                   crossAxisAlignment: CrossAxisAlignment.center,
-//                                   children: <Widget>[
-//                                     // Container(
-//                                     //   color: AppColors.primary,
-//                                     //   width: 10.0,
-//                                     // ),
-//                                     // SizedBox(
-//                                     //   width: 10.0,
-//                                     // ),
-//                                     Expanded(
-//                                       child: AbsorbPointer(
-//                                         child: Row(
-//                                           children: [
-//                                             Expanded(
-//                                               flex: 1,
-//                                               child: objMensaMob.documentoLido == null
-//                                                   ? Icon(
-//                                                       Icons.messenger,
-//                                                       color: Colors.green,
-
-//                                                       // : Colors.purple[200] ,
-//                                                       size: 30,
-//                                                     )
-//                                                   : Icon(
-//                                                       Icons.messenger,
-//                                                       color: objMensaMob.documentoLido == null
-//                                                           ? null
-//                                                           : Colors.grey,
-//                                                       size: 30,
-//                                                     ),
-//                                             ),
-//                                             Expanded(
-//                                               flex: 5,
-//                                               child: Padding(
-//                                                 padding:
-//                                                     const EdgeInsets.fromLTRB(
-//                                                         0, 0, 120, 0),
-//                                                 child: Text(
-//                                                   objMensaMob.titulo,
-//                                                   overflow:
-//                                                       TextOverflow.ellipsis,
-//                                                   style: TextStyle(
-//                                                     fontWeight:
-//                                                     objMensaMob.documentoLido == null
-//                                                             ? FontWeight.bold
-//                                                             : FontWeight.normal,
-//                                                     color: objMensaMob.documentoLido == null
-//                                                         ? null
-//                                                         : Colors.grey,
-//                                                     fontSize: 15,
-//                                                   ),
-//                                                 ),
-//                                               ),
-//                                             ),
-//                                             Expanded(
-//                                               flex: 2,
-//                                               child: Text(
-//                                                 objMensaMob.dataCriacao ==   DateFormat('dd/MM/yy').format(DateTime.now()).toString() ? objMensaMob.horaCriacao : objMensaMob.dataCriacao, //dias
-//                                                 style: TextStyle(
-//                                                   fontWeight:
-//                                                   objMensaMob.documentoLido == null
-//                                                       ? FontWeight.bold
-//                                                       : FontWeight.normal,
-//                                                   color: objMensaMob.documentoLido == null
-//                                                       ? null
-//                                                       : Colors.grey,
-//                                                   fontSize: 12,
-//                                                 ),
-//                                               ),
-//                                             ),
-//                                             objMensaMob == null
-//                                                 ? Container()
-//                                                 : Expanded(
-//                                               flex: 1,
-//                                               child: objMensaMob.requerCiencia == true && objMensaMob.documentoLido == null //pendente == isFalse
-//                                                   ? Icon(Icons.drive_file_rename_outline,
-//                                                 color: Colors.orange[200],
-//                                                 size: 30,
-//                                               )
-//                                                   : objMensaMob.requerCiencia == true && objMensaMob.documentoLido != null ? Icon(Icons.check_circle_sharp,
-//                                                 color: Colors.green,
-//                                                 size: 30,
-//                                               ): Icon(null) ,
-//                                             ),
-//                                           ],
-//                                         ),
-//                                       ),
-//                                     ),
-//                                   ],
-//                                 ),
-//                               )),
-//                         ),
-//                         SizedBox(height: 10),
-//                       ],
-//                     ),
-
-//                     //   actionPane: SlidableDrawerActionPane(),
-//                   );
-//                 },
-//               ),
-//       ),
-//       //
-//       floatingActionButton: (controller.isSelecting)
-//           ? Row(
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               children: [
-//                 //1
-//                 IconButton(
-//                   icon: Icon(
-//                     Icons.design_services_rounded,
-//                     color: AppColors.darkRed,
-//                     size: 30,
-//                   ),
-//                   onPressed: undoSelect,
-//                 ),
-//                 //2
-//                 // IconButton(
-//                 //   icon: Icon(
-//                 //     Icons.edit,
-//                 //     color: AppColors.darkRed,
-//                 //     size: 30,
-//                 //   ),
-//                 //   onPressed: edit,
-//                 // ),
-//                 // //3
-//                 // IconButton(
-//                 //   icon: Icon(
-//                 //     Icons.delete,
-//                 //     color: AppColors.darkRed,
-//                 //     size: 30,
-//                 //   ),
-//                 //   onPressed: delete,
-//                 // ),
-//               ],
-//             )
-//           : null,
-//     );
-//   }
-
 //   //WEB
-  Widget _ListaDocNovosWeb() {
+  Widget _ListaDocWidgetWebWeb() {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 //
-    final txtAppBarTitle = (controller.isSelecting)
-        ? Text('Selecionado(s) ${controller.selectedIndexes.length}  ')
-        : Text(
-            "DOCUMENTOS NOVOS",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
-              fontSize: 12,
-            ),
-          );
-    //
-    // final btnAddMensa = _habilitaButton == false
-    //     ? new IconButton(
-    //         icon: Icon(Icons.add_comment,
-    //             size: 30, color: Colors.amber.withOpacity(0.0)),
-    //         splashColor: Colors.blue,
-    //         splashRadius: 20,
-    //         onPressed: null)
-    //     : new IconButton(
-    //         icon: Icon(
-    //           Icons.add_comment,
-    //           color: AppColors.iconSemFundo,
-    //           size: 30,
-    //         ),
-    //         splashColor: Colors.blue,
-    //         splashRadius: 20,
-    //         onPressed: () {
-    //           setState(() {
-    //             origemClick = "createMensa";
-    //             _openEndDrawer(9999);
-    //           });
-    //         },
-    //       );
+    final txtAppBarTitle = Text(
+      "DOCUMENTOS NOVOS",
+      style: TextStyle(
+        color: Colors.white,
+        fontWeight: FontWeight.w500,
+        fontSize: 12,
+      ),
+    );
 
     final btnRefresh = new IconButton(
         icon: Icon(
@@ -468,82 +200,59 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
+        title: Text(
+          "DOCUMENTOS",
+          style: TextStyle(
+            color: Colors.white,
+            // fontSize: 20,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
         automaticallyImplyLeading: false,
         elevation: 0,
         centerTitle: true,
-        title: txtAppBarTitle,
-        actions: [
-          // btnAddMensa,
-          // btnRefresh,
-        ],
       ),
-      body: SmartRefresher(
-        header: WaterDropHeader(waterDropColor: Colors.green),
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        child: listaFinal.isEmpty
-            ? Center(
-                child: Text(
-                  'Lista vazia no momento!',
-                  style: TextStyle(
-                    color: AppColors.txtSemFundo,
-                    fontWeight: FontWeight.w500,
+      body: Padding(
+        padding: const EdgeInsets.only(top: 20),
+        child: SmartRefresher(
+          header: WaterDropHeader(waterDropColor: Colors.green),
+          controller: _refreshController,
+          onRefresh: _onRefresh,
+          child: listaFinal.isEmpty
+              ? Center(
+                  child: Text(
+                    'Lista vazia no momento!',
+                    style: TextStyle(
+                      color: AppColors.txtSemFundo,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-              )
-            : ListView.builder(
-                itemCount: listaFinal.length,
-                itemBuilder: (BuildContext context, int index) =>
-                    MultiSelectItem(
-                      isSelecting: controller.isSelecting,
-                      onSelected: () {
-                        setState(() {
-                          controller.toggle(index);
-                        });
-                      },
-                      child: Column(
+                )
+              : ListView.builder(
+                  itemCount: listaFinal.length,
+                  itemBuilder: (BuildContext context, index) => Column(
                         children: [
                           //acao click!
                           GestureDetector(
                             onTap: () {
-                              _visualizaDocWeb(listaFinal[index], index);
+                              _visualizaDocWeb(index);
                             },
                             child: Container(
                               margin: new EdgeInsets.fromLTRB(10, 0, 10, 0),
                               width: width * 0.89, // 0.29 web
                               height: 55.0, //height * 0.07
-
-                              // child: Card(
-                              //   clipBehavior: Clip.antiAlias,
-                              //   shape: RoundedRectangleBorder(
-                              //       borderRadius: BorderRadius.circular(8.0)),
-                              //   color: controller.isSelected(index)
-                              //       ? AppColors.black
-                              //       : AppColors.white,
-                              //   child:
                               decoration: BoxDecoration(
-                                // color: _selectedColorRight,
-                                // gradient: AppGradients.linear2,
                                 border: Border.fromBorderSide(
                                   BorderSide(
                                     color: AppColors.border,
                                   ),
                                 ),
                                 borderRadius: BorderRadius.circular(5),
-                                color: controller.isSelected(index)
-                                    ? AppColors.black
-                                    : AppColors.white,
+                                color: AppColors.white,
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                  // Container(
-                                  //   color: AppColors.primary,
-                                  //   width: 10.0,
-                                  // ),
-                                  // SizedBox(
-                                  //   width: 10.0,
-                                  // ),
                                   Expanded(
                                     child: AbsorbPointer(
                                       child: Row(
@@ -595,22 +304,6 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
                                               ),
                                             ),
                                           ),
-                                          // Expanded(
-                                          //   flex: 2,
-                                          //   child: Text(
-                                          //     listaFinal[index].dataCriacao ==   DateFormat('dd/MM/yy').format(DateTime.now()).toString() ? listaFinal[index].horaCriacao : listaFinal[index].dataCriacao, //dias
-                                          //     style: TextStyle(
-                                          //       fontWeight:
-                                          //       listaFinal[index].documentoLido == null
-                                          //           ? FontWeight.bold
-                                          //           : FontWeight.normal,
-                                          //       color: listaFinal[index].documentoLido == null
-                                          //           ? null
-                                          //           : Colors.grey,
-                                          //       fontSize: 12,
-                                          //     ),
-                                          //   ),
-                                          // ),
                                           listaFinal[index] == null
                                               ? Container()
                                               : Expanded(
@@ -654,240 +347,27 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
                           // ),
                           SizedBox(height: 10),
                         ],
-                      ),
-                      // child: Card(
-                      //   color: controller.isSelected(index)
-                      //       ? AppColors.black
-                      //       : AppColors.white,
-                      //   child: ListTile(
-                      //     //acao do click
-                      //     onTap: () {
-                      //       _visualizaDocWeb(objMensaWeb, index);
-                      //     },
-                      //     leading: objMensaWeb.lido == false
-                      //         ? Icon(
-                      //             Icons.messenger,
-                      //             color: Colors.green,
-                      //             size: 30,
-                      //           )
-                      //         : Icon(
-                      //             Icons.messenger,
-                      //             color: objMensaWeb.lido == false
-                      //                 ? null
-                      //                 : Colors.grey,
-                      //             size: 30,
-                      //           ),
-                      //     title: Row(
-                      //       // mainAxisAlignment: MainAxisAlignment.start,
-                      //       children: [
-                      //         Flexible(
-                      //           flex: 1,
-                      //           child: Text(
-                      //             objMensaWeb.titulo,
-                      //             overflow: TextOverflow.clip,
-                      //             style: TextStyle(
-                      //               fontWeight: objMensaWeb.lido == false
-                      //                   ? FontWeight.bold
-                      //                   : FontWeight.normal,
-                      //               color: objMensaWeb.lido == false
-                      //                   ? null
-                      //                   : Colors.grey,
-                      //               fontSize: 15,
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     trailing: Text(
-                      //       objMensaWeb.data.split(' ').first ==
-                      //               periodoAtualGeral.toString() //true == horas
-                      //           ? objMensaWeb.data
-                      //               .split(' ')
-                      //               .last
-                      //               .substring(0, 5) //horas
-                      //           : objMensaWeb.data.split(' ').first, //dias
-                      //       style: TextStyle(
-                      //         fontWeight: objMensaWeb.lido == false
-                      //             ? FontWeight.bold
-                      //             : FontWeight.normal,
-                      //         color:
-                      //             objMensaWeb.lido == false ? null : Colors.grey,
-                      //         fontSize: 12,
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                    )),
+                      )),
+        ),
       ),
       //
-      floatingActionButton: (controller.isSelecting)
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                //1
-                IconButton(
-                  icon: Icon(
-                    Icons.design_services_rounded,
-                    color: AppColors.darkRed,
-                    size: 30,
-                  ),
-                  onPressed: undoSelect,
-                ),
-                //2
-                // IconButton(
-                //   icon: Icon(
-                //     Icons.edit,
-                //     color: AppColors.darkRed,
-                //     size: 30,
-                //   ),
-                //   onPressed: editWeb,
-                // ),
-                //3
-                // IconButton(
-                //   icon: Icon(
-                //     Icons.delete,
-                //     color: AppColors.darkRed,
-                //     size: 30,
-                //   ),
-                //   onPressed: delete,
-                // ),
-              ],
-            )
-          : null,
     );
   }
 
 ////////////////////////////////////////////////////////////////////////////////
-  ///[MOBILE]
-  //void acaoClick(TtRetorno2 obj) {
-  //
-  //  abrirMensa(obj);
-  //
-  // setState(() {
-  //   // refreshAction();
-  // });
-  //}
-
-  // void edit() {
-  //   var list = controller.selectedIndexes;
-  //   list.sort((b, a) =>
-  //       a.compareTo(b)); //reoder from biggest number, so it wont error
-  //   list.forEach((element) {
-  //     TtRetorno2 objMensa = listaFinal[element];
-  //     editarMensa(objMensa);
-  //   });
-  // }
-
-  // void delete() {
-  //   var list = controller.selectedIndexes;
-  //   //reoder from biggest number, so it wont error
-  //   list.forEach((element) async {
-  //     final objMensa = listaFinal[element];
-  //     //action delete obj
-  //     await exlcuirMensa(objMensa);
-  //   });
-  //
-  //   setState(() {
-  //     controller.deselectAll();
-  //     // controller.set(listaFinal.length);
-  //   });
-  // }
-
-  // abrirMensa(objAbrirMensa) {
-  // setState(() {
-  //  _listaMensaBloc.actionOpenMsg(context, objAbrirMensa, true, listaFinal);
-  // });
-  // refreshAction();
-  // }
-
-  // editarMensa(objMensa) {
-  //   setState(() {
-  //     Navigator.of(context).push(
-  //       PageRouteBuilder(
-  //         fullscreenDialog: true,
-  //         transitionDuration: Duration(milliseconds: 500),
-  //         pageBuilder: (BuildContext context, Animation<double> animation,
-  //             Animation<double> secondaryAnimation) {
-  //           return EditarMensaWidget(objMensa);
-  //         },
-  //         transitionsBuilder: (BuildContext context,
-  //             Animation<double> animation,
-  //             Animation<double> secondaryAnimation,
-  //             Widget child) {
-  //           return Align(
-  //             child: FadeTransition(
-  //               opacity: animation,
-  //               child: child,
-  //             ),
-  //           );
-  //         },
-  //       ),
-  //     );
-  //   });
-  // }
-  //
-  // exlcuirMensa(objMensa) {
-  //   Alert(
-  //     buttons: [
-  //       DialogButton(
-  //         onPressed: () async {
-  //           titulo = objMensa.titulo;
-  //           mensg = objMensa.mensagem;
-  //           data = objMensa.data;
-  //           sequencia = objMensa.sequencia;
-  //           //
-  //           if (sequencia != null) {
-  //             await new EnviarMensaBloc().postEnviarMensagem(
-  //                 context, titulo, mensg, data, 3, sequencia, null, true);
-  //             Navigator.of(context).pop();
-  //           }
-  //           refreshAction();
-  //         },
-  //         child: Text('OK'),
-  //         color: AppColors.green,
-  //       )
-  //     ],
-  //     context: context,
-  //     title: 'Mensagem excluida com sucesso!',
-  //     useRootNavigator: true,
-  //   ).show();
-  // }
-
-  Future<bool> undoSelect() async {
-    //block app from quitting when selecting
-    var before = !controller.isSelecting;
-    setState(() {
-      controller.deselectAll();
-    });
-    return before;
-  }
-
-////////////////////////////////////////////////////////////////////////////////
   ///[WEB]
-  void editWeb() {
-    var list = controller.selectedIndexes;
-    list.sort((b, a) =>
-        a.compareTo(b)); //reoder from biggest number, so it wont error
-    list.forEach((element) {
-      setState(() {
-        origemClick = "editMensa";
-        _openEndDrawer(element);
-      });
-    });
-  }
 
-  void _visualizaDocWeb(objMensa, pageIndex) {
+  void _visualizaDocWeb(pageIndex) {
     setState(() {
       origemClick = "viewDoc";
-      objMensaEndDrawer = objMensa;
       _openEndDrawer(pageIndex);
     });
   }
 
   //METODOS COMPARTILHADOS
   Future<int> _openEndDrawer(i) async {
-    indexPage = i;
-    _scaffoldKeyListaDocNovos.currentState.openEndDrawer();
+    index = i;
+    _scaffoldKeyListaDocWidgetWeb.currentState.openEndDrawer();
   }
 
   void closeEndDrawer() {
@@ -909,7 +389,11 @@ class _ListaDocNovosState extends State<ListaDocNovos> {
   Future<void> refreshAction() async => setState(() {
         SharedPreferences.getInstance().then((prefs) {
           LisartDocsBloc()
-              .getListDocs(context: context, barraStatus: true, operacao: 1)
+              .getListDocs(
+                  context: context,
+                  barraStatus: true,
+                  operacao: 1,
+                  codDocumento: 1)
               .then((map) {
             setState(() {
               listaFinal.clear();

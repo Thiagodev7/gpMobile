@@ -97,9 +97,7 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
           caseBuilders: {
             'viewMensa': (BuildContext context) =>
                 // new VisualizaMensaWidget(objDocEndDrawer),
-                new DocsWidget(
-                    file: objDocEndDrawer.arquivoBase64,
-                    title: objDocEndDrawer.titulo),
+                new DocsWidget(),
             // 'createMensa': (BuildContext context) => EnviarMensaWidget(),
             // 'EnviarMensaWidget': (BuildContext context) => ProductCard(),
             // 'editMensa': (BuildContext context) => new EditarMensaWidget(objDocEndDrawer),
@@ -482,11 +480,7 @@ class _ListaDocWidgetState extends State<ListaDocWidget> {
       print(base);
       Navigator.push(
         context,
-        MaterialPageRoute(
-            builder: (document) => DocsWidget(
-                  file: base,
-                  title: listDocs.titulo.toString(),
-                )),
+        MaterialPageRoute(builder: (document) => DocsWidget()),
       );
     });
   }

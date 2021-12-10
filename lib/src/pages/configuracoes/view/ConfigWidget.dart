@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 // import 'package:flutter_conditional_rendering/conditional.dart';
 import 'package:flutter_conditional_rendering/conditional_switch.dart';
 import 'package:gpmobile/src/pages/login/trocar_senha/TrocarSenhaWidget.dart';
-import 'package:gpmobile/src/pages/mensagens/model/StatusMensaModel.dart';
 import 'package:gpmobile/src/versao/VersaoAppWidget.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:responsive_builder/responsive_builder.dart';

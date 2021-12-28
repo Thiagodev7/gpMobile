@@ -7,11 +7,18 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
+import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
+import 'package:gpmobile/src/pages/documentos/model/ListarDocModel.dart';
+import 'package:gpmobile/src/pages/documentos/view/DocsWidget.dart';
 import 'package:gpmobile/src/pages/documentos/view/ListaDocNovosWidgets.dart';
+import 'package:gpmobile/src/pages/envDoc/view/envDoc.dart';
+import 'package:gpmobile/src/pages/home/model/listNotfic.dart';
+import 'package:gpmobile/src/pages/home/view/HomeWebWidget.dart';
+import 'package:gpmobile/src/pages/mensagens/view/ListaMensaNovas.dart';
 import 'package:gpmobile/src/pages/mensagens/model/MensagemRetornoModel.dart'
     as MensagemRetornoModel;
+import 'package:gpmobile/src/pages/mensagens/view/VisualizaMensaWidget.dart';
 import 'package:gpmobile/src/pages/ponto/bloc/PontoBloc.dart';
-import 'package:gpmobile/src/pages/quiz/view/quizWidget.dart';
 import 'package:gpmobile/src/util/Globals.dart';
 import 'package:gpmobile/src/widgets/countdown_timer.dart';
 import 'package:intl/intl.dart';
@@ -23,8 +30,7 @@ import 'package:gpmobile/src/pages/bcoHoras/view/BcoHorasWidget.dart';
 import 'package:gpmobile/src/pages/configuracoes/view/ConfigWidget.dart';
 import 'package:gpmobile/src/pages/contraCheque/view/ContraChequeWidget.dart';
 import 'package:gpmobile/src/pages/ferias/view/FeriasWidget.dart';
-import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaBloc.dart';
-import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaWidgetWeb.dart';
+import 'package:gpmobile/src/pages/mensagens/bloc/ListaMensaBloc.dart';
 import 'package:gpmobile/src/pages/myDay/view/MyDayWidget.dart';
 import 'package:gpmobile/src/pages/ponto/page/PontoWidget.dart';
 import 'package:gpmobile/src/pages/sugestoes/view/SugestoesWidget.dart';
@@ -56,15 +62,17 @@ class _HomeWidgetState extends State<HomeWidget>
   double topContainer = 0;
   bool closeTopContainer = false;
 
-  List<MensagemRetornoModel.TtMensagens> listaFinal = new List();
+  List<MensagemRetornoModel.TtRetorno2> listaFinal = [];
+  List<TtRetorno2> listaFinalDoc = [];
   List<TutorialItens> itens = []; //criar lista de tutoriais
+  List<ListNotific> dados = [];
 
   //MensagemRetornoModel.MensagemRetornoModel listaGlobal;
   //
   String titulo;
   String mensagem;
   String data;
-  bool lido;
+  bool documentoLido;
   //CONTROLLERS
   ScrollController controller = ScrollController();
   RefreshController _refreshController =
@@ -164,35 +172,116 @@ class _HomeWidgetState extends State<HomeWidget>
         closeTopContainer = controller.offset > 50;
       });
     });
+    setState(() {
+      SharedPreferences.getInstance().then((prefs) {
+        LisartDocsBloc()
+            .getListDocs(
+                context: context, cienciaConfirmada: false, operacao: 1)
+            .then((value) => {
+                  setState(() {
+                    if (value != null &&
+                        value.response.ttRetorno.ttRetorno2[0] != null) {
+                      TtRetorno2 documentos =
+                          value.response.ttRetorno.ttRetorno2.firstWhere(
+                              (element) =>
+                                  element.requerCiencia == true &&
+                                  element.documentoAssinado == null,
+                              orElse: () => null);
+                      if (documentos == null) {
+                        Globals.bloqueiaMenu = false;
+                      } else {
+                        Globals.bloqueiaMenu = true;
+                      }
+                      listaFinalDoc = value.response.ttRetorno.ttRetorno2
+                          .where((element) => element.requerCiencia == false
+                              ? element.documentoLido == false
+                              : element.documentoAssinado == false)
+                          .toList();
+                    } else {
+                      Globals.bloqueiaMenu = false;
+                    }
+                  })
+                })
+            .whenComplete(() => {
+                  ListaMensaBloc()
+                      .getMessageBack(
+                          cienciaConfirmada: false,
+                          context: context,
+                          operacao: 1)
+                      .then((map1) {
+                    setState(() {
+                      if (map1 != null &&
+                          map1.response.ttRetorno.ttRetorno2 != null) {
+                        //listaGlobal = map1;
 
-    SharedPreferences.getInstance().then((prefs) {
-      listaMensaBloc.getMessageBack(context, true).then((map1) {
-        setState(() {
-          if (map1 != null &&
-              map1.response.dsMensagens.dsMensagens2.ttMensagens != null) {
-            //listaGlobal = map1;
+                        MensagemRetornoModel.TtRetorno2 mensagem;
+                        mensagem = map1.response.ttRetorno.ttRetorno2
+                            .firstWhere(
+                                (element) =>
+                                    element.requerCiencia == true &&
+                                    element.mensagemAssinada == false,
+                                orElse: () => null);
 
-            MensagemRetornoModel.TtMensagens mensagem =
-                map1.response.dsMensagens.dsMensagens2.ttMensagens.firstWhere(
-                    (element) =>
-                        element.requerCiencia == true &&
-                        element.ttMensVisu == null,
-                    orElse: () => null);
-            if (mensagem == null) {
-              Globals.bloqueiaMenu = false;
-            } else {
-              Globals.bloqueiaMenu = true;
-            }
-            listaFinal = map1.response.dsMensagens.dsMensagens2.ttMensagens
-                .where((element) => element.ttMensVisu == null)
-                .toList();
-          } else {
-            Globals.bloqueiaMenu = false;
-          }
-        });
+                        if (mensagem == null) {
+                          Globals.bloqueiaMenu = false;
+                        } else {
+                          Globals.bloqueiaMenu = true;
+                        }
+                        listaFinal = map1.response.ttRetorno.ttRetorno2
+                            .where((element) => element.requerCiencia == false
+                                ? element.mensagemLida == false
+                                : element.mensagemAssinada == false)
+                            .toList();
+                      } else {
+                        Globals.bloqueiaMenu = false;
+                      }
+                    });
+                  }).whenComplete(() => preencherList()),
+                });
       });
     });
+
     super.initState();
+  }
+
+  preencherList() {
+    dados.clear();
+    setState(() {
+      for (var i = 0; i < listaFinalDoc.length; i++) {
+        ListNotific item = new ListNotific();
+
+        item.codDocumento = listaFinalDoc[i].codDocumento;
+        item.titulo = listaFinalDoc[i].titulo;
+        item.dataCriacao = listaFinalDoc[i].dataCriacao;
+        item.documentoAssinado = listaFinalDoc[i].documentoAssinado;
+        item.documentoLido = listaFinalDoc[i].documentoLido;
+        item.arquivoBase64 = listaFinalDoc[i].arquivoBase64;
+        item.icon2 = Icons.find_in_page;
+        item.icon1 = Icons.find_in_page;
+        item.descricao = listaFinalDoc[i].descricao;
+        item.requerCiencia = listaFinalDoc[i].requerCiencia;
+        item.horaCriacao = listaFinalDoc[i].horaCriacao;
+        item.tipo = 'doc';
+
+        dados.add(item);
+      }
+
+      for (var i = 0; i < listaFinal.length; i++) {
+        ListNotific item = new ListNotific();
+        item.codDocumento = listaFinal[i].codMensagem;
+        item.titulo = listaFinal[i].titulo;
+        item.dataCriacao = listaFinal[i].dataCriacao;
+        item.requerCiencia = listaFinal[i].requerCiencia;
+        item.documentoLido = listaFinal[i].mensagemLida;
+        item.icon1 = Icons.message;
+        item.icon2 = Icons.message;
+        item.requerCiencia = listaFinal[i].requerCiencia;
+        item.horaCriacao = listaFinal[i].horaCriacao;
+        item.tipo = 'msg';
+
+        dados.add(item);
+      }
+    });
   }
 
   final _scaffoldKeyHomeWidget = GlobalKey<ScaffoldState>();
@@ -264,11 +353,11 @@ class _HomeWidgetState extends State<HomeWidget>
             print("Sobre o App");
           }
           break;
-        case 9:
-          {
-            print("Quiz:");
-          }
-          break;
+        // case 9:
+        //   {
+        //     print("Enviar Doc.");
+        //   }
+        //   break;
       }
     });
   }
@@ -369,13 +458,7 @@ class _HomeWidgetState extends State<HomeWidget>
               child: _boxMensageMobile(context),
             ),
           ),
-          Container(
-              color: Colors.transparent,
-              height: height * 0.8,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Documento(),
-              ))
+          // s
         ],
       ),
       bottomNavigationBar: Padding(
@@ -386,39 +469,39 @@ class _HomeWidgetState extends State<HomeWidget>
     );
   }
 
-  Container Documento() {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.width;
-    return Container(
-      color: Colors.transparent,
-      child: SmartRefresher(
-        header: WaterDropHeader(waterDropColor: Colors.green),
-        controller: _refreshController,
-        onRefresh: _onRefresh,
-        child: //listaFinal.isEmpty
-            //? SizedBox() :
-            Container(
-          color: Colors.transparent.withOpacity(0.2),
-          child: ListView(
-            children: [
-              Center(
-                child: Text(
-                  'Documentos:',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // Container Documento() {
+  //   double width = MediaQuery.of(context).size.width;
+  //   double height = MediaQuery.of(context).size.width;
+  //   return Container(
+  //     color: Colors.transparent,
+  //     child: SmartRefresher(
+  //       header: WaterDropHeader(waterDropColor: Colors.green),
+  //       controller: _refreshController,
+  //       onRefresh: _onRefresh,
+  //       child: //listaFinal.isEmpty
+  //           //? SizedBox() :
+  //           Container(
+  //         color: Colors.transparent.withOpacity(0.2),
+  //         child: ListView(
+  //           children: [
+  //             Center(
+  //               child: Text(
+  //                 'Documentos:',
+  //                 style: TextStyle(
+  //                   color: Colors.white,
+  //                   fontSize: 18,
+  //                 ),
+  //               ),
+  //             ),
+  //             SizedBox(
+  //               height: 20,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _boxMensageMobile(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -429,7 +512,7 @@ class _HomeWidgetState extends State<HomeWidget>
         header: WaterDropHeader(waterDropColor: Colors.green),
         controller: _refreshController,
         onRefresh: _onRefresh,
-        child: listaFinal.isEmpty
+        child: dados.isEmpty
             ? Center(
                 child: Image.asset(
                   imageLogoGrupoHorizontal,
@@ -439,10 +522,25 @@ class _HomeWidgetState extends State<HomeWidget>
                 ),
               )
             : ListView.builder(
-                itemCount: listaFinal.length,
+                itemCount: dados.length,
                 itemBuilder: (BuildContext context, int index) {
-                  MensagemRetornoModel.TtMensagens objMensaMob =
-                      listaFinal[index];
+                  ListNotific objMensaMob = dados[index];
+
+                  bool mensagemLida;
+                  if (dados[index].requerCiencia == true) {
+                    if (dados[index].documentoLido == true &&
+                        dados[index].documentoAssinado == true) {
+                      mensagemLida = true;
+                    } else {
+                      mensagemLida = false;
+                    }
+                  } else {
+                    if (dados[index].documentoLido == true) {
+                      mensagemLida = true;
+                    } else {
+                      mensagemLida = false;
+                    }
+                  }
 
                   return Column(
                     children: [
@@ -450,10 +548,23 @@ class _HomeWidgetState extends State<HomeWidget>
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            listaMensaBloc
-                                .actionOpenMsg(
-                                    context, objMensaMob, true, listaFinal)
-                                .then((value) => atualizarBox());
+                            objMensaMob.tipo == "doc"
+                                ? Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            new DocsWidget(
+                                              index: objMensaMob.codDocumento,
+                                              signature:
+                                                  objMensaMob.documentoAssinado,
+                                            )))
+                                : Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            new VisualizaMensaWidget(
+                                                index:
+                                                    objMensaMob.codDocumento)));
                           });
                         },
                         child: Container(
@@ -479,19 +590,18 @@ class _HomeWidgetState extends State<HomeWidget>
                                     children: [
                                       Expanded(
                                         flex: 1,
-                                        child: objMensaMob.ttMensVisu == null
+                                        child: mensagemLida == false
                                             ? Icon(
-                                                Icons.messenger,
+                                                objMensaMob.icon1,
                                                 color: Colors.green,
 
                                                 //: Colors.purple[200] ,
                                                 size: 30,
                                               )
                                             : Icon(
-                                                Icons.messenger,
+                                                objMensaMob.icon1,
                                                 // Icons.messenger_outline,
-                                                color: objMensaMob.ttMensVisu ==
-                                                        null
+                                                color: mensagemLida == false
                                                     ? null
                                                     : Colors.grey,
                                                 size: 30,
@@ -506,14 +616,12 @@ class _HomeWidgetState extends State<HomeWidget>
                                             objMensaMob.titulo,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
-                                              fontWeight:
-                                                  objMensaMob.ttMensVisu == null
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                              color:
-                                                  objMensaMob.ttMensVisu == null
-                                                      ? null
-                                                      : Colors.grey,
+                                              fontWeight: mensagemLida == false
+                                                  ? FontWeight.bold
+                                                  : FontWeight.normal,
+                                              color: mensagemLida == false
+                                                  ? null
+                                                  : Colors.grey,
                                               fontSize: 15,
                                             ),
                                           ),
@@ -529,14 +637,12 @@ class _HomeWidgetState extends State<HomeWidget>
                                               ? objMensaMob.horaCriacao
                                               : objMensaMob.dataCriacao, //dias
                                           style: TextStyle(
-                                            fontWeight:
-                                                objMensaMob.ttMensVisu == null
-                                                    ? FontWeight.bold
-                                                    : FontWeight.normal,
-                                            color:
-                                                objMensaMob.ttMensVisu == null
-                                                    ? null
-                                                    : Colors.grey,
+                                            fontWeight: mensagemLida == false
+                                                ? FontWeight.bold
+                                                : FontWeight.normal,
+                                            color: mensagemLida == false
+                                                ? null
+                                                : Colors.grey,
                                             fontSize: 12,
                                           ),
                                         ),
@@ -545,29 +651,16 @@ class _HomeWidgetState extends State<HomeWidget>
                                           ? Container()
                                           : Expanded(
                                               flex: 1,
-                                              child: objMensaMob
-                                                              .requerCiencia ==
-                                                          true &&
-                                                      objMensaMob.ttMensVisu ==
-                                                          null //pendente == isFalse
+                                              child: objMensaMob.requerCiencia
                                                   ? Icon(
                                                       Icons
                                                           .drive_file_rename_outline,
-                                                      color: Colors.orange[200],
-                                                      size: 30,
+                                                      color: objMensaMob
+                                                              .documentoLido
+                                                          ? Colors.grey
+                                                          : Colors.green,
                                                     )
-                                                  : objMensaMob.requerCiencia ==
-                                                              true &&
-                                                          objMensaMob
-                                                                  .ttMensVisu !=
-                                                              null
-                                                      ? Icon(
-                                                          Icons
-                                                              .check_circle_sharp,
-                                                          color: Colors.green,
-                                                          size: 30,
-                                                        )
-                                                      : Icon(null),
+                                                  : Icon(null),
                                             ),
                                     ],
                                   ),
@@ -732,11 +825,11 @@ class _HomeWidgetState extends State<HomeWidget>
       text: "Config. ",
       iconData: Icons.settings,
     ),
-    // [9]
-    MenuItemWidget(
-      text: "Quiz.",
-      iconData: Icons.quiz_outlined,
-    ),
+    //[9]
+    // MenuItemWidget(
+    //   text: "Enviar Doc.",
+    //   iconData: Icons.quiz_outlined,
+    // ),
   ];
 
   //WEB/////////////////////////////////////////////////////////////////////////
@@ -837,20 +930,20 @@ class _HomeWidgetState extends State<HomeWidget>
 
   Expanded _buildColunaDireita() {
     // List<StatusModel> listMensag = [];
-    MensagemRetornoModel.TtMensagens objBoxMensa;
+    TtRetorno2 objBoxMensa;
 
     var _pages = [
-      new ListarMensaWidgetWeb(), //0
+      new HomeWeb(), //0
       new FeriasWidget(), //1
       new BcoHorasWidget(), //2
       new PontoWidget(null, null), //3
       new ContraChequeWidget(), //4
       new MyDayWidget(), //5
-      // new NiverWidget(), //6
+      new ListaMensaNovas(), //6
       new ListaDocWidgetWeb(), //7
       new SugestoesWidget(), //8
       new ConfigWidget(), //8
-      new Quiz(), //10
+      // new EnviarDocs(), //10
     ];
 
     return Expanded(
@@ -1293,36 +1386,65 @@ class _HomeWidgetState extends State<HomeWidget>
 
   atualizarBox() {
     SharedPreferences.getInstance().then((prefs) {
-      listaMensaBloc.getMessageBack(context, true).then((map1) {
-        // StatusModelMok().list().then((map1) {
-        setState(() {
-          setState(() {
-            listaFinal.clear();
-          });
+      LisartDocsBloc()
+          .getListDocs(context: context, cienciaConfirmada: false, operacao: 1)
+          .then((value) => {
+                setState(() {
+                  if (value != null &&
+                      value.response.ttRetorno.ttRetorno2[0] != null) {
+                    TtRetorno2 documentos = value.response.ttRetorno.ttRetorno2
+                        .firstWhere(
+                            (element) =>
+                                element.requerCiencia == true &&
+                                element.documentoAssinado == null,
+                            orElse: () => null);
+                    if (documentos == null) {
+                      Globals.bloqueiaMenu = false;
+                    } else {
+                      Globals.bloqueiaMenu = true;
+                    }
+                    listaFinalDoc = value.response.ttRetorno.ttRetorno2
+                        .where((element) => element.requerCiencia == false
+                            ? element.documentoLido == false
+                            : element.documentoAssinado == false)
+                        .toList();
+                  } else {
+                    Globals.bloqueiaMenu = false;
+                  }
+                })
+              })
+          .whenComplete(() => {
+                ListaMensaBloc()
+                    .getMessageBack(
+                        cienciaConfirmada: false, context: context, operacao: 1)
+                    .then((map1) {
+                  setState(() {
+                    if (map1 != null &&
+                        map1.response.ttRetorno.ttRetorno2 != null) {
+                      //listaGlobal = map1;
 
-          if (map1 != null &&
-              map1.response.dsMensagens.dsMensagens2.ttMensagens != null) {
-            setState(() {
-              MensagemRetornoModel.TtMensagens mensagem =
-                  map1.response.dsMensagens.dsMensagens2.ttMensagens.firstWhere(
-                      (element) =>
-                          element.requerCiencia == true &&
-                          element.ttMensVisu == null,
-                      orElse: () => null);
-              if (mensagem == null) {
-                Globals.bloqueiaMenu = false;
-              } else {
-                Globals.bloqueiaMenu = true;
-              }
-              listaFinal = map1.response.dsMensagens.dsMensagens2.ttMensagens
-                  .where((element) => element.ttMensVisu == null)
-                  .toList();
-            });
-          } else {
-            Globals.bloqueiaMenu = false;
-          }
-        });
-      }); //ms
+                      MensagemRetornoModel.TtRetorno2 mensagem;
+                      mensagem = map1.response.ttRetorno.ttRetorno2.firstWhere(
+                          (element) =>
+                              element.requerCiencia == true &&
+                              element.mensagemAssinada == false,
+                          orElse: () => null);
+                      if (mensagem == null) {
+                        Globals.bloqueiaMenu = false;
+                      } else {
+                        Globals.bloqueiaMenu = true;
+                      }
+                      listaFinal = map1.response.ttRetorno.ttRetorno2
+                          .where((element) => element.requerCiencia == false
+                              ? element.mensagemLida == false
+                              : element.mensagemAssinada == false)
+                          .toList();
+                    } else {
+                      Globals.bloqueiaMenu = false;
+                    }
+                  });
+                }).whenComplete(() => preencherList()),
+              });
     });
   }
 
@@ -1339,8 +1461,8 @@ class _HomeWidgetState extends State<HomeWidget>
   List<BottomMenuItemWidget> cardItensWeb = [
     //[0]
     MenuItemWidget(
-      text: "Mens.",
-      iconData: Icons.messenger,
+      text: "Home.",
+      iconData: Icons.home,
     ),
     // [1]
     MenuItemWidget(
@@ -1368,15 +1490,26 @@ class _HomeWidgetState extends State<HomeWidget>
       text: "Meu Dia",
       iconData: Icons.event_available_rounded,
     ),
+    //[6]
+    MenuItemWidget(
+      text: "Mens.",
+      iconData: Icons.messenger,
+    ),
     // // [6]
     // MenuItemWidget(
     //   text: "Aniver.",
     //   iconData: Icons.cake,
     // ),
     // [7]
-    MenuItemWidget(text: "Anexos", iconData: Icons.image_rounded),
+    MenuItemWidget(
+      text: "Anexos",
+      iconData: Icons.image_rounded,
+    ),
     // [8]
-    MenuItemWidget(text: "Sugestões", iconData: Icons.thumbs_up_down_rounded),
+    MenuItemWidget(
+      text: "Sugestões",
+      iconData: Icons.thumbs_up_down_rounded,
+    ),
     //[9]
     MenuItemWidget(
       text: "Config. ",
@@ -1384,7 +1517,7 @@ class _HomeWidgetState extends State<HomeWidget>
     ),
     //[10]
     MenuItemWidget(
-      text: "Qiz. ",
+      text: "Enviar Doc. ",
       iconData: Icons.settings,
     ),
   ];

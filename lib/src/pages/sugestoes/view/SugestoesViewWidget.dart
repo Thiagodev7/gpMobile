@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gpmobile/src/pages/mensagens/listar_mensagens/ListaMensaBloc.dart';
+import 'package:gpmobile/src/pages/mensagens/bloc/ListaMensaBloc.dart';
 import 'package:gpmobile/src/util/Estilo.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_builder/responsive_builder.dart';

@@ -1,9 +1,9 @@
-class ListarDocModel {
+class MensagensModel {
   Response response;
 
-  ListarDocModel({this.response});
+  MensagensModel({this.response});
 
-  ListarDocModel.fromJson(Map<String, dynamic> json) {
+  MensagensModel.fromJson(Map<String, dynamic> json) {
     response = json['response'] != null
         ? new Response.fromJson(json['response'])
         : null;
@@ -21,15 +21,15 @@ class ListarDocModel {
 class Response {
   int pIntCodErro;
   String pChrDescErro;
-  TtRetorno ttRetorno;
+  TtMensagens ttMensagens;
 
-  Response({this.pIntCodErro, this.pChrDescErro, this.ttRetorno});
+  Response({this.pIntCodErro, this.pChrDescErro, this.ttMensagens});
 
   Response.fromJson(Map<String, dynamic> json) {
     pIntCodErro = json['pIntCodErro'];
     pChrDescErro = json['pChrDescErro'];
-    ttRetorno = json['ttRetorno'] != null
-        ? new TtRetorno.fromJson(json['ttRetorno'])
+    ttMensagens = json['ttMensagens'] != null
+        ? new TtMensagens.fromJson(json['ttMensagens'])
         : null;
   }
 
@@ -37,37 +37,37 @@ class Response {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['pIntCodErro'] = this.pIntCodErro;
     data['pChrDescErro'] = this.pChrDescErro;
-    if (this.ttRetorno != null) {
-      data['ttRetorno'] = this.ttRetorno.toJson();
+    if (this.ttMensagens != null) {
+      data['ttMensagens'] = this.ttMensagens.toJson();
     }
     return data;
   }
 }
 
-class TtRetorno {
-  List<TtRetorno2> ttRetorno2;
+class TtMensagens {
+  List<TtMensagens2> ttMensagens2;
 
-  TtRetorno({this.ttRetorno2});
+  TtMensagens({this.ttMensagens2});
 
-  TtRetorno.fromJson(Map<String, dynamic> json) {
-    if (json['ttRetorno'] != null) {
-      ttRetorno2 = new List<TtRetorno2>();
-      json['ttRetorno'].forEach((v) {
-        ttRetorno2.add(new TtRetorno2.fromJson(v));
+  TtMensagens.fromJson(Map<String, dynamic> json) {
+    if (json['ttMensagens'] != null) {
+      ttMensagens2 = new List<TtMensagens2>();
+      json['ttMensagens'].forEach((v) {
+        ttMensagens2.add(new TtMensagens2.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.ttRetorno2 != null) {
-      data['ttRetorno'] = this.ttRetorno2.map((v) => v.toJson()).toList();
+    if (this.ttMensagens2 != null) {
+      data['ttMensagens'] = this.ttMensagens2.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class TtRetorno2 {
+class TtMensagens2 {
   int codDocumento;
   String categoria;
   String titulo;
@@ -82,7 +82,7 @@ class TtRetorno2 {
   String horaCriacao;
   String tipoDocumento;
 
-  TtRetorno2(
+  TtMensagens2(
       {this.codDocumento,
       this.categoria,
       this.titulo,
@@ -97,7 +97,7 @@ class TtRetorno2 {
       this.horaCriacao,
       this.tipoDocumento});
 
-  TtRetorno2.fromJson(Map<String, dynamic> json) {
+  TtMensagens2.fromJson(Map<String, dynamic> json) {
     codDocumento = json['codDocumento'];
     categoria = json['categoria'];
     titulo = json['titulo'];

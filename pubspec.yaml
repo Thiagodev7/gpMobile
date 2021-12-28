@@ -25,6 +25,9 @@ dependencies:
   custom_navigation_bar: ^0.8.0
   custom_splash: ^0.0.2
   
+  camera_camera: ^2.0.2
+  datetime_picker_formfield: ^2.0.0
+  
   date_format: ^2.0.2
   day_night_switcher: ^0.2.0+1
   day_selector: ^1.0.0
@@ -41,7 +44,6 @@ dependencies:
   flutter_advanced_switch: ^2.0.2
   flutter_archive: ^4.0.1
   flutter_bloc: ^7.1.0
-  flutter_cache_manager: ^2.0.0
   flutter_collapse: ^0.1.1
   flutter_conditional_rendering: ^2.0.0
   flutter_custom_clippers: ^1.1.2
@@ -71,7 +73,6 @@ dependencies:
   launchers: ^0.5.6+1
   mobx: ^2.0.5
   multi_select_item: ^1.0.3
-  month_picker_dialog: ^0.3.3
   open_file: any
   path: ^1.8.0
   path_provider: any
@@ -80,7 +81,7 @@ dependencies:
   plugin_platform_interface: ^2.0.0
   progress_dialog: ^1.2.2
   provider: any
-  pull_to_refresh: ^1.6.5
+  pull_to_refresh: ^2.0.0
   responsive: ^0.2.3+4
   responsive_builder: ^0.4.1
   responsive_framework: ^0.1.4
@@ -111,7 +112,7 @@ dependencies:
   timer_button: ^2.0.0
   flutter_local_notifications: ^9.0.3
   flutter_native_timezone: ^2.0.0
-  stop_watch_timer: ^0.6.0+1
+ 
   flutter_countdown_timer: ^4.1.0
   syncfusion_flutter_charts: ^18.4.49
   pdf_render: ^1.0.17

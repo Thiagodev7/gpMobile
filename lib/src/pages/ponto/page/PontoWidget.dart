@@ -404,7 +404,7 @@ class _PontoWidgetState extends State<PontoWidget> {
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          (_isButtonDisabled == true || mesAssinatura == dataAtual.toString())
+          (_isButtonDisabled == true || int.parse(mesAssinatura) >= dataAtual)
               ? SizedBox()
               : MaterialButton(
                   highlightColor: Theme.of(context).backgroundColor,

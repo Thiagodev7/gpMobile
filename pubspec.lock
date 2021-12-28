@@ -169,6 +169,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "8.0.4"
+  camera:
+    dependency: transitive
+    description:
+      name: camera
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.1+7"
+  camera_camera:
+    dependency: "direct main"
+    description:
+      name: camera_camera
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.2"
+  camera_platform_interface:
+    dependency: transitive
+    description:
+      name: camera_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.1"
   carousel_slider:
     dependency: "direct main"
     description:
@@ -260,6 +281,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0"
+  cross_file:
+    dependency: transitive
+    description:
+      name: cross_file
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2"
   crypto:
     dependency: transitive
     description:
@@ -330,6 +358,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
+  datetime_picker_formfield:
+    dependency: "direct main"
+    description:
+      name: datetime_picker_formfield
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   day_night_switcher:
     dependency: "direct main"
     description:
@@ -461,13 +496,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.1.0"
-  flutter_cache_manager:
-    dependency: "direct main"
-    description:
-      name: flutter_cache_manager
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.2"
   flutter_collapse:
     dependency: "direct main"
     description:
@@ -496,13 +524,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.1.0"
-  flutter_cupertino_localizations:
-    dependency: transitive
-    description:
-      name: flutter_cupertino_localizations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   flutter_custom_clippers:
     dependency: "direct main"
     description:
@@ -756,13 +777,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.4"
-  image:
-    dependency: transitive
-    description:
-      name: image
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.8"
   inflection3:
     dependency: transitive
     description:
@@ -861,13 +875,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0-nullsafety.2"
-  month_picker_dialog:
-    dependency: "direct main"
-    description:
-      name: month_picker_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.3"
   multi_select_item:
     dependency: "direct main"
     description:
@@ -1070,7 +1077,14 @@ packages:
       name: pull_to_refresh
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.5"
+    version: "2.0.0"
+  quiver:
+    dependency: transitive
+    description:
+      name: quiver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1+1"
   r_get_ip:
     dependency: "direct main"
     description:
@@ -1133,7 +1147,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.24.1"
+    version: "0.26.0"
   scratch_space:
     dependency: transitive
     description:
@@ -1335,13 +1349,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.1"
-  stop_watch_timer:
-    dependency: "direct main"
-    description:
-      name: stop_watch_timer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.6.0+1"
   stream_channel:
     dependency: transitive
     description:
@@ -1517,13 +1524,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
-  uuid:
-    dependency: transitive
-    description:
-      name: uuid
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.5"
   validadores:
     dependency: "direct main"
     description:

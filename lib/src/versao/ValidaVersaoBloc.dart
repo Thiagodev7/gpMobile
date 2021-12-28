@@ -81,6 +81,6 @@ class ValidaVersaoBloc extends BlocBase {
   }
 
   static double getVersaoAppDp() {
-    return 1.2;
+    return 1.21;
   }
 }

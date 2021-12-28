@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gpmobile/src/core/app_colors.dart';
-import 'package:gpmobile/src/pages/mensagens/model/StatusMensaModel.dart';
 
 class SampleListItem extends StatelessWidget {
   final String title;

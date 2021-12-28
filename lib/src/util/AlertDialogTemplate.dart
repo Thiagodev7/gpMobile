@@ -816,6 +816,108 @@ class AlertDialogTemplate extends State<StatefulWidget>
     );
   }
 
+  //Senha Documentos
+
+  Future<ConfirmAction> ShowDialogSenhaDoc(BuildContext context, String titulo,
+      String subTitulo, String descController) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String senhaAtual = prefs.getString('senha');
+    String senhaPonto = prefs.getString('senhaPonto');
+    final crtlAssinatura = new TextEditingController();
+    String matriculaInformada = crtlAssinatura.text;
+    String campoVazio = 'Campo não pode ser vazio!';
+    String campoSenhaErrada = 'Senha incorreta!';
+
+    ///[metodos]
+
+    dynamic validarCampoSenhaMensa(value) {
+      if (value.isEmpty) {
+        return campoVazio;
+      } else if (value != senhaPonto) {
+        return campoSenhaErrada;
+      }
+
+      return null;
+    }
+
+    return showDialog<ConfirmAction>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Form(
+          key: _formKey,
+          child: AlertDialog(
+            title: Column(
+              children: [
+                Text(titulo, style: TextStyle(color: Color(0xFFC42224))),
+                SizedBox(height: 10),
+                Text(subTitulo),
+              ],
+            ),
+            content: new TextFormField(
+              controller: crtlAssinatura,
+              keyboardType: TextInputType.multiline,
+              obscureText: true,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: descController,
+                labelStyle: TextStyle(color: AppColors.black),
+                fillColor: Color(0xFFDBEDFF),
+                focusedBorder: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  borderSide: new BorderSide(color: AppColors.black),
+                ),
+                border: new OutlineInputBorder(
+                  borderRadius: new BorderRadius.circular(10.0),
+                  borderSide: new BorderSide(color: AppColors.black),
+                ),
+              ),
+              onChanged: (value) {
+                matriculaInformada = value;
+              },
+              validator: (value) => validarCampoSenhaMensa(value),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(
+                    color: AppColors.black,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) => Color(0xFFC42224)),
+                  ),
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState.validate()) {
+                      //forca validacao de matricula!!
+                      if (_formKey.currentState.validate() == true) {
+                        Navigator.of(context).pop(ConfirmAction.OK);
+                        return ConfirmAction.OK;
+                      }
+                    }
+                  }),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  //Senha ponto
+
   Future<ConfirmAction> ShowDialogSenhaPonto(BuildContext context,
       String titulo, String subTitulo, String descController) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

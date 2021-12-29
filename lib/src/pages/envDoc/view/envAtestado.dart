@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:camera_camera/camera_camera.dart';
 import 'package:flutter/material.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:gpmobile/src/pages/envDoc/bloc/enviarAtestadoBloc.dart';
 import 'package:intl/intl.dart';
 
 class EnviarAtestado extends StatefulWidget {
@@ -14,12 +16,18 @@ class EnviarAtestado extends StatefulWidget {
 class _EnviarAtestadoState extends State<EnviarAtestado> {
   File photos;
 
-  void openCamera() {}
+  TextEditingController hospitalController;
+  TextEditingController medicoController;
+  TextEditingController crmCroController;
+  TextEditingController inicioController;
+  TextEditingController fimController;
+  TextEditingController motivoController;
+  TextEditingController cidController;
+
+  String img64;
 
   @override
   Widget build(BuildContext context) {
-    final format = DateFormat("yyyy-MM-dd HH:mm");
-    final size = MediaQuery.of(context).size;
     return Scaffold(
         backgroundColor: Color(0xff501d2c),
         appBar: AppBar(
@@ -30,65 +38,85 @@ class _EnviarAtestadoState extends State<EnviarAtestado> {
             padding: const EdgeInsets.all(16.0),
             child: ListView(
               children: [
+                TextFormFildAtestado("Hospital:", Icons.local_hospital_outlined,
+                    hospitalController),
+                TextFormFildAtestado("Medico:", Icons.medical_services_rounded,
+                    medicoController),
+                TextFormFildAtestado("CRM ou CRO do medico:",
+                    Icons.person_search_sharp, crmCroController),
+                BasicDateTimeField('Data Inicial de Afastamento:',
+                    Icons.calendar_today, inicioController),
+                BasicDateTimeField('Data Final de Afastamento:',
+                    Icons.calendar_today, fimController),
                 TextFormFildAtestado(
-                    "Hospital:", Icons.local_hospital_outlined),
-                BasicDateTimeField(
-                    'Data e Hora da consulta', Icons.calendar_today),
-                TextFormFildAtestado("Medico", Icons.medical_services_rounded),
-                TextFormFildAtestado(
-                    "CRM ou CRO do medico:", Icons.person_search_sharp),
-                TextFormFildAtestado("Motivo da ausencia", Icons.line_style),
-                TextFormFildAtestado(
-                    "Periodo de Afastamento:", Icons.personal_injury_rounded),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => CameraCamera(
-                                  onFile: (file) {
-                                    photos = file;
-                                    Navigator.pop(context);
-                                    setState(() {});
-                                  },
-                                )));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20, right: 250),
-                    child: Container(
-                      height: 200,
-
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 3.0, color: Colors.white),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(
-                              5.0), //                 <--- border radius here
-                        ),
-                      ), //             <--- BoxDecoration here
-                      child: photos == null
-                          ? Icon(
-                              Icons.add,
-                              size: 50,
-                              color: Colors.white,
-                            )
-                          : Image.file(
-                              photos,
-                              fit: BoxFit.cover,
-                            ),
-                    ),
-                  ),
-                ),
+                    "Motivo da ausencia:", Icons.line_style, motivoController),
+                TextFormFildAtestado("CID:", Icons.book, cidController),
+                cardCamera(context),
               ],
             )),
         floatingActionButton: ElevatedButton(
-          onPressed: () {},
+          onPressed: () => EnviarAtestadoBloc().getEnvAtestado(
+            arquivo: img64,
+            barraStatus: true,
+            cid: cidController.toString(),
+            context: context,
+            crmcro: crmCroController.toString(),
+            fimAfastamento: fimController.toString(),
+            hospital: hospitalController.toString(),
+            inicioAfastamento: inicioController.toString(),
+            justificativa: motivoController.toString(),
+            medico: medicoController.toString(),
+          ),
           child: Text('Enviar'),
-          style: ElevatedButton.styleFrom(shadowColor: Colors.red),
         ));
   }
 
-  TextFormField TextFormFildAtestado(String text, IconData icon) {
+  GestureDetector cardCamera(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (_) => CameraCamera(
+                      onFile: (file) {
+                        photos = file;
+                        Navigator.pop(context);
+                        setState(() {});
+                      },
+                    )));
+        final bytes = File(photos.path).readAsBytesSync();
+        img64 = base64Encode(bytes);
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(top: 20, right: 250),
+        child: Container(
+          height: 200,
+
+          decoration: BoxDecoration(
+            border: Border.all(width: 3.0, color: Colors.white),
+            borderRadius: BorderRadius.all(
+              Radius.circular(5.0), //                 <--- border radius here
+            ),
+          ), //             <--- BoxDecoration here
+          child: photos == null
+              ? Icon(
+                  Icons.add,
+                  size: 50,
+                  color: Colors.white,
+                )
+              : Image.file(
+                  photos,
+                  fit: BoxFit.cover,
+                ),
+        ),
+      ),
+    );
+  }
+
+  TextFormField TextFormFildAtestado(
+      String text, IconData icon, TextEditingController controller) {
     return TextFormField(
+      controller: controller,
       cursorColor: Colors.white,
       style: TextStyle(
         color: Colors.white,
@@ -114,14 +142,16 @@ class _EnviarAtestadoState extends State<EnviarAtestado> {
 }
 
 class BasicDateTimeField extends StatelessWidget {
+  TextEditingController controller;
   String text;
   IconData icon;
-  BasicDateTimeField(this.text, this.icon);
+  BasicDateTimeField(this.text, this.icon, this.controller);
   final format = DateFormat("yyyy-MM-dd HH:mm");
   @override
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       DateTimeField(
+        controller: controller,
         cursorColor: Colors.white,
         style: TextStyle(
           color: Colors.white,

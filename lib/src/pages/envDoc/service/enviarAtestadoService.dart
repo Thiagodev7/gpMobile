@@ -87,7 +87,7 @@ class EnviarAtestadoService {
                 },
                 {
                   "fieldName": "Arquivo",
-                  "fileName": "{YYMMDD}_{Matricula}_{CID}.pdf",
+                  "fileName": "29/12/2021_$matricula _$cid.pdf",
                   "dataType": 11,
                   "fieldValue": arquivo
                 }

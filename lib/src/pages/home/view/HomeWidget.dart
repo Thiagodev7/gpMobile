@@ -11,7 +11,7 @@ import 'package:gpmobile/src/pages/documentos/bloc/ListarDocBloc.dart';
 import 'package:gpmobile/src/pages/documentos/model/ListarDocModel.dart';
 import 'package:gpmobile/src/pages/documentos/view/DocsWidget.dart';
 import 'package:gpmobile/src/pages/documentos/view/ListaDocNovosWidgets.dart';
-import 'package:gpmobile/src/pages/envDoc/view/envDoc.dart';
+import 'package:gpmobile/src/pages/envdoc/view/envDoc.dart';
 import 'package:gpmobile/src/pages/home/model/listNotfic.dart';
 import 'package:gpmobile/src/pages/home/view/HomeWebWidget.dart';
 import 'package:gpmobile/src/pages/mensagens/view/ListaMensaNovas.dart';
@@ -353,11 +353,11 @@ class _HomeWidgetState extends State<HomeWidget>
             print("Sobre o App");
           }
           break;
-        // case 9:
-        //   {
-        //     print("Enviar Doc.");
-        //   }
-        //   break;
+        case 9:
+          {
+            print("Enviar Doc.");
+          }
+          break;
       }
     });
   }
@@ -825,11 +825,11 @@ class _HomeWidgetState extends State<HomeWidget>
       text: "Config. ",
       iconData: Icons.settings,
     ),
-    //[9]
-    // MenuItemWidget(
-    //   text: "Enviar Doc.",
-    //   iconData: Icons.quiz_outlined,
-    // ),
+    // [9]
+    MenuItemWidget(
+      text: "Enviar Doc.",
+      iconData: Icons.quiz_outlined,
+    ),
   ];
 
   //WEB/////////////////////////////////////////////////////////////////////////
@@ -943,7 +943,7 @@ class _HomeWidgetState extends State<HomeWidget>
       new ListaDocWidgetWeb(), //7
       new SugestoesWidget(), //8
       new ConfigWidget(), //8
-      // new EnviarDocs(), //10
+      new EnviarDocs(), //10
     ];
 
     return Expanded(

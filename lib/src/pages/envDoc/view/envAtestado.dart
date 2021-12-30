@@ -16,13 +16,13 @@ class EnviarAtestado extends StatefulWidget {
 class _EnviarAtestadoState extends State<EnviarAtestado> {
   File photos;
 
-  TextEditingController hospitalController;
-  TextEditingController medicoController;
-  TextEditingController crmCroController;
-  TextEditingController inicioController;
-  TextEditingController fimController;
-  TextEditingController motivoController;
-  TextEditingController cidController;
+  var hospitalController = new TextEditingController();
+  var medicoController = new TextEditingController();
+  var crmCroController = new TextEditingController();
+  var inicioController = new TextEditingController();
+  var fimController = new TextEditingController();
+  var motivoController = new TextEditingController();
+  var cidController = new TextEditingController();
 
   String img64;
 
@@ -58,14 +58,14 @@ class _EnviarAtestadoState extends State<EnviarAtestado> {
           onPressed: () => EnviarAtestadoBloc().getEnvAtestado(
             arquivo: img64,
             barraStatus: true,
-            cid: cidController.toString(),
+            cid: cidController.text,
             context: context,
-            crmcro: crmCroController.toString(),
-            fimAfastamento: fimController.toString(),
-            hospital: hospitalController.toString(),
-            inicioAfastamento: inicioController.toString(),
-            justificativa: motivoController.toString(),
-            medico: medicoController.toString(),
+            crmcro: crmCroController.text,
+            fimAfastamento: fimController.text,
+            hospital: hospitalController.text,
+            inicioAfastamento: inicioController.text,
+            justificativa: motivoController.text,
+            medico: medicoController.text,
           ),
           child: Text('Enviar'),
         ));

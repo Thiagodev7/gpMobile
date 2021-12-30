@@ -25,7 +25,7 @@ class EnviarAtestadoService {
   ) async {
     try {
       final response = await http.post(
-        await new BuscaUrl().url("receberArq") + token,
+        'http://pc205:4040/fusion-i7/services/WorkflowRest/abrirSolicitacao',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -38,34 +38,30 @@ class EnviarAtestadoService {
               "dataType": 8,
               "fieldName": "Empresa",
               "fieldValueList": [
-                {
-                  "dataType": 1,
-                  "fieldName": "EmpresaEMS2",
-                  "fieldValue": empresa
-                }
+                {"dataType": 1, "fieldName": "EmpresaEMS2", "fieldValue": "01"}
               ]
             },
-            {"fieldName": "Matricula", "dataType": 1, "fieldValue": matricula},
-            {"fieldName": "Colaborador", "dataType": 1, "fieldValue": usuario},
-            {"fieldName": "Hospital", "dataType": 1, "fieldValue": hospital},
-            {"fieldName": "Medico", "dataType": 1, "fieldValue": medico},
-            {"fieldName": "CRMCRO", "dataType": 1, "fieldValue": crmcro},
+            {"fieldName": "Matricula", "dataType": 1, "fieldValue": "5015"},
+            {
+              "fieldName": "Colaborador",
+              "dataType": 1,
+              "fieldValue": "Thiago Ribeiro dos Santos"
+            },
             {
               "fieldName": "InicioAfastamento",
               "dataType": 4,
-              "fieldValue": inicioAfastamento
+              "fieldValue": "10/04/2021 10:45:10"
             },
             {
-              "fieldName": fimAfastamento,
+              "fieldName": "FimDoAfastamento",
               "dataType": 4,
               "fieldValue": "10/04/2021 12:00:00"
             },
             {
               "fieldName": "Justificativa",
               "dataType": 1,
-              "fieldValue": justificativa
+              "fieldValue": "Tive que sair 1h mais cedo para ir ao dentista."
             },
-            {"fieldName": "CID", "dataType": 1, "fieldValue": cid},
             {
               "fieldName": "TipoDeCadastro",
               "dataType": 8,
@@ -87,9 +83,9 @@ class EnviarAtestadoService {
                 },
                 {
                   "fieldName": "Arquivo",
-                  "fileName": "29/12/2021_$matricula _$cid.pdf",
+                  "fileName": "{YYMMDD}_{Matricula}_{CID}.pdf",
                   "dataType": 11,
-                  "fieldValue": arquivo
+                  "fieldValue": "adsçlkfjaçlsdf..."
                 }
               ]
             }
